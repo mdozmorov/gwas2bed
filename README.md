@@ -10,6 +10,8 @@ A collection of scripts to download and extract genomic coordinates of disease-,
 
 * `gwassort.sh` - A script to sort large/small SNP sets into separate folders
 
-* `gwascatalog` - Files with disease- and trait-specific sets of SNPs, accessed 01/12/2014
+* `more15` - Files with disease- and trait-specific sets of SNPs, each set has at least 15 SNPs. Accessed 01/31/2014
 
-* `gwascatalog.bed` - coordinates of all GWAS catalog SNPs, accessed 01/12/2014
+* `less15` - Files with disease- and trait-specific sets of SNPs, each set has less than 15 SNPs. Accessed 01/31/2014
+
+* `gwascatalog.bed` - coordinates of all GWAS catalog SNPs. Accessed 01/31/2014. 14,182 SNPs total.

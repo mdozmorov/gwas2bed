@@ -18,10 +18,10 @@ mkdir more15
 for file in `ls $1`; do
 	echo $file
 	# wc -l $file | cut -d " " -f1 -
-	if [ ! `wc -l "$file" |cut -d " " -f1 -` -ge 15 ]
+	if [ ! `wc -l $1"/"$file" |cut -d " " -f1 -` -ge 15 ]
 	then
-		cp "$file" less15
+		cp $1"/"$file" less15
 	else
-		cp "$file" more15
+		cp $1"/"$file" more15
 	fi
 done
