@@ -1,0 +1,947 @@
+chr10	101365312	101365313	rs11190179	&beta;2-Glycoprotein I (&beta;2-GPI) plasma levels
+chr2	38916969	38916970	rs6741892	5-HTT brain serotonin transporter levels
+chr1	56850685	56850686	rs11206801	AB1-42
+chr12	57534469	57534470	rs1466535	Abdominal aortic aneurysm
+chr10	96405328	96405329	rs12772169	Acenocoumarol maintenance dosage
+chr1	169551681	169551682	rs6028	Activated partial thromboplastin time
+chr10	8104207	8104208	rs3824662	Acute lymphoblastic leukemia (B-cell precursor)
+chr1	66762465	66762466	rs546784	Acute lymphoblastic leukemia (childhood)
+chr1	204828040	204828041	rs12043259	Addiction
+chr1	24626173	24626174	rs10794657	Adiponectin levels
+chr1	219644223	219644224	rs2605100	Adiposity
+chr3	156797608	156797609	rs17451107	Adiposity in newborns
+chr17	69236997	69236998	rs12946942	Adolescent idiopathic scoliosis (severe)
+chr14	96169130	96169131	rs7158782	Adverse response to aromatase inhibitors
+chr6	29913297	29913298	rs1061235	Adverse response to carbamapezine
+chr2	192465597	192465598	rs6706693	Adverse response to chemotherapy (neutropenia/leucopenia) (5-fluorouracil)
+chr1	68633923	68633924	rs1367448	Adverse response to chemotherapy (neutropenia/leucopenia) (all anthracycline-based drugs)
+chr12	54319726	54319727	rs894734	Adverse response to chemotherapy (neutropenia/leucopenia) (all antimetabolite drugs)
+chr1	216716319	216716320	rs12145418	Adverse response to chemotherapy (neutropenia/leucopenia) (all antimicrotubule drugs)
+chr1	21837754	21837755	rs16825455	Adverse response to chemotherapy (neutropenia/leucopenia) (all platinum-based drugs)
+chr1	99589378	99589379	rs303386	Adverse response to chemotherapy (neutropenia/leucopenia) (all topoisomerase inhibitors)
+chr1	99589378	99589379	rs303386	Adverse response to chemotherapy (neutropenia/leucopenia) (camptothecin)
+chr1	109392836	109392837	rs1277203	Adverse response to chemotherapy (neutropenia/leucopenia) (carboplatin)
+chr1	108302921	108302922	rs12142335	Adverse response to chemotherapy (neutropenia/leucopenia) (cisplatin)
+chr1	198469161	198469162	rs10922438	Adverse response to chemotherapy (neutropenia/leucopenia) (cyclophosphamide)
+chr13	106596718	106596719	rs488248	Adverse response to chemotherapy (neutropenia/leucopenia) (docetaxel)
+chr11	86414281	86414282	rs2512987	Adverse response to chemotherapy (neutropenia/leucopenia) (doxorubicin)
+chr10	126144838	126144839	rs908366	Adverse response to chemotherapy (neutropenia/leucopenia) (epirubicin)
+chr1	48098405	48098406	rs2506991	Adverse response to chemotherapy (neutropenia/leucopenia) (etoposide)
+chr15	85415385	85415386	rs12900463	Adverse response to chemotherapy (neutropenia/leucopenia) (gemcitabine)
+chr1	15339959	15339960	rs6429703	Adverse response to chemotherapy (neutropenia/leucopenia) (paclitaxel + carboplatin)
+chr1	90025518	90025519	rs922106	Adverse response to chemotherapy (neutropenia/leucopenia) (paclitaxel)
+chr10	56204290	56204291	rs7476422	Adverse response to chemotherapy in breast cancer (alopecia)
+chr10	8324888	8324889	rs11255615	Adverse response to chemotherapy in breast cancer (alopecia) (anti-microtubule)
+chr1	70887098	70887099	rs672203	Adverse response to chemotherapy in breast cancer (alopecia) (cyclophosphamide+doxorubicin+/-5FU)
+chr1	95081444	95081445	rs4474258	Adverse response to chemotherapy in breast cancer (alopecia) (cyclophosphamide+epirubicin+/-5FU)
+chr1	56112773	56112774	rs10443215	Adverse response to chemotherapy in breast cancer (alopecia) (docetaxel)
+chr12	128782021	128782022	rs11059635	Adverse response to chemotherapy in breast cancer (alopecia) (paclitaxel)
+chr11	21058730	21058731	rs4569005	Adverse response to lamotrigine and phenytoin
+chr11	92792099	92792100	rs7120482	Adverse response to radiation therapy
+chr1	177568798	177568799	rs16851585	Age-related macular degeneration
+chr10	124214447	124214448	rs10490924	Age-related macular degeneration (CNV vs. GA)
+chr1	196659236	196659237	rs1061170	Age-related macular degeneration (CNV)
+chr1	196673992	196673993	rs1831282	Age-related macular degeneration (extreme sampling)
+chr1	196659236	196659237	rs1061170	Age-related macular degeneration (GA)
+chr18	62418443	62418444	rs17073641	Age-related macular degeneration (smoking status interaction)
+chr10	124220543	124220544	rs11200638	Age-related macular degeneration (wet)
+chr1	229019147	229019148	rs11585386	Aging
+chr3	120585314	120585315	rs322458	Aging (facial)
+chr11	124017492	124017493	rs4936894	Aging (time to death)
+chr1	44215827	44215828	rs2367725	Aging (time to event)
+chr1	235720897	235720898	rs291353	Aging traits
+chr1	107577831	107577832	rs4118325	AIDS
+chr1	146560563	146560564	rs11239930	AIDS progression
+chr1	56359812	56359813	rs6684428	Airflow obstruction
+chr2	228397565	228397566	rs6731443	Airway hyperresponsiveness
+chr11	125170638	125170639	rs1426153	Alcohol and nictotine co-dependence
+chr1	216738787	216738788	rs7553212	Alcohol consumption
+chr1	64127467	64127468	rs2749097	Alcohol consumption (transferrin glycosylation)
+chr1	25193154	25193155	rs3131513	Alcohol dependence
+chr14	42655274	42655275	rs2154294	Alcoholism (12-month weekly alcohol consumption)
+chr13	98016415	98016416	rs9556711	Alcoholism (alcohol dependence factor score)
+chr13	98016415	98016416	rs9556711	Alcoholism (alcohol use disorder factor score)
+chr1	115734090	115734091	rs195204	Alcoholism (heaviness of drinking)
+chr12	96057183	96057184	rs2367563	Allergic dermatitis (nickel)
+chr1	17216330	17216331	rs6586513	Allergic rhinitis
+chr11	76299193	76299194	rs2155219	Allergic sensitization
+chr10	6101712	6101713	rs3118470	Alopecia areata
+chr1	84254734	84254735	rs7539409	Alzheimer's disease
+chr12	117295332	117295333	rs17429217	Alzheimer's disease (age of onset)
+chr1	171557599	171557600	rs2421847	Alzheimer's disease (cognitive decline)
+chr1	167718498	167718499	rs4145462	Alzheimer's disease (late onset)
+chr12	106108718	106108719	rs10219670	Alzheimer's disease biomarkers
+chr11	18285773	18285774	rs4638289	Amyloid A Levels
+chr1	40132794	40132795	rs873917	Amyotrophic lateral sclerosis
+chr1	44005279	44005280	rs2819332	Amyotrophic lateral sclerosis (age of onset)
+chr10	65337152	65337153	rs10822184	Androgen levels
+chr17	61566030	61566031	rs4343	Angiotensin-converting enzyme activity
+chr1	240846123	240846124	rs4659996	Ankle-brachial index
+chr1	25297183	25297184	rs11249215	Ankylosing spondylitis
+chr1	19206333	19206334	rs28441017	Anorexia nervosa
+chr1	5170711	5170712	rs7513590	Anthropometric traits
+chr6	32363214	32363215	rs1980493	Anti-cyclic Citrullinated Peptide Antibody
+chr1	65815658	65815659	rs1413885	Anticoagulant levels
+chr10	36060308	36060309	rs11010290	Antineutrophil cytoplasmic antibody-associated vasculitis
+chr18	57882786	57882787	rs489693	Antipsychotic drug-induced weight gain
+chr1	70921172	70921173	rs10458561	Antipsychotic-induced QTc interval prolongation
+chr1	100049784	100049785	rs7543130	Aortic root size
+chr14	98588320	98588321	rs7152623	Aortic stiffness
+chr6	161010117	161010118	rs10455872	Aortic-valve calcification
+chr10	128777389	128777390	rs9733352	Apolipoprotein Levels
+chr13	110818597	110818598	rs3742207	Arterial stiffness
+chr1	117751364	117751365	rs12046117	Arthritis (juvenile idiopathic)
+chr5	153170373	153170374	rs4958351	Asparaginase hypersensitivity in acute lymphoblastic leukemia
+chr10	100127550	100127551	rs17109512	Aspartate aminotransferase
+chr11	131320069	131320070	rs1550976	Asperger disorder
+chr6	33048660	33048661	rs1042151	Aspirin exacerbated respiratory disease in asthmatics
+chr3	165480099	165480100	rs6445035	Aspirin hydrolysis (plasma)
+chr1	152492558	152492559	rs4845783	Asthma
+chr10	4240869	4240870	rs11252394	Asthma (bronchodilator response)
+chr1	117129710	117129711	rs17036023	Asthma (childhood onset)
+chr10	68088507	68088508	rs10762058	Asthma (toluene diisocyanate-induced)
+chr1	152300816	152300817	rs3126085	Atopic dermatitis
+chr2	42276920	42276921	rs4952590	Atopy
+chr1	11852515	11852516	rs17375901	Atrial fibrillation
+chr4	111710168	111710169	rs2200733	Atrial fibrillation/atrial flutter
+chr10	90826778	90826779	rs1937332	Atrioventricular conduction
+chr1	34359857	34359858	rs2281597	Attention deficit hyperactivity disorder
+chr2	206060636	206060637	rs10153620	Attention deficit hyperactivity disorder (combined symptoms)
+chr15	24062914	24062915	rs7164923	Attention deficit hyperactivity disorder (hyperactivity-impulsivity symptoms)
+chr16	20056992	20056993	rs12596252	Attention deficit hyperactivity disorder (inattention symptoms)
+chr11	19569562	19569563	rs874426	Attention deficit hyperactivity disorder (time to onset)
+chr1	30627711	30627712	rs2180233	Attention deficit hyperactivity disorder and conduct disorder
+chr4	29903051	29903052	rs7442317	Attention deficit hyperactivity disorder motor coordination
+chr11	94312322	94312323	rs2212361	Attention deficit hyperactivity disorder symptoms (interaction)
+chr14	102360744	102360745	rs7142002	Autism
+chr1	8422675	8422676	rs2252865	Autism spectrum disorder, attention deficit-hyperactivity disorder, bipolar disorder, major depressive disorder, and schizophrenia (combined)
+chr1	38092722	38092723	rs4074961	Axial length
+chr3	187649418	187649419	rs6773854	B cell non-Hodgkin lymphoma
+chr10	88116478	88116479	rs7904985	Barrett's esophagus
+chr1	17722362	17722363	rs7538876	Basal cell carcinoma
+chr1	241892234	241892235	rs9782914	Behavioural disinhibition (generation interaction)
+chr1	67753507	67753508	rs1495965	Behcet's disease
+chr11	5264145	5264146	rs2071348	Beta thalassemia/hemoglobin E disease
+chr12	111884607	111884608	rs3184504	Beta-2 microglubulin plasma levels
+chr9	139862632	139862633	rs57024841	Beta-trace protein levels
+chr10	111735749	111735750	rs17095355	Biliary atresia
+chr1	64868351	64868352	rs11208446	Bilirubin levels
+chr12	42171981	42171982	rs871392	Biochemical measures
+chr1	208024819	208024820	rs12731740	Biomedical quantitative traits
+chr1	41839821	41839822	rs4660531	Bipolar disorder
+chr15	57762792	57762793	rs2934442	Bipolar disorder (age of onset and psychomotor symptoms)
+chr13	85665878	85665879	rs17079247	Bipolar disorder (mania)
+chr1	24431955	24431956	rs3934861	Bipolar disorder (mood-incongruent)
+chr10	62181127	62181128	rs10994338	Bipolar disorder and major depressive disorder (combined)
+chr1	30432218	30432219	rs4949526	Bipolar disorder and schizophrenia
+chr10	115805055	115805056	rs1801253	Birth weight
+chr12	11216314	11216315	rs2708377	Bitter taste perception
+chr7	141673344	141673345	rs713598	Bitter taste response
+chr14	92773662	92773663	rs12896399	Black vs. blond hair color
+chr15	28365617	28365618	rs12913832	Black vs. red hair color
+chr18	43309910	43309911	rs17674580	Bladder cancer
+chr18	57503377	57503378	rs8093763	Bleomycin sensitivity
+chr11	68846398	68846399	rs35264875	Blond vs. brown hair color
+chr1	10796865	10796866	rs880315	Blood pressure
+chr1	3691527	3691528	rs1175550	Blood trace element (Cu levels)
+chr17	20924076	20924077	rs7226229	Blood trace element (Se levels)
+chr11	80928808	80928809	rs11232535	Blood trace element (Zn levels)
+chr15	28530181	28530182	rs1667394	Blue vs. brown eyes
+chr11	89011045	89011046	rs1393350	Blue vs. green eyes
+chr11	58472798	58472799	rs2507838	Body mass (lean)
+chr16	53816274	53816275	rs8050136	Body mass in chronic obstructive pulmonary disease
+chr1	1005805	1005806	rs3934834	Body mass index
+chr10	6572224	6572225	rs11259403	Body mass index (asthmatics)
+chr1	53777630	53777631	rs2788032	Body mass index (interaction)
+chr17	46720564	46720565	rs2326017	Body mass index (non-asthmatics)
+chr12	73601131	73601132	rs11615274	Body mass index and cholesterol (psychopharmacological treatment)
+chr1	8447721	8447722	rs2120461	Bone mineral density
+chr1	22698446	22698447	rs7524102	Bone mineral density (hip)
+chr1	22698446	22698447	rs7524102	Bone mineral density (spine)
+chr5	79446903	79446904	rs73772260	Borderline personality disorder features
+chr7	86696713	86696714	rs1476587	Brachial circumference
+chr10	72114377	72114378	rs4747011	Brain connectivity
+chr2	199601924	199601925	rs11893063	Brain cytoarchitecture
+chr1	63586972	63586973	rs7526034	Brain imaging
+chr14	103377320	103377321	rs10133111	Brain imaging in schizophrenia (interaction)
+chr14	32353249	32353250	rs2039485	Brain lesion load
+chr1	19568971	19568972	rs710865	Brain structure
+chr1	90539763	90539764	rs2813746	Brain structure (hippocampal volume)
+chr12	13923327	13923328	rs11055612	Brain structure (temporal lobe volume)
+chr1	8386729	8386730	rs9628987	Breast cancer
+chr1	84622512	84622513	rs903263	Breast cancer (male)
+chr13	29164782	29164783	rs9579199	Breast cancer (menopausal hormone therapy interaction)
+chr1	114670968	114670969	rs2774307	Breast cancer (prognosis)
+chr14	68749926	68749927	rs3784099	Breast cancer (survival)
+chr1	204516024	204516025	rs2290854	Breast Cancer in BRCA1 mutation carriers
+chr1	201884951	201884952	rs2819348	Breast size
+chr1	42297123	42297124	rs349423	Bronchopulmonary dysplasia
+chr3	38633922	38633923	rs11708996	Brugada syndrome
+chr1	58319827	58319828	rs985795	Bulimia nervosa
+chr20	32729443	32729444	rs4911414	Burning and freckling
+chr1	201952573	201952574	rs4950806	Butyrylcholinesterase levels
+chr1	40064960	40064961	rs12037222	C-reactive protein
+chr12	121423955	121423956	rs2393791	C-reactive protein and white blood cell count
+chr1	207269857	207269858	rs3813948	C4b binding protein levels
+chr14	75322793	75322794	rs8014204	Caffeine consumption
+chr10	9328650	9328651	rs10491003	Calcium levels
+chr3	3628980	3628981	rs10865864	Callous-unemotional behaviour
+chr1	192995212	192995213	rs9427573	Cannabis dependence
+chr11	21620947	21620948	rs1573535	Cannabis use (initiation)
+chr1	75770624	75770625	rs1249675	Capecitabine sensitivity
+chr1	43596383	43596384	rs16830359	Cardiac hypertrophy
+chr1	112464375	112464376	rs17029069	Cardiac repolarization
+chr10	87846958	87846959	rs7910620	Cardiac structure and function
+chr1	16080170	16080171	rs12725198	Cardiac Troponin-T levels
+chr1	109817837	109817838	rs660240	Cardiovascular disease risk factors
+chr1	182081959	182081960	rs10911021	Cardiovascular heart disease in diabetics
+chr11	116603723	116603724	rs12272004	Carotenoid and tocopherol levels
+chr10	83153245	83153246	rs588517	Carotid atherosclerosis in HIV infection
+chr19	11202305	11202306	rs6511720	Carotid intima media thickness
+chr16	57563670	57563671	rs8052123	Cataracts in type 2 diabetes
+chr5	76781470	76781471	rs163030	Caudate nucleus volume
+chr6	31252395	31252396	rs2524054	CD4:CD8 lymphocyte ratio
+chr1	2526745	2526746	rs3748816	Celiac disease
+chr1	159005648	159005649	rs1772408	Celiac disease and Rheumatoid arthritis
+chr13	23228690	23228691	rs1034200	Central corneal thickness
+chr17	38051347	38051348	rs8067378	Cervical cancer
+chr1	159342438	159342439	rs6687840	Chemerin levels
+chr2	234668569	234668570	rs887829	Cholelithiasis-related traits in sickle cell anemia
+chr16	57005478	57005479	rs1532624	Cholesterol
+chr1	206626827	206626828	rs2483058	Cholesterol and Triglycerides
+chr1	25768936	25768937	rs10903129	Cholesterol, total
+chr6	31130592	31130593	rs1419881	Chronic hepatitis B infection
+chr19	39738786	39738787	rs12979860	Chronic Hepatitis C infection
+chr1	109999837	109999838	rs1933182	Chronic kidney disease
+chr16	20364587	20364588	rs4293393	Chronic kidney disease and serum creatinine levels
+chr10	90759723	90759724	rs4406737	Chronic lymphocytic leukemia
+chr17	25541277	25541278	rs4795519	Chronic myeloid leukemia
+chr1	53871084	53871085	rs114216682	Chronic obstructive pulmonary disease
+chr1	15347639	15347640	rs6667220	Chronic obstructive pulmonary disease-related biomarkers
+chr2	234672638	234672639	rs6742078	Circulating cell-free DNA
+chr1	229718000	229718001	rs12049351	Circulating myeloperoxidase levels (plasma)
+chr1	196642232	196642233	rs800292	Circulating myeloperoxidase levels (serum)
+chr1	211168758	211168759	rs1501550	Circulating vasoactive peptide levels
+chr1	209988046	209988047	rs10863790	Cleft lip
+chr12	6153513	6153514	rs1063857	Coagulation factor levels
+chr1	195790657	195790658	rs6677435	Cocaine dependence
+chr15	75019448	75019449	rs2470893	Coffee consumption
+chr19	45395618	45395619	rs2075650	Cognitive decline
+chr12	15735441	15735442	rs2300290	Cognitive function
+chr1	16393356	16393357	rs9442235	Cognitive performance
+chr1	88802011	88802012	rs2179965	Cognitive test performance
+chr1	162821290	162821291	rs1912453	Colorectal cancer
+chr1	152062766	152062767	rs17646946	Common traits (Other)
+chr1	196620916	196620917	rs3753394	Complement C3 and C4 levels
+chr11	61570782	61570783	rs174547	Comprehensive strength and appendicular lean mass
+chr10	49735562	49735563	rs10776612	Conduct disorder (case status)
+chr1	155868624	155868625	rs2282301	Conduct disorder (interaction)
+chr1	153774275	153774276	rs4434872	Conduct disorder (symptom count)
+chr4	4648046	4648047	rs870142	Congenital heart disease
+chr1	118902977	118902978	rs2474937	Congenital heart malformation
+chr1	145727682	145727683	rs1797052	Contrast sensitivity
+chr1	28262408	28262409	rs4409675	Corneal astigmatism
+chr1	11171225	11171226	rs17036350	Corneal curvature
+chr1	36571919	36571920	rs96067	Corneal structure
+chr5	113798985	113798986	rs17136627	Coronary arterial lesions in patients with Kawasaki disease
+chr1	90943906	90943907	rs2390582	Coronary artery calcification
+chr1	55496038	55496039	rs11206510	Coronary heart disease
+chr12	103912505	103912506	rs10861032	Coronary restenosis
+chr14	39020504	39020505	rs10498345	Coronary spasm
+chr20	5588448	5588449	rs238295	Cortical structure
+chr13	43128576	43128577	rs9525638	Cortical thickness
+chr17	59483765	59483766	rs8068318	Creatinine levels
+chr20	4680250	4680251	rs1799990	Creutzfeldt-Jakob disease
+chr11	125241045	125241046	rs12273350	Creutzfeldt-Jakob disease (variant)
+chr1	7879062	7879063	rs2797685	Crohn's disease
+chr7	81839552	81839553	rs11978472	Crohn's disease (need for surgery)
+chr16	75167578	75167579	rs7195303	Crohn's disease (time to surgery)
+chr2	61217541	61217542	rs10188217	Crohn's disease and celiac disease
+chr1	19718823	19718824	rs7667	Crohn's disease and psoriasis
+chr10	23665437	23665438	rs1398024	Crohn's disease and sarcoidosis (combined)
+chr1	236179868	236179869	rs3768080	Cutaneous nevi
+chr20	23578188	23578189	rs1158167	Cystatin C
+chr11	34834203	34834204	rs12793173	Cystic fibrosis severity
+chr1	205914756	205914757	rs4077468	Cystic fibrosis-related diabetes
+chr1	111417914	111417915	rs2885805	Cytomegalovirus antibody response
+chr1	94611299	94611300	rs2774920	D-dimer levels
+chr10	94485210	94485211	rs2497306	Dehydroepiandrosterone sulphate levels
+chr10	96058297	96058298	rs3765524	Dengue shock syndrome
+chr1	4668669	4668670	rs3896439	Dental caries
+chr10	33294774	33294775	rs11009175	Depression (quantitative trait)
+chr1	50937847	50937848	rs3827730	Depression and alcohol dependence
+chr2	198896894	198896895	rs6738825	Dermatomyositis
+chr11	92698426	92698427	rs10830962	Diabetes (gestational)
+chr2	192914361	192914362	rs10497721	Diabetes (incident)
+chr13	69530663	69530664	rs2066219	Diabetes related insulin traits
+chr1	18795254	18795255	rs3007729	Diabetic retinopathy
+chr1	94462768	94462769	rs17110736	Dialysis-related mortality
+chr1	113216542	113216543	rs2932538	Diastolic blood pressure
+chr1	214261349	214261350	rs1440620	Dietary macronutrient intake
+chr15	58253105	58253106	rs3784262	Digestive system disease (Barrett's esophagus and esophageal adenocarcinoma combined)
+chr14	70347347	70347348	rs11158820	Digit length ratio
+chr1	16299311	16299312	rs10927875	Dilated cardiomyopathy
+chr10	3155172	3155173	rs7896691	Disc degeneration (lumbar)
+chr11	2024543	2024544	rs4930103	DNA methylation (parent-of-origin)
+chr11	1985126	1985127	rs10769945	DNA methylation (variation)
+chr12	111340242	111340243	rs10774610	Drinking behavior
+chr3	12330410	12330411	rs17036170	Drug-induced liver injury
+chr6	29828659	29828660	rs2523822	Drug-induced liver injury (amoxicillin-clavulanate)
+chr12	38743507	38743508	rs6582630	Drug-induced liver injury (flucloxacillin)
+chr8	143761930	143761931	rs2294008	Duodenal ulcer
+chr1	22698446	22698447	rs7524102	Dupuytren's disease
+chr9	136153874	136153875	rs651007	E-selectin levels
+chr1	152318160	152318161	rs3120667	Eating disorders
+chr10	70014229	70014230	rs10998035	Eating disorders (purging via substances)
+chr1	66310864	66310865	rs10493389	Echocardiographic traits
+chr1	8338354	8338355	rs438895	Economic and political preferences
+chr10	3418123	3418124	rs1570854	Economic and political preferences (environmentalism)
+chr11	64584230	64584231	rs470763	Economic and political preferences (fairness)
+chr1	66279124	66279125	rs4384209	Economic and political preferences (feminism/equality)
+chr10	5009758	5009759	rs2904804	Economic and political preferences (immigration/crime)
+chr1	85290408	85290409	rs9728717	Economic and political preferences (time)
+chr1	204576982	204576983	rs11584700	Educational attainment
+chr1	61897966	61897967	rs2207790	Electrocardiographic conduction measures
+chr1	162085308	162085309	rs1415259	Electrocardiographic traits
+chr11	63592620	63592621	rs10897449	Electroencephalographic traits in alcoholism
+chr10	1630820	1630821	rs2999399	Emphysema-related traits
+chr1	95052475	95052476	rs2022309	End-stage coagulation
+chr8	129072160	129072161	rs2648875	End-stage renal disease
+chr22	36616444	36616445	rs4821469	End-stage renal disease (non-diabetic)
+chr2	174462853	174462854	rs4972593	End-stage renal disease in Type 1 diabetics
+chr1	35687814	35687815	rs673604	Endometrial cancer
+chr1	22422720	22422721	rs10917151	Endometriosis
+chr10	105647094	105647095	rs3814219	Endothelial function traits
+chr11	113106454	113106455	rs12279261	Entorhinal cortical thickness
+chr12	111884607	111884608	rs3184504	Eosinophil counts
+chr10	85422853	85422854	rs2224865	Eosinophilic esophagitis (pediatric)
+chr1	200826768	200826769	rs2292096	Epilepsy
+chr1	34750935	34750936	rs771390	Epilepsy (generalized)
+chr1	145645605	145645606	rs12744221	Epilepsy (remission after treatment)
+chr4	113328077	113328078	rs6838440	Epirubicin-induced leukopenia
+chr6	32569690	32569691	rs477515	Epstein-Barr virus immune response (EBNA-1)
+chr1	197020657	197020658	rs2990510	Erectile dysfunction
+chr1	15792425	15792426	rs2901964	Erectile dysfunction and prostate cancer treatment
+chr1	25570080	25570081	rs1043879	Erythrocyte sedimentation rate
+chr16	86463694	86463695	rs2178146	Esophageal adenocarcinoma
+chr10	96066340	96066341	rs2274223	Esophageal cancer
+chr13	105039145	105039146	rs17450420	Esophageal cancer  (alcohol interaction)
+chr16	50103733	50103734	rs4785204	Esophageal cancer (squamous cell)
+chr1	155162066	155162067	rs4072037	Esophageal cancer and gastric cancer
+chr18	33694119	33694120	rs1050631	Esophageal squamous cell cancer (length of survival)
+chr11	35329614	35329615	rs3794087	Essential tremor
+chr11	61712130	61712131	rs2727261	Estradiol levels
+chr1	27731650	27731651	rs11548323	Estradiol plasma levels (breast cancer)
+chr2	97228038	97228039	rs4907240	Event-related brain oscillations
+chr1	11046854	11046855	rs9430161	Ewing sarcoma
+chr10	89443309	89443310	rs10887741	Exercise (leisure time)
+chr1	237911003	237911004	rs2819770	Exercise treadmill test traits
+chr1	213126564	213126565	rs3002288	Eye color
+chr15	28365617	28365618	rs12913832	Eye color traits
+chr1	221010204	221010205	rs12073837	F-cell distribution
+chr2	223068285	223068286	rs7559271	Facial morphology
+chr1	4315203	4315204	rs966321	Factor VII
+chr1	214159255	214159256	rs340874	Fasting glucose-related traits
+chr1	214159255	214159256	rs340874	Fasting glucose-related traits (interaction with BMI)
+chr12	102875568	102875569	rs35767	Fasting insulin-related traits
+chr1	24584489	24584490	rs6670533	Fasting insulin-related traits (interaction with BMI)
+chr11	92673827	92673828	rs1387153	Fasting plasma glucose
+chr1	109417678	109417679	rs7523050	Fat distribution (HIV)
+chr16	20351230	20351231	rs11859916	Femoral neck bone geometry
+chr11	2138138	2138139	rs6578985	Femoral neck bone geometry and menarche (age at onset)
+chr11	5306508	5306509	rs4910742	Fetal hemoglobin levels
+chr1	66117828	66117829	rs1938492	Fibrinogen
+chr1	11958722	11958723	rs12085006	Folate pathway vitamin levels
+chr11	123361396	123361397	rs735665	Follicular lymphoma
+chr14	95892273	95892274	rs12895389	Follicule stimulating hormone
+chr1	35289038	35289039	rs7526035	Formal thought disorder in schizophrenia
+chr11	88911695	88911696	rs1042602	Freckles
+chr16	89818731	89818732	rs12931267	Freckling
+chr18	53210301	53210302	rs613872	Fuchs's corneal dystrophy
+chr1	161463586	161463587	rs7535475	Functional impairment in major depressive disorder, bipolar disorder and schizophrenia
+chr19	34766587	34766588	rs10407640	Functional MRI
+chr18	50517775	50517776	rs7504990	Gallbladder cancer
+chr2	44066246	44066247	rs11887534	Gallstones
+chr12	130630934	130630935	rs11060736	Gambling
+chr1	16505319	16505320	rs1497406	Gamma gluatamyl transferase levels
+chr12	111414460	111414461	rs12229654	Gamma glutamyl transpeptidase
+chr3	114362763	114362764	rs9841504	Gastric cancer
+chr10	115756129	115756130	rs82625	Gaucher disease severity
+chr1	165687204	165687205	rs4656461	Glaucoma
+chr15	74219581	74219582	rs3825942	Glaucoma (exfoliation)
+chr1	103379917	103379918	rs3753841	Glaucoma (primary open-angle)
+chr5	80719124	80719125	rs7732320	Glioblastoma
+chr11	118477366	118477367	rs498872	Glioma
+chr20	62309838	62309839	rs6010620	Glioma (high-grade)
+chr15	45719186	45719187	rs17536527	Glomerular filtration rate
+chr22	36661329	36661330	rs2239785	Glomerulosclerosis
+chr1	158585414	158585415	rs2779116	Glycated hemoglobin levels
+chr11	92698426	92698427	rs10830962	Glycemic traits
+chr10	70982940	70982941	rs4746822	Glycemic traits (pregnancy)
+chr10	123280657	123280658	rs3135753	Gout
+chr1	157669277	157669278	rs3761959	Graves' disease
+chr12	18508251	18508252	rs11044045	Gray matter volume (schizophrenia interaction)
+chr11	68840159	68840160	rs3750965	Hair color
+chr1	151895092	151895093	rs10788819	Hair morphology
+chr3	39055316	39055317	rs883565	Handedness
+chr15	101875122	101875123	rs11855415	Handedness in dyslexia
+chr16	72108092	72108093	rs2000999	Haptoglobin levels
+chr11	5225446	5225447	rs7950726	HbA2 levels
+chr1	40028179	40028180	rs4660293	HDL cholesterol
+chr11	116639103	116639104	rs10790162	HDL Cholesterol - Triglycerides (HDLC-TG)
+chr12	66358346	66358347	rs1042725	Head circumference (infant)
+chr5	75920971	75920972	rs457717	Hearing impairment
+chr1	221028507	221028508	rs11118620	Heart failure
+chr1	207940852	207940853	rs11118555	Heart rate
+chr13	36663301	36663302	rs9315385	Heart rate variability traits
+chr1	2069171	2069172	rs425277	Height
+chr1	161484209	161484210	rs368433	Helicobacter pylori serologic status
+chr10	71093391	71093392	rs16926246	Hematocrit
+chr1	21904528	21904529	rs2242420	Hematological and biochemical traits
+chr12	112871371	112871372	rs11066301	Hematological parameters
+chr1	158971085	158971086	rs4657616	Hematology traits
+chr10	71093391	71093392	rs16926246	Hemoglobin
+chr1	37958812	37958813	rs9253	Hemostatic factors and hematological phenotypes
+chr16	9862555	9862556	rs11866328	Hepatitis B
+chr6	33033021	33033022	rs3077	Hepatitis B (viral clearance)
+chr6	31870855	31870856	rs9267665	Hepatitis B vaccine response
+chr6	32315726	32315727	rs910049	Hepatitis C induced liver cirrhosis
+chr12	104421807	104421808	rs2629751	Hepatitis C induced liver fibrosis
+chr1	10385470	10385471	rs17401966	Hepatocellular carcinoma
+chr2	191964632	191964633	rs7574865	Hepatocellular carcinoma (hepatitis B virus related)
+chr22	37462935	37462936	rs855791	Hepcidin levels
+chr2	198962242	198962243	rs7595412	Hip bone size
+chr1	121200489	121200490	rs6600671	Hip geometry
+chr1	53581669	53581670	rs3820201	Hippocampal atrophy
+chr12	65534623	65534624	rs6581612	Hippocampal volume
+chr10	43612608	43612609	rs2742234	Hirschsprung's disease
+chr1	57805549	57805550	rs10159302	HIV-1 control
+chr1	214125126	214125127	rs17762192	HIV-1 progression
+chr21	38740823	38740824	rs12483205	HIV-1 replication
+chr10	132056414	132056415	rs4751185	HIV-1 susceptibility
+chr16	9382328	9382329	rs8061903	HIV-1 viral setpoint
+chr1	83489843	83489844	rs12742923	HIV-associated dementia
+chr15	94689652	94689653	rs2388436	Hoarding
+chr10	8093033	8093034	rs501764	Hodgkin's lymphoma
+chr15	45652702	45652703	rs1153858	Homoarginine levels
+chr1	11838645	11838646	rs12134663	Homocysteine levels
+chr14	89437415	89437416	rs12589060	Hormone measurements
+chr6	32664959	32664960	rs9357152	HPV seropositivity
+chr1	113313562	113313563	rs11590090	Hyperactive-impulsive symptoms
+chr15	38464873	38464874	rs16966389	Hypersomnia (HLA-DQB1*06:02 negative)
+chr1	113216542	113216543	rs2932538	Hypertension
+chr2	34284851	34284852	rs9308945	Hypertension (young onset)
+chr1	44117005	44117006	rs660899	Hypertension risk in short sleep duration
+chr11	115943252	115943253	rs1426391	Hypertriglyceridemia
+chrX	50182183	50182184	rs1934179	Hypospadias
+chr1	38279986	38279987	rs3748682	Hypothyroidism
+chr5	1286515	1286516	rs2736100	Idiopathic pulmonary fibrosis
+chr20	3381548	3381549	rs965469	IFN-related cytopenia
+chr17	7462968	7462969	rs3803800	IgA levels
+chr16	31347747	31347748	rs3925075	IgA nephropathy
+chr1	51859241	51859242	rs6673480	IgE grass sensitization
+chr1	159175526	159175527	rs13962	IgE levels
+chr19	57132237	57132238	rs10404342	IgE levels in asthmatics
+chr14	98486544	98486545	rs10142119	IgE levels in asthmatics (D.f. specific)
+chr11	123648332	123648333	rs17744026	IgE levels in asthmatics (D.p. specific)
+chr1	1079197	1079198	rs11260603	IgG glycosylation
+chr14	106232584	106232585	rs10136766	IgG levels
+chr17	7462554	7462555	rs11552708	IgM levels
+chr20	16311309	16311310	rs2208059	Ileal carcinoids
+chr1	114677947	114677948	rs529989	Illicit drug use
+chr1	111033808	111033809	rs4839431	Immune reponse to smallpox (secreted IFN-alpha)
+chr1	58367235	58367236	rs6679454	Immune reponse to smallpox (secreted IL-10)
+chr11	38288592	38288593	rs11034653	Immune reponse to smallpox (secreted IL-12p40)
+chr10	9363876	9363877	rs12247397	Immune reponse to smallpox (secreted IL-1beta)
+chr1	235092599	235092600	rs908327	Immune reponse to smallpox (secreted IL-2)
+chr12	44153825	44153826	rs4251424	Immune reponse to smallpox (secreted TNF-alpha)
+chr1	9411468	9411469	rs11121382	Immune response to anthrax vaccine
+chr1	22373623	22373624	rs2501276	Immune response to smallpox vaccine (IL-6)
+chr1	232519149	232519150	rs669408	Immunoglobulin A
+chr1	69579251	69579252	rs4147141	Inattentive symptoms
+chr11	116706046	116706047	rs12721025	Infantile hypertrophic pyloric stenosis
+chr1	56060950	56060951	rs10888935	Inflammatory biomarkers
+chr1	1247493	1247494	rs12103	Inflammatory bowel disease
+chr10	81060316	81060317	rs1250550	Inflammatory bowel disease (early onset)
+chr10	117512587	117512588	rs10490919	Information processing speed
+chr12	40354243	40354244	rs11174478	Insomnia
+chr10	112877800	112877801	rs2065779	Insomnia (caffeine-induced)
+chr12	120880433	120880434	rs17431357	Insulin resistance/response
+chr10	73849638	73849639	rs1245541	Insulin-like growth factors
+chr10	132747886	132747887	rs10829848	Insulin-related traits
+chr1	34180841	34180842	rs16835742	Intelligence
+chr1	212392162	212392163	rs6540731	Intelligence (childhood)
+chr11	112023826	112023827	rs1834481	Interleukin-18 levels
+chr1	159753182	159753183	rs4233356	Interstitial lung disease
+chr10	104719095	104719096	rs12413409	Intracranial aneurysm
+chr17	44187256	44187257	rs9303525	Intracranial volume
+chr1	165718978	165718979	rs7555523	Intraocular pressure
+chr14	92763390	92763391	rs4900109	Iris characteristics
+chr15	28513363	28513364	rs916977	Iris color
+chr22	22512414	22512415	rs987710	Iron deficiency
+chr22	37469590	37469591	rs4820268	Iron levels
+chr11	24849565	24849566	rs10500991	Iron status biomarkers
+chr6	149270828	149270829	rs13219957	Job-related exhaustion
+chr1	58757914	58757915	rs527409	Kawasaki disease
+chr1	222271766	222271767	rs873549	Keloid
+chr21	37833306	37833307	rs219780	Kidney stones
+chr1	186725002	186725003	rs4140564	Knee osteoarthritis
+chr13	28197435	28197436	rs7097	Large B-cell lymphoma
+chr2	21231523	21231524	rs676210	LDL (oxidized)
+chr1	25775732	25775733	rs12027135	LDL cholesterol
+chr1	159173886	159173887	rs3027009	Lean body mass and age at menarche (combined)
+chr11	112991617	112991618	rs1436109	Left ventricular mass
+chr6	32595222	32595223	rs9271858	Leishmaniasis (visceral)
+chr1	153769399	153769400	rs9426935	Lentiform nucleus volume
+chr1	67597118	67597119	rs3762318	Leprosy
+chr1	234816553	234816554	rs482329	Life threatening arrhythmia
+chr19	39731782	39731783	rs12980275	Lipid levels in hepatitis C treatment
+chr1	56116504	56116505	rs72669744	Lipid metabolism phenotypes
+chr11	116619072	116619073	rs28927680	Lipid traits
+chr1	109817191	109817192	rs7528419	Lipoprotein-associated phospholipase A2 activity and mass
+chr1	85268242	85268243	rs10782529	Lipoprotein-associated phospholipase A2 activity change in response to statin therapy
+chr1	21821756	21821757	rs1780324	Liver enzyme levels
+chr1	76899463	76899464	rs4949718	Liver enzyme levels (alanine transaminase)
+chr1	21766452	21766453	rs1976403	Liver enzyme levels (alkaline phosphatase)
+chr1	76899463	76899464	rs4949718	Liver enzyme levels (aspartate transaminase)
+chr1	16505319	16505320	rs1497406	Liver enzyme levels (gamma-glutamyl transferase)
+chr17	32989537	32989538	rs11654964	Lobular breast cancer (menopausal hormone therapy interaction)
+chr10	4050002	4050003	rs2031577	Longevity
+chr6	160741621	160741622	rs3120139	Lp (a) levels
+chr6	32305978	32305979	rs3129900	Lumiracoxib-related liver injury
+chr15	78894338	78894339	rs1051730	Lung adenocarcinoma
+chr1	159680867	159680868	rs2808630	Lung cancer
+chr19	45854918	45854919	rs13181	Lung Cancer (DNA repair capacity)
+chr16	5001379	5001380	rs9635542	Lung cancer-asbestos exposure interaction
+chr10	86721180	86721181	rs12266096	Lung function (forced expiratory flow between 25% and 75% of forced vital capacity)
+chr10	45553728	45553729	rs12358699	Lung function (forced expiratory volume in 1 second to forced vital capacity ratio)
+chr12	11942719	11942720	rs2856329	Lung function (forced expiratory volume in 1 second)
+chr10	67964372	67964373	rs1471384	Lung function (forced vital capacity)
+chr1	57126918	57126919	rs2746347	Lymphocyte counts
+chr11	58060191	58060192	rs12289961	Lymphoma
+chr1	155162066	155162067	rs4072037	Magnesium levels
+chr6	13332466	13332467	rs499818	Major CVD
+chr1	5354843	5354844	rs912988	Major depressive disorder
+chr10	29291897	29291898	rs1612122	Major depressive disorder (broad)
+chr3	52584786	52584787	rs2251219	Major mood disorders
+chr1	203654023	203654024	rs10900585	Malaria
+chr12	3814237	3814238	rs10848911	Male infertility
+chr1	11033081	11033082	rs12565727	Male-pattern baldness
+chr10	64278681	64278682	rs10995190	Mammographic density
+chr22	26159288	26159289	rs133885	Mathematical ability in children with dyslexia
+chr11	102691481	102691482	rs11225434	Matrix metalloproteinase levels
+chr1	198595505	198595506	rs12127588	Mean corpuscular hemoglobin
+chr1	156255455	156255456	rs6684514	mean corpuscular hemoglobin concentration
+chr1	248046271	248046272	rs11204538	Mean corpuscular volume
+chr4	108115221	108115222	rs10516541	Mean forced vital capacity from 2 exams
+chr1	10286175	10286176	rs17396340	Mean platelet volume
+chr1	150860470	150860471	rs7412746	Melanoma
+chr1	165394881	165394882	rs466639	Menarche (age at onset)
+chr19	55819844	55819845	rs1172822	Menarche and menopause (age at onset)
+chr10	21830103	21830104	rs11012732	Meningioma
+chr1	196760416	196760417	rs426736	Meningococcal disease
+chr1	39380384	39380385	rs4246511	Menopause (age at onset)
+chr2	166978749	166978750	rs7587026	Mesial temporal lobe epilepsy with hippocampal sclerosis
+chr1	84761347	84761348	rs1085093	Metabolic syndrome
+chr11	92673827	92673828	rs1387153	Metabolic syndrome (bivariate traits)
+chr1	21820989	21820990	rs10799701	Metabolic traits
+chr1	55958029	55958030	rs1998013	Metabolite levels
+chr1	74083034	74083035	rs2341263	Metabolite levels  (X-11787)
+chr1	31315592	31315593	rs4949316	Metabolite levels (5-HIAA)
+chr10	127823150	127823151	rs1278329	Metabolite levels (5-HIAA/ MHPG Ratio)
+chr1	95334186	95334187	rs17520351	Metabolite levels (Dihydroxy docosatrienoic acid)
+chr2	26249898	26249899	rs68184094	Metabolite levels (HVA)
+chr1	222245257	222245258	rs10863681	Metabolite levels (HVA-5-HIAA Factor score)
+chr11	31884918	31884919	rs11031492	Metabolite levels (HVA/5-HIAA ratio)
+chr1	33983018	33983019	rs10798959	Metabolite levels (HVA/MHPG ratio)
+chr1	5707815	5707816	rs4845812	Metabolite levels (MHPG)
+chr10	25224461	25224462	rs11014306	Metabolite levels (Pyroglutamine)
+chr8	14853780	14853781	rs4427170	Methamphetamine dependence
+chr12	21377558	21377559	rs4149080	Methotrexate clearance (acute lymphoblastic leukemia)
+chr1	19321494	19321495	rs16862426	Methotrexate phramacokinetics (acute lymphoblastic leukemia)
+chr1	3083711	3083712	rs2651899	Migraine
+chr1	4183005	4183006	rs10915437	Migraine - clinic-based
+chr1	5661008	5661009	rs7528859	Migraine with aura
+chr1	115677945	115677946	rs12134493	Migraine without aura
+chr16	65895363	65895364	rs1126179	Molar-incisor hypomineralization
+chr1	159175353	159175354	rs12075	Monocyte chemoattractant protein-1
+chr16	85946449	85946450	rs424971	Monocyte count
+chr1	220977332	220977333	rs6693017	Monocyte early outgrowth colony forming units
+chr1	168618640	168618641	rs1412337	Morbidity-free survival
+chr1	221551538	221551539	rs12733856	Mortality among heart failure patients
+chr17	78348493	78348494	rs6565681	Moyamoya disease
+chr1	75913825	75913826	rs1857353	MRI atrophy measures
+chr6	40536127	40536128	rs2494938	Multiple cancers (lung cancer, gastric cancer, and squamous cell carcinoma)
+chr10	112036974	112036975	rs11195062	Multiple myeloma
+chr1	54375569	54375570	rs2235544	Multiple myeloma (hyperdiploidy)
+chr1	153640826	153640827	rs7536700	Multiple myeloma (IgH translocation)
+chr1	2709163	2709164	rs4648356	Multiple sclerosis
+chr1	179469313	179469314	rs12047808	Multiple sclerosis (age of onset)
+chr1	159818512	159818513	rs6659742	Multiple sclerosis (OCB status)
+chr11	116599391	116599392	rs180358	Multiple sclerosis (severity)
+chr14	29249348	29249349	rs2038256	Multiple sclerosis--Brain Glutamate Levels
+chr15	31463377	31463378	rs7169523	Myasthenia gravis
+chr9	5070830	5070831	rs10974944	Myeloproliferative neoplasms
+chr5	4029788	4029789	rs11748327	Myocardial infarction
+chr1	55496038	55496039	rs11206510	Myocardial infarction (early onset)
+chr1	99524046	99524047	rs10747502	Myopia (pathological)
+chr2	145223619	145223620	rs13382811	Myopia (severe)
+chr12	121403723	121403724	rs7953249	N-glycan levels
+chr14	23002683	23002684	rs1154155	Narcolepsy
+chr12	3164922	3164923	rs12425451	Narcolepsy with cataplexy
+chr13	24127209	24127210	rs1572072	Nasopharyngeal carcinoma
+chr1	11899032	11899033	rs1023252	Natriuretic peptide levels
+chr1	195531422	195531423	rs1890645	Neonatal lupus
+chr13	42754521	42754522	rs4142110	Nephrolithiasis
+chr1	196686917	196686918	rs6677604	Nephropathy
+chr2	160917496	160917497	rs4664308	Nephropathy (idiopathic membranous)
+chr13	92203812	92203813	rs16946160	Nephrotic syndrome (acquired)
+chr1	231816841	231816842	rs12042938	Neuranatomic and neurocognitive phenotypes
+chr11	8252852	8252853	rs110419	Neuroblastoma
+chr2	215672545	215672546	rs6435862	Neuroblastoma (high-risk)
+chr13	94011168	94011169	rs9561329	Neuroticism
+chr1	60084515	60084516	rs12727131	Neutrophil count
+chr2	60534198	60534199	rs6545803	Nevirapine-induced rash
+chr10	68640950	68640951	rs4142041	Nicotine dependence
+chr1	53958602	53958603	rs1298637	Nicotine use
+chr6	32109978	32109979	rs204999	Nodular sclerosis Hodgkin lymphoma
+chr17	7462968	7462969	rs3803800	Non-albumin protein levels
+chr1	30265651	30265652	rs6691847	Non-alcoholic fatty liver disease
+chr1	95692309	95692310	rs1414896	Non-alcoholic fatty liver disease histology (AST)
+chr10	30096627	30096628	rs2986971	Non-alcoholic fatty liver disease histology (lobular)
+chr1	99782956	99782957	rs12743824	Non-alcoholic fatty liver disease histology (other)
+chr14	52310103	52310104	rs8015138	Non-melanoma skin cancer
+chr1	2392647	2392648	rs2477686	Non-obstructive azoospermia
+chr13	102051089	102051090	rs9557635	Non-small cell lung cancer
+chr1	55107018	55107019	rs1368882	Non-substance related behavioral disinhibition
+chr13	30347834	30347835	rs2892463	Non-word repetition
+chr1	54320336	54320337	rs11206226	Nonalcoholic fatty liver disease
+chr10	30008662	30008663	rs1927457	Normalized brain volume
+chr1	72751184	72751185	rs3101336	Obesity
+chr1	65979279	65979280	rs11208659	Obesity (early onset extreme)
+chr1	209727256	209727257	rs12130212	Obesity (extreme)
+chr18	57963116	57963117	rs17773430	Obesity and blood pressure
+chr11	16389593	16389594	rs297325	Obesity and osteoporosis
+chr1	2452978	2452979	rs12073504	Obesity-related traits
+chr12	50319085	50319086	rs297941	Obsessive-compulsive disorder
+chr11	55895744	55895745	rs2220004	Odorant perception (B-damascenone)
+chr11	59224143	59224144	rs7943953	Odorant perception (B-ionone)
+chr2	240900120	240900121	rs13424612	Odorant perception (isobutyraldehyde)
+chr10	50500458	50500459	rs17774576	Oleic acid (18:1n-9) plasma levels
+chr2	208494233	208494234	rs2952768	Opioid sensitivity
+chr1	92077096	92077097	rs1192415	Optic disc parameters
+chr1	217058478	217058479	rs1436900	Optic disc size (cup)
+chr1	92077096	92077097	rs1192415	Optic disc size (disc)
+chr1	10638603	10638604	rs12741973	Optic disc size (rim)
+chr1	18979873	18979874	rs742071	Orofacial clefts
+chr6	11730081	11730082	rs2294426	Orofacial clefts (interaction)
+chr10	98417929	98417930	rs7098785	Orthostatic hypotension
+chr1	219673827	219673828	rs1417066	Osteoarthritis
+chr12	124375209	124375210	rs10773046	Osteoarthritis (hip)
+chr10	96798547	96798548	rs1934951	Osteonecrosis of the jaw
+chr1	112192121	112192122	rs494453	Osteoporosis
+chr2	224274621	224274622	rs16864755	Osteoporosis-related phenotypes
+chr10	5804530	5804531	rs2797501	Osteosarcoma
+chr1	158612547	158612548	rs857721	Other erythrocyte phenotypes
+chr2	174297658	174297659	rs10497394	Otitis media (chronic/recurrent)
+chr7	103527368	103527369	rs3914132	Otosclerosis
+chr1	22490723	22490724	rs7521902	Ovarian cancer
+chr17	43516401	43516402	rs17631303	Ovarian cancer in BRCA1 mutation carriers
+chr10	7736903	7736904	rs11255291	Ovarian reserve
+chr18	71058621	71058622	rs1943816	P-tau181p
+chr1	56108603	56108604	rs1165472	Paclitaxel-induced neuropathy
+chr1	110352476	110352477	rs10494112	Paget's disease
+chr1	96145967	96145968	rs6693882	Pain
+chr1	95485824	95485825	rs2391388	Palmitic acid (16:0) plasma levels
+chr1	94533013	94533014	rs1931575	Palmitoleic acid (16:1n-7) plasma levels
+chr1	200007431	200007432	rs3790844	Pancreatic cancer
+chr10	30519831	30519832	rs2995271	Pancreatitis
+chr1	111237684	111237685	rs12061304	Panic disorder
+chr7	94938256	94938257	rs2057681	Paraoxonase activity
+chr1	19139516	19139517	rs12063142	Parkinson's disease
+chr1	161915500	161915501	rs10918270	Parkinson's disease (age of onset)
+chr4	852312	852313	rs1564282	Parkinson's disease (familial)
+chr10	129678673	129678674	rs6482992	Parkinson's disease (motor and cognition)
+chr16	4103870	4103871	rs2601828	Partial epilepsies
+chr10	51549495	51549496	rs10993994	PCA3 expression level
+chr2	12964496	12964497	rs10198628	Pericardial fat
+chr1	7521584	7521585	rs1616122	Periodontal microbiota
+chr19	6887735	6887736	rs3826782	Periodontitis
+chr1	204103617	204103618	rs2293335	Periodontitis (CDC/AAP)
+chr13	106067919	106067920	rs17655948	Periodontitis (DPAL)
+chr10	54130752	54130753	rs112125027	Periodontitis (Mean PAL)
+chr1	60691587	60691588	rs17120400	Periodontitis (PAL4Q3)
+chr10	20899607	20899608	rs2359536	Peripheral artery disease
+chr1	201081942	201081943	rs2281845	Permanent tooth development
+chr1	76484013	76484014	rs12753569	Personality dimensions
+chr1	61205468	61205469	rs1514178	Phospholipid levels (plasma)
+chr1	21823291	21823292	rs1697421	Phosphorus levels
+chr2	44073655	44073656	rs41360247	Phytosterol levels
+chr22	37199805	37199806	rs2022068	Pit-and-Fissure caries
+chr11	13361523	13361524	rs6486122	Plasminogen activator inhibitor type 1 levels (PAI-1)
+chr1	156869046	156869047	rs12566888	Platelet aggregation
+chr1	12046062	12046063	rs2336384	Platelet counts
+chr5	176842473	176842474	rs2731672	Platelet function and related traits
+chr11	102070638	102070639	rs1894116	Polycystic ovary syndrome
+chr4	166872535	166872536	rs6812849	Post-traumatic stress disorder
+chr1	244015992	244015993	rs4430311	Post-traumatic stress disorder (asjusted for relatedness)
+chr1	40433770	40433771	rs3103778	PR interval
+chr10	29027222	29027223	rs1248993	Preeclampsia
+chr8	101813155	101813156	rs3847153	Premature ovarian failure
+chr1	67123056	67123057	rs6681460	Presence of antiphospholipid antibodies
+chr1	67790597	67790598	rs17129789	Primary biliary cirrhosis
+chr2	111989371	111989372	rs6720394	Primary sclerosing cholangitis
+chr10	18442481	18442482	rs10740993	Primary tooth development (number of teeth)
+chr10	18442481	18442482	rs10740993	Primary tooth development (time to first tooth eruption)
+chr10	72527516	72527517	rs12761224	Prion diseases
+chr1	109818529	109818530	rs646776	Progranulin levels
+chr1	180962281	180962282	rs1411478	Progressive supranuclear palsy
+chr1	99177252	99177253	rs9727115	Proinsulin levels
+chr1	154834182	154834183	rs1218582	Prostate cancer
+chr1	30185661	30185662	rs1866967	Prostate cancer (gene x gene interaction)
+chr1	205638221	205638222	rs12409639	Prostate-specific antigen levels
+chr14	55614635	55614636	rs2274273	Protein biomarker
+chr2	128177376	128177377	rs1158867	Protein C levels
+chr1	103133908	103133909	rs10874639	Protein quantitative trait loci
+chr13	113760033	113760034	rs561241	Prothrombin time
+chr1	24519919	24519920	rs4649203	Psoriasis
+chr2	61081541	61081542	rs702873	Psoriatic arthritis
+chr13	102060075	102060076	rs1572591	Psychosis (atypical)
+chr15	87064088	87064089	rs12591257	Psychosis (methamphetamine induced)
+chr1	57625931	57625932	rs17541203	Pubertal anthropometrics
+chr18	70150938	70150939	rs2217560	Pulmonary arterial hypertension (without BMPR2 mutations)
+chr1	17306674	17306675	rs2284746	Pulmonary function
+chr1	17306674	17306675	rs2284746	Pulmonary function (interaction)
+chr1	91288129	91288130	rs3843306	Pulmonary function decline
+chr10	119227341	119227342	rs4752066	Pulmonary function in asthmatics
+chr1	185794882	185794883	rs13375391	QRS duration
+chr1	6279369	6279370	rs846111	QT interval
+chr1	101540998	101540999	rs17450029	QT interval (interaction)
+chr10	1676530	1676531	rs6560749	Quantitative traits
+chr1	241878546	241878547	rs12569163	Radiation response
+chr10	3408946	3408947	rs17135159	Reading and spelling
+chr1	2069680	2069681	rs3753242	Reasoning
+chr5	23542710	23542711	rs2914276	Recombination (females)
+chr5	23542710	23542711	rs2914276	Recombination (males)
+chr4	1078186	1078187	rs1670533	Recombination rate (females)
+chr4	1095280	1095281	rs3796619	Recombination rate (males)
+chr12	4333918	4333919	rs11611647	Red blood cell count
+chr1	40069938	40069939	rs3916164	Red blood cell traits
+chr16	89986116	89986117	rs1805007	Red vs non-red hair color
+chr20	32729443	32729444	rs4911414	Red vs. non-red hair color
+chr10	60265403	60265404	rs7084402	Refractive error
+chr20	11209521	11209522	rs6040449	Relative hand skill
+chr11	35495440	35495441	rs1996369	Relative hand skill in reading disability
+chr11	69234493	69234494	rs4980785	Renal cell carcinoma
+chr15	45698792	45698793	rs2467853	Renal function and chronic kidney disease
+chr1	155194979	155194980	rs2049805	Renal function-related traits (BUN)
+chr11	30749089	30749090	rs963837	Renal function-related traits (eGRFcrea)
+chr11	30749089	30749090	rs963837	Renal function-related traits (sCR)
+chr11	64464084	64464085	rs504915	Renal function-related traits (urea)
+chr1	157437509	157437510	rs6686423	Renal sinus fat
+chr11	70665520	70665521	rs3017493	Renal transplant outcome
+chr1	57243453	57243454	rs17372114	Resistin levels
+chr1	165180088	165180089	rs1532815	Response to acetaminophen (hepatotoxicity)
+chr1	19032271	19032272	rs2236824	Response to amphetamines
+chr1	170633895	170633896	rs659580	Response to angiotensin II receptor blocker therapy
+chr11	94132138	94132139	rs3758785	Response to angiotensin II receptor blocker therapy (opposite direction w/ diuretic therapy)
+chr13	79888475	79888476	rs1155848	Response to anti-TNF alpha therapy in inflammatory bowel disease
+chr1	160516307	160516308	rs6427528	Response to anti-TNF treatment in rheumatoid arthritis
+chr1	47918820	47918821	rs527430	Response to antidepressant treatment
+chr1	9151324	9151325	rs12080794	Response to antidepressant treatment (citalopram)
+chr1	90875887	90875888	rs2136093	Response to antidepressants
+chr1	214830616	214830617	rs438034	Response to antineoplastic agents
+chr1	59799160	59799161	rs17119280	Response to antipsychotic therapy (extrapyramidal side effects)
+chr1	83311834	83311835	rs11163585	Response to antipsychotic treatment
+chr1	237990121	237990122	rs2819742	Response to cerivastatin
+chr13	34894788	34894789	rs492452	Response to cholinesterase inhibitors in Alzheimer's disease
+chr13	84130231	84130232	rs6563353	Response to citalopram treatment
+chr10	96405501	96405502	rs12777823	Response to clopidogrel therapy
+chr16	55844608	55844609	rs2244613	Response to dabigatran etexilate treatment
+chr12	69727189	69727190	rs317689	Response to diuretic therapy
+chr20	57562101	57562102	rs2273359	Response to diuretic therapy in hypertension
+chr10	65026857	65026858	rs10995485	Response to fenofibrate
+chr11	70506205	70506206	rs525304	Response to fenofibrate (adiponectin levels)
+chr12	2091256	2091257	rs11062040	Response to gemcitabine in pancreatic cancer
+chr1	17834741	17834742	rs2254135	Response to hepatitis C treatment
+chr10	83819124	83819125	rs4933824	Response to iloperidone treatment (QT prolongation)
+chr6	32599998	32599999	rs9272105	Response to interferon beta therapy
+chr1	68105452	68105453	rs344924	Response to irinotecan and platinum-based chemotherapy in non-small-cell lung cancer
+chr20	8277942	8277943	rs2745761	Response to irinotecan in non-small-cell lung cancer
+chr11	108283160	108283161	rs11212617	Response to metformin
+chr16	84796602	84796603	rs12932018	Response to mTOR inhibitor (everolimus)
+chr1	163053288	163053289	rs2063142	Response to mTOR inhibitor (rapamycin)
+chr5	52020395	52020396	rs830884	Response to platinum-based agents
+chr12	108699031	108699032	rs1878022	Response to platinum-based chemotherapy in non-small-cell lung cancer
+chr1	3280252	3280253	rs6658356	Response to statin therapy
+chr1	55505646	55505647	rs11591147	Response to statin therapy (LDL-C)
+chr10	78157571	78157572	rs10509373	Response to tamoxifen in breast cancer
+chr1	83054798	83054799	rs10874322	Response to taxane treatment (docetaxel)
+chr1	5913620	5913621	rs548726	Response to taxane treatment (placlitaxel)
+chr10	131426021	131426022	rs477692	Response to temozolomide
+chr1	88132379	88132380	rs983332	Response to TNF antagonist treatment
+chr1	21875915	21875916	rs885814	Response to TNF-alpha inhibitors in rheumatoid arthritis
+chr1	9408958	9408959	rs11121380	Response to tocilizumab in rheumatoid arthritis
+chr10	8150712	8150713	rs10508343	Response to treatment for acute lymphoblastic leukemia
+chr11	35155731	35155732	rs2785173	Response to Vitamin E supplementation
+chr1	208128721	208128722	rs2745967	Resting heart rate
+chr15	68036851	68036852	rs12593813	Restless legs syndrome
+chr17	74733402	74733403	rs3744061	Retinal arteriolar caliber
+chr12	111910218	111910219	rs10774625	Retinal vascular caliber
+chr10	95348181	95348182	rs10882272	Retinol levels
+chr1	211691705	211691706	rs7553035	Retinopathy in non-diabetics
+chr1	150940624	150940625	rs267738	Rhegmatogenous retinal detachment
+chr1	2553623	2553624	rs3890745	Rheumatoid arthritis
+chr20	3193841	3193842	rs1127354	Ribavirin-induced anemia
+chr1	213855587	213855588	rs17706439	RR interval (heart rate)
+chr20	7106288	7106289	rs1884302	Sagittal craniosynostosis
+chr10	81911724	81911725	rs1953600	Sarcoidosis
+chr1	8422675	8422676	rs2252865	Schizophrenia
+chr10	68598291	68598292	rs7902091	Schizophrenia (cytomegalovirus infection interaction)
+chr1	147083113	147083114	rs583583	Schizophrenia (negative symptoms)
+chr1	160630142	160630143	rs11265461	Schizophrenia (treatment refractory)
+chr11	10390580	10390581	rs6484218	Schizophrenia, bipolar disorder and depression (combined)
+chr18	53207206	53207207	rs1452787	Sclerosing cholangitis and ulcerative colitis (combined)
+chr10	102979206	102979207	rs11190870	Scoliosis
+chr1	84254550	84254551	rs7552393	Select biomarker traits
+chr10	49763165	49763166	rs10776614	Self-employment
+chr1	110770222	110770223	rs958798	Self-rated health
+chr1	10581657	10581658	rs2056417	Self-reported allergy
+chr1	110405270	110405271	rs6537883	Sensory disturbances after bilateral sagittal split ramus osteotomy
+chr11	47440757	47440758	rs2293579	Serum albumin level
+chr3	148913125	148913126	rs13072552	Serum ceruloplasmin levels
+chr1	88651770	88651771	rs10923038	Serum protein levels (sST2)
+chr1	238669775	238669776	rs6692700	Serum selenium levels
+chr5	36309096	36309097	rs16902947	Serum tamsulosin hydrochloride concentration
+chr10	63636530	63636531	rs2675609	Serum total protein level
+chr4	9923003	9923004	rs734553	Serum uric acid levels
+chr1	107546374	107546375	rs17496332	Sex hormone-binding globulin levels
+chr1	219753508	219753509	rs2820443	Sexual dimorphism in anthropometric traits
+chr10	32634971	32634972	rs2370759	Sexual dysfunction (female)
+chr14	30594656	30594657	rs225848	Sexual dysfunction (SSRI/SNRI-related)
+chr11	5029702	5029703	rs2445284	Sickle cell anemia (haemolysis)
+chr2	191935803	191935804	rs10168266	Sjogren's syndrome
+chr11	88911695	88911696	rs1042602	Skin pigmentation
+chr11	89011045	89011046	rs1393350	Skin sensitivity to sun
+chr15	62899159	62899160	rs12913538	Sleep depth
+chr10	72500762	72500763	rs10823607	Sleep duration
+chr12	2783971	2783972	rs2302729	Sleep quality
+chr10	23369420	23369421	rs722258	Sleep time
+chr5	58676048	58676049	rs1823068	Sleepiness
+chr11	103418157	103418158	rs716274	Small-cell lung cancer
+chr1	30567595	30567596	rs910696	Smoking behavior
+chr14	72883873	72883874	rs7159300	Smoking cessation
+chr1	210898262	210898263	rs1934620	Smooth-surface caries
+chr10	104207798	104207799	rs927821	Social autistic-like traits
+chr10	109626065	109626066	rs1834180	Social communication problems
+chr9	136154167	136154168	rs579459	Soluble E-selectin levels
+chr19	10394791	10394792	rs1799969	Soluble ICAM-1
+chr1	65992624	65992625	rs1751492	Soluble leptin receptor levels
+chr1	169563950	169563951	rs6136	Soluble levels of adhesion molecules
+chr10	131992244	131992245	rs4751178	Speech perception in dyslexia
+chr11	61655304	61655305	rs1000778	Sphingolipid levels
+chr20	33914207	33914208	rs6060373	Spine bone size
+chr12	100820084	100820085	rs12296850	Squamous cell carcinoma
+chr1	7113111	7113112	rs11120822	Stearic acid (18:0) plasma levels
+chr6	31006854	31006855	rs2844665	Stevens-Johnson syndrome and toxic epidermal necrolysis (SJS-TEN)
+chr12	783483	783484	rs12425791	Stroke
+chr12	112211832	112211833	rs2238151	Stroke (ischemic)
+chr11	120026747	120026748	rs2084898	Stroke (pediatric)
+chr1	189861403	189861404	rs1400544	Subclinical atherosclerosis traits (other)
+chr1	72823712	72823713	rs990871	Subcutaneous adipose tissue
+chr11	125179852	125179853	rs12284594	Substance dependence
+chr1	171261192	171261193	rs6660565	Sudden cardiac arrest
+chr4	21476989	21476990	rs358592	Suicidal ideation
+chr11	33588209	33588210	rs10437629	Suicide attempts in bipolar disorder
+chr10	30490703	30490704	rs2462021	Suicide risk
+chr11	89017960	89017961	rs1126809	Sunburns
+chr1	53629584	53629585	rs6695567	Systemic lupus erythematosus
+chr1	35908450	35908451	rs2275247	Systemic lupus erythematosus and Systemic sclerosis
+chr1	167420424	167420425	rs2056626	Systemic sclerosis
+chr1	10799576	10799577	rs12046278	Systolic blood pressure
+chr11	113424557	113424558	rs7952106	Systolic blood pressure in sickle cell anemia
+chr12	119387917	119387918	rs1997111	T-tau
+chr11	88557990	88557991	rs10831496	Tanning
+chr7	154072019	154072020	rs6977820	Tardive dyskinesia
+chr1	43645410	43645411	rs621559	Telomere length
+chr1	82247247	82247248	rs11163372	Temperament
+chr1	212155007	212155008	rs17018311	Temperament (bipolar disorder)
+chr12	3287278	3287279	rs878962	Temporomandibular joint disorders
+chr12	88953958	88953959	rs4474514	Testicular cancer
+chr12	14653866	14653867	rs2900333	Testicular germ cell cancer
+chr1	156169609	156169610	rs2072499	Testicular germ cell tumor
+chr1	22573941	22573942	rs909814	Testosterone levels
+chr10	8954223	8954224	rs2388896	Tetralogy of Fallot
+chr1	94674725	94674726	rs2274788	Thiazide-induced adverse metabolic effects in hypertensive patients
+chr15	48914774	48914775	rs1036476	Thoracic aortic aneurysms and dissections
+chr14	36649245	36649246	rs944289	Thyroid cancer
+chr9	100556108	100556109	rs965513	Thyroid cancer (Papillary, radiation-related)
+chr1	19861105	19861106	rs10917477	Thyroid function
+chr1	19841173	19841174	rs10799824	Thyroid hormone levels
+chr5	76518441	76518442	rs4704397	Thyroid stimulating hormone
+chr1	19765517	19765518	rs12045440	Thyroid volume
+chr17	68259445	68259446	rs623011	Thyrotoxic hypokalemic periodic paralysis
+chr1	175296447	175296448	rs3766680	Tonometry
+chr10	65658743	65658744	rs938036	Tooth agenesis (mandibular third molar)
+chr2	137875874	137875875	rs1469622	Tooth agenesis (third molar)
+chr1	165616587	165616588	rs6686643	Total ventricular volume
+chr11	85783737	85783738	rs621942	Tourette syndrome
+chr1	239075713	239075714	rs1915279	Treatment response for severe sepsis
+chr1	62931631	62931632	rs1167998	Triglycerides
+chr11	116626257	116626258	rs11825181	Triglycerides-Blood Pressure (TG-BP)
+chr1	228703288	228703289	rs1925714	Tuberculosis
+chr15	43836477	43836478	rs2251844	Tumor biomarkers
+chr10	114788814	114788815	rs12243326	Two-hour glucose challenge
+chr1	64108770	64108771	rs2269241	Type 1 diabetes
+chr1	157670815	157670816	rs7528684	Type 1 diabetes autoantibodies
+chr12	120974509	120974510	rs614226	Type 1 diabetes nephropathy
+chr1	92194321	92194322	rs11165354	Type 2 diabetes
+chr16	24810680	24810681	rs17177078	Type 2 diabetes (dietary heme iron intake interaction)
+chr10	114758348	114758349	rs7903146	Type 2 diabetes and other traits
+chr12	66117557	66117558	rs2358944	Type 2 diabetes nephropathy
+chr1	2501337	2501338	rs10797432	Ulcerative colitis
+chr12	112521447	112521448	rs4767364	Upper aerodigestive tract cancers
+chr1	145723644	145723645	rs1967017	Urate levels
+chr1	145725688	145725689	rs12129861	Uric acid levels
+chr10	16919051	16919052	rs1801239	Urinary albumin excretion
+chr3	189645932	189645933	rs710521	Urinary bladder cancer
+chr12	122395776	122395777	rs830124	Urinary metabolites
+chr9	27488091	27488092	rs17779457	Urinary symptoms in response to radiotherapy in prostate cancer
+chr10	105714398	105714399	rs7913069	Uterine fibroids
+chr1	159710516	159710517	rs11265263	Vaccine-related adverse events
+chr9	93636663	93636664	rs290227	Vascular dementia
+chr6	43897726	43897727	rs9472155	Vascular endothelial growth factor levels
+chr14	95012383	95012384	rs11160190	Vaspin levels
+chr1	169135126	169135127	rs16861990	Venous thromboembolism
+chr1	51546139	51546140	rs17391905	Ventricular conduction
+chr1	8759553	8759554	rs12025126	Vertical cup-disc ratio
+chr1	3649561	3649562	rs9662633	Visceral adipose tissue adjusted for BMI
+chr1	3651030	3651031	rs12562437	Visceral adipose tissue/subcutaneous adipose tissue ratio
+chr1	3651408	3651409	rs10910018	Visceral fat
+chr11	59837191	59837192	rs2298585	Vitamin B12 levels
+chr11	14914877	14914878	rs10741657	Vitamin D insufficiency
+chr11	14910233	14910234	rs1993116	Vitamin D levels
+chr11	116648916	116648917	rs964184	Vitamin E levels
+chr1	8526141	8526142	rs4908760	Vitiligo
+chr16	53639437	53639438	rs3213758	Vitiligo (non-segmental)
+chr11	34605434	34605435	rs5028798	Volumetric brain MRI
+chr12	90609016	90609017	rs10745527	vWF and FVIII levels
+chr11	7708280	7708281	rs7932813	Waist circumference
+chr11	116639103	116639104	rs10790162	Waist Circumference - Triglycerides (WC-TG)
+chr16	56993323	56993324	rs3764261	Waist circumference and related phenotypes
+chr1	119503842	119503843	rs984222	Waist-hip ratio
+chr1	38721662	38721663	rs11802770	Waist-to-hip circumference ratio (interaction)
+chr10	96405501	96405502	rs12777823	Warfarin maintenance dose
+chr11	60592275	60592276	rs595018	Wegener's granulomatosis
+chr1	63480729	63480730	rs17124318	Weight
+chr11	77300047	77300048	rs7129556	Weight loss (gastric bypass surgery)
+chr1	159174682	159174683	rs2814778	White blood cell count
+chr1	6631430	6631431	rs11587438	White blood cell types
+chr17	73872947	73872948	rs1055129	White matter hyperintensity burden
+chr1	48321220	48321221	rs946836	White matter integrity
+chr1	100268990	100268991	rs6689305	White matter integrity (interaction)
+chr1	55512994	55512995	rs2495478	Wilms tumor
+chr1	59036624	59036625	rs638065	Word reading
+chr1	107432575	107432576	rs12726652	Working memory
+chr11	15952293	15952294	rs11023787	Wrist bone mass
+chr1	203155881	203155882	rs4950928	YKL-40 levels
