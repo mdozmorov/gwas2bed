@@ -5,7 +5,6 @@ A collection of scripts to download and extract genomic coordinates of disease-,
 
 * `gwas2bed.py` - A Pyhton script to download the coordinates and separate them into disease-specific .bed files
 
-## ==================================================================
 ## Get GWAScatalog data from the UCSC MySQL server, 
 ## extract hg19 genomic coordinates into separate files 
 ## defined by 'title' column
@@ -27,4 +26,3 @@ A collection of scripts to download and extract genomic coordinates of disease-,
 ## coordinates of all SNPs from GWAScatalog, and two subfolders,
 ## "less15" and "more15", each containing .BED files with coordinates of
 ## less than or more than 15 trait-specific SNPs, respectively.
-## ==================================================================
