@@ -31,23 +31,6 @@ import itertools
 import pdb
 import shutil
 
-# sys.argv[1] contains number of SNPs to be considered for enrichment analysis. E.g., 5 means SNP sets larger than 5 SNPs will be considered
-if len(sys.argv) > 1:
-	OUTDIRless="less"+sys.argv[1]
-	OUTDIRmore="more"+sys.argv[1]
-else:
-	print("Please, specify the count - if a set of SNPs has more SNPs than the count, it will be placed into 'more' folder")
-	sys.exit()
-
-# Delete folders, if exist, and create empty ones
-if os.path.exists(OUTDIRless): shutil.rmtree(OUTDIRless)
-if os.path.exists(OUTDIRmore): shutil.rmtree(OUTDIRmore)
-os.mkdir(OUTDIRless)
-os.mkdir(OUTDIRmore)
-
-# Define legitimate chromosome names
-chromosomes=set(['chr1', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr2', 'chr20', 'chr21', 'chr22', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chrX', 'chrY', 'chrM'])
-
 def rowValid(row):
 	if row[2]>row[1]:
 		return row
@@ -58,37 +41,58 @@ def rowValid(row):
 		rowList[2]=rowList[1]+1
 		return rowList
 
-conn = MySQLdb.connect(host="genome-mysql.cse.ucsc.edu", user="genomep", passwd="password", db="hg19")
-with closing(conn.cursor()) as c:
-	# Download chromosome-filtered GWAS catalog
-	sql='select distinct chrom, chromStart, chromEnd, name, trait from gwasCatalog'
-	c.execute(sql)
-	h = open("gwasCatalog_" + time.strftime("%d-%m-%Y") + ".bed", "w")
-	try:
-		for row in c:
-			if row[0] in chromosomes:
-				h.write("\t".join(map(str, rowValid(row))) + "\n")
-	finally:
-		h.close()
-	
-	# Sorting trait-specific chromosome-filtered coordinates into separate files
-	sql='select distinct chrom, chromStart, chromEnd, name, trait from gwasCatalog order by trait'
-	c.execute(sql)
-	for trait, rows in itertools.groupby(c, lambda r: r[4].lower()):
-		print("Processing " + trait)
-		fname=trait.replace("'","").replace(" ","_").replace("/","-").replace("&","").replace(";","_").replace("(","").replace(")","").replace("%","") + ".bed"
-		with open(fname, "w") as h:
-			nelements=0 # Number of SNPs in a set
-			for row in rows:
+def main():
+	# sys.argv[1] contains number of SNPs to be considered for enrichment analysis. E.g., 5 means SNP sets larger than 5 SNPs will be considered
+	if len(sys.argv) > 1:
+		OUTDIRless="less"+sys.argv[1]
+		OUTDIRmore="more"+sys.argv[1]
+	else:
+		print("Please, specify the count - if a set of SNPs has more SNPs than the count, it will be placed into 'more' folder")
+		sys.exit()
+
+	# Delete folders, if exist, and create empty ones
+	if os.path.exists(OUTDIRless): shutil.rmtree(OUTDIRless)
+	if os.path.exists(OUTDIRmore): shutil.rmtree(OUTDIRmore)
+	os.mkdir(OUTDIRless)
+	os.mkdir(OUTDIRmore)
+
+	# Define legitimate chromosome names
+	chromosomes=set(['chr1', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr2', 'chr20', 'chr21', 'chr22', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chrX', 'chrY', 'chrM'])
+
+	conn = MySQLdb.connect(host="genome-mysql.cse.ucsc.edu", user="genomep", passwd="password", db="hg19")
+	with closing(conn.cursor()) as c:
+		# Download chromosome-filtered GWAS catalog
+		sql='select distinct chrom, chromStart, chromEnd, name, trait from gwasCatalog'
+		c.execute(sql)
+		h = open("gwasCatalog_" + time.strftime("%d-%m-%Y") + ".bed", "w")
+		try:
+			for row in c:
 				if row[0] in chromosomes:
-			 		h.write("\t".join(map(str, rowValid(row))) + "\n")
-			 		nelements+=1
-		# Compare the number of SNPs in a set with the provided count, and move the file accordingly
-		if nelements <= int(sys.argv[1]):
-			shutil.move(fname, OUTDIRless)
-		else:
-			shutil.move(fname, OUTDIRmore)
-conn.close()
+					h.write("\t".join(map(str, rowValid(row))) + "\n")
+		finally:
+			h.close()
+		
+		# Sorting trait-specific chromosome-filtered coordinates into separate files
+		sql='select distinct chrom, chromStart, chromEnd, name, trait from gwasCatalog order by trait'
+		c.execute(sql)
+		for trait, rows in itertools.groupby(c, lambda r: r[4].lower()):
+			print("Processing " + trait)
+			fname=trait.replace("'","").replace(" ","_").replace("/","-").replace("&","").replace(";","_").replace("(","").replace(")","").replace("%","") + ".bed"
+			with open(fname, "w") as h:
+				nelements=0 # Number of SNPs in a set
+				for row in rows:
+					if row[0] in chromosomes:
+				 		h.write("\t".join(map(str, rowValid(row))) + "\n")
+				 		nelements+=1
+			# Compare the number of SNPs in a set with the provided count, and move the file accordingly
+			if nelements <= int(sys.argv[1]):
+				shutil.move(fname, OUTDIRless)
+			else:
+				shutil.move(fname, OUTDIRmore)
+	conn.close()
+
+if __name__ == "__main__":
+    main()
 
 """
 	# Outputs whole GWAS catalog filtered by chromosomes into a file
