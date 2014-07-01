@@ -1,13 +1,14 @@
 Disease-associated SNPs from M. Schaub - M Snyder paper
 ========================================================
 
-List of disease-associated lead and LD SNPs from
+Tissue-specific H3K4me3 from
 
-[Schaub MA, Boyle AP, Kundaje A, Batzoglou S, Snyder M. Linking disease
-associations with regulatory information in the human genome. Genome Res. 2012
-Sep;22(9):1748-59. doi: 10.1101/gr.136127.111. PubMed PMID: 22955986; PubMed
-Central PMCID: PMC3431491.](http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=3431491)
+[Trynka G, Sandor C, Han B, Xu H, Stranger BE, Liu XS and Raychaudhuri S. Chromatin marks identify critical cell types for fine mapping complex trait variants. Nat Genet 2012](https://www.broadinstitute.org/mpg/epigwas/)
 
-`Makefile` - downloads list of SNPs
+`Makefile` - downloads gzipped data, unzip, convert .csv to .BED files
 
-ToDo: Need to process this file into separate disease-specific BED files.
+Potentially usefull data on their page [https://www.broadinstitute.org/mpg/epigwas/](https://www.broadinstitute.org/mpg/epigwas/):
+
+- [LD pruned background SNPs](https://www.broadinstitute.org/mpg/epigwas/backgroundSNPs.tar.gz) - similar to Okada data (?)
+
+[808, independent GWAS catalog SNPs](https://www.broadinstitute.org/mpg/epigwas/gwasCatalog.tar.gz)
