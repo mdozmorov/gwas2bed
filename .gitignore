@@ -3,4 +3,6 @@
 .RData
 *.Rproj
 gwascatalog/*
+less*
+more*
 *.html
