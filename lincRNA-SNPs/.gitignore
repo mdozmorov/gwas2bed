@@ -1,2 +1,5 @@
 *.txt
+*.bed
 bed/*
+txt/*
+tfbsEncode/*
