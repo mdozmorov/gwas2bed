@@ -1,4 +1,6 @@
-all:	bed
+#all:	bed
+all:	tfbsEncode
+#all:	ENCODE
 
 bed:	simple_somatic_mutations.txt
 	if [ ! -d $@ ]; then \
@@ -22,4 +24,14 @@ bed:	simple_somatic_mutations.txt
 		gzip $$file; \
 	done
 
-	
+tfbsEncode:	gfs.hg19.tfbsEncode.txt
+	if [ ! -d $@ ]; then \
+		mkdir $@ ; \
+	fi ; \
+	python -m grsnp.hypergeom4 fois.txt $< ICGC.bed --run_files_dir $@
+
+ENCODE:	gfs.hg19.ENCODE.txt
+	if [ ! -d $@ ]; then \
+		mkdir $@ ; \
+	fi ; \
+	python -m grsnp.hypergeom4 fois.txt $< ICGC.bed --run_files_dir $@

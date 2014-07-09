@@ -1,2 +1,6 @@
 *.bed
 *.gz
+bed/*
+tfbsEncode/*
+*.txt
+!simple_somatic_mutations.txt
