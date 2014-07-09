@@ -2,7 +2,7 @@ all:	bed
 
 # Creates disease/trait-specific .BED files
 bed:
-	python gwas2bed.py
+	python gwas2bed.py 15
 
 # Downloads Barabasi network
 AllNet3.net:
