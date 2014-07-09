@@ -42,10 +42,12 @@ def rowValid(row):
 		return rowList
 
 def main():
+	if os.path.exists("bed"): shutil.rmtree("bed")
+	os.mkdir("bed")
 	# sys.argv[1] contains number of SNPs to be considered for enrichment analysis. E.g., 5 means SNP sets larger than 5 SNPs will be considered
 	if len(sys.argv) > 1:
-		OUTDIRless="less"+sys.argv[1]
-		OUTDIRmore="more"+sys.argv[1]
+		OUTDIRless="bed/less"+sys.argv[1]
+		OUTDIRmore="bed/more"+sys.argv[1]
 	else:
 		print("Please, specify the count - if a set of SNPs has more SNPs than the count, it will be placed into 'more' folder")
 		sys.exit()
