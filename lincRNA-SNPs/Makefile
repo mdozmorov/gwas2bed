@@ -16,8 +16,8 @@ bed:	gwas_snp_lincrna.txt
 	fi ; \
 	cat $< | sed '1d' | awk 'BEGIN {FS=OFS="\t";} {sub(/\//, "-", $$4); print $$1 > "bed/"$$4}'; \
 	for FILE in bed/*; do \
-		mv -v "$$FILE" `echo $$FILE | tr ' ' '_' | tr -d '[{}(),!]' | tr -d "'" | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g'`".txt"; \
+		mv -v "$$FILE" $$(echo "$$FILE" | tr ' ' '_' | tr -d '[{}(),!]' | tr -d "'" | tr -d '`' | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g').all; \
 	done; \
-	for file in bed/*.txt; do \
-		sort $$file -o $$file; \
+	for file in bed/*.all; do \
+		sort $$file | uniq > $${file%????}".txt" && rm $$file; \
 	done
