@@ -79,7 +79,7 @@ def main():
 		c.execute(sql)
 		for trait, rows in itertools.groupby(c, lambda r: r[4].lower()):
 			print("Processing " + trait)
-			fname=trait.replace("'","").replace(" ","_").replace("/","-").replace("&","").replace(";","_").replace("(","").replace(")","").replace("%","").replace("*","-").replace(":","-") + ".bed"
+			fname=trait.replace("'","").replace(" ","_").replace("/","-").replace("&","").replace(";","_").replace("(","").replace(")","").replace("%","").replace("*","-").replace(":","-").replace(",","_") + ".bed"
 			with open(fname, "w") as h:
 				nelements=0 # Number of SNPs in a set
 				for row in rows:
