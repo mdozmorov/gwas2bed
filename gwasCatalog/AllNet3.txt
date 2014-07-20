@@ -1,0 +1,61 @@
+Name	ICD-9 Name	ICD-9 Code	Match
+adiponectin_levels		NM	
+age.related_macular_degeneration	"Macular degeneration (senile), unspecified"	362	Yes
+alzheimers_disease_biomarkers	Alzheimer's disease	331	No
+alzheimers_disease_cognitive_decline	Alzheimer's disease	331	No
+antineutrophil_cytoplasmic_antibody.associated_vasculitis	Retinal vasculitis	362	No
+attention_deficit_hyperactivity_disorder_combined_symptoms	Attention deficit disorder with hyperactivity	314	No
+attention_deficit_hyperactivity_disorder_hyperactivity.impulsivity_symptoms	Attention deficit disorder with hyperactivity	314	No
+attention_deficit_hyperactivity_disorder_inattention_symptoms	Attention deficit disorder with hyperactivity	314	No
+bilirubin_levels	Disorders of bilirubin excretion	277	No
+body_mass_index	"Overweight, obesity and other hyperalimentation"	278	No
+breast_cancer	"Malignant neoplasm of breast (female), unspecified"	174	Yes
+c.reactive_protein	Elevated C-reactive protein (CRP)	790	No
+celiac_disease	Celiac disease	570	Yes
+cholesterol__total	Dysmetabolic syndrome X	277	No
+chronic_lymphocytic_leukemia	Lymphoid leukemia chronic	204	Yes
+colorectal_cancer	"Malignant neoplasm of colon, unspecified site"	153	Yes
+crohns_disease	Regional enteritis of unspecified site	555	Yes
+disc_degeneration_lumbar	"Degeneration of intervertebral disc, site unspecified"	722	Yes
+economic_and_political_preferences_environmentalism		NM	
+end.stage_coagulation	Coagulation defects	286	No
+erectile_dysfunction_and_prostate_cancer_treatment		NM	
+f.cell_distribution		NM	
+fibrinogen	Congenital deficiency of other clotting factors	286	No
+hdl_cholesterol	Dysmetabolic syndrome X	277	No
+height	Loss of height	281	No
+hiv.1_control	Human immunodeficiency virus [HIV] disease	42	No
+immune_reponse_to_smallpox_secreted_ifn.alpha	"Smallpox, unspecified"	50	No
+inflammatory_bowel_disease	Regional enteritis of unspecified site	555	Yes
+intelligence		NM	
+iron_status_biomarkers	"Iron deficiency anemia, unspecified"	280	No
+ldl_cholesterol	Pure hypercholesterolemia	272	No
+lipid_metabolism_phenotypes	Disorders of lipoid metabolism	272	No
+liver_enzyme_levels_gamma.glutamyl_transferase	Other specified disorders of amino-acid metabolism	270	No
+major_depressive_disorder	Major depressive disorder single episode	296	No
+mean_corpuscular_hemoglobin	Other abnormality of red blood cells	790	No
+mean_corpuscular_volume	Other abnormality of red blood cells	790	No
+mean_platelet_volume	Other abnormality of red blood cells	790	No
+menopause_age_at_onset	Symptomatic menopausal or female climacteric states	627	No
+metabolic_syndrome	Dysmetabolic syndrome X	277	Yes
+metabolite_levels	"Renal failure, unspecified"	586	No
+multiple_sclerosis	Multiple sclerosis	340	Yes
+obesity.related_traits	"Overweight, obesity and other hyperalimentation"	278	Yes
+phospholipid_levels_plasma		NM	
+platelet_counts	Qualitative platelet defects	287	No
+pr_interval	First degree atrioventricular block	426	No
+primary_biliary_cirrhosis	Biliary cirrhosis	571	Yes
+prostate_cancer	Malignant neoplasm of prostate	185	Yes
+psoriasis	Psoriasis and similar disorders	696	Yes
+red_blood_cell_traits		282	No
+response_to_antipsychotic_treatment		NM	
+rheumatoid_arthritis	Rheumatoid arthritis	714	Yes
+select_biomarker_traits		NM	
+self.reported_allergy	"Allergy, unspecified, not elsewhere classified"	995	Yes
+systemic_lupus_erythematosus	Systemic lupus erythematosus	710	Yes
+triglycerides	Pure hypercholesterolemia	272	No
+type_1_diabetes_autoantibodies	Diabetes mellitus	250	No
+type_2_diabetes	Diabetes mellitus	250	No
+ulcerative_colitis	"Ulcerative colitis, unspecified"	556	Yes
+urate_levels	"Gout, unspecified"	274	No
+venous_thromboembolism	Acute venous embolism and thrombosis of unspecified deep vessels of lower extremity	453	No
