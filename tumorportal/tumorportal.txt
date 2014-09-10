@@ -1,0 +1,22 @@
+AML_SNP	Acute myeloid leukemia
+BLCA_SNP	Bladder cancer
+BRCA_SNP	Breast cancer
+CARC_SNP	Carcinoid
+CLL_SNP	Chronic lymphocytic leukemia
+CRC_SNP	Colorectal cancer
+DLBCL_SNP	Diffuse large B-cell lymphoma
+UCEC_SNP	Endometrial cancer
+ESO_SNP	Esophageal adenocarcinoma
+GBM_SNP	Glioblastoma multiforme
+HNSC_SNP	Head and neck cancer
+KIRC_SNP	Kidney clear cell carcinoma
+LUAD_SNP	Lung adenocarcinoma
+LUSC_SNP	Lung squamous cell carcinoma
+MED_SNP	Medulloblastoma
+MEL_SNP	Melanoma
+MM_SNP	Multiple myeloma
+NB_SNP	Neuroblastoma
+OV_SNP	Ovarian cancer
+PRAD_SNP	Prostate cancer
+RHAB_SNP	Rhabdoid cancer
+PanCan_SNP	Combined cohort
