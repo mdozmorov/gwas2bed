@@ -23,10 +23,9 @@ set.seed(1)
 
 ```{r loadData, echo=FALSE}
 # One or more GenomeRunner Web results data folders.
-dname <- "data.gr//ENCODE2/"
+dname <- "data.gr//ENCODE/"
 mtx<-do.call("rbind", lapply(dname, function(fn) as.matrix(read.table(paste(fn, "matrix.txt", sep=""), sep="\t", header=T, row.names=1))))
-# Optional: filter unused genomic features
-# mtx<-mtx[grep("snp", rownames(mtx), ignore.case=T, invert=T), ]
+# mtx <- mtx[grep("tfbs", rownames(mtx), ignore.case=T), ] # Limit the GFs to TFBSs and Histone marks
 mtx<-mtx.transform(mtx) # -log10 transform p-values
 # Read in deciphering of tumor abbreviations
 tumorportal.names <- read.table("data/tumorportal.txt", sep="\t", row.names=1, header=F)
@@ -37,6 +36,10 @@ colnames(mtx) <- tumorportal.names[colnames(mtx), "V2"]
 # Optional: adjust columns for multiple testing, if not already done. See utils.R for the function definition.
 # mtx<-mtx.adjust(mtx) 
 trackDb.hg19 <- read.table("data//gf_descriptions.hg19.txt", sep="\t", row.names=1)
+# Define file names for results output
+fn_maxmin <- "results//maxmin_correlations_all.txt"
+fn_clust <- "results/clustering_all.txt"
+fn_degs <- "results/clusters-degs_all.txt"
 ```
 
 Input: a matrix of the -log10-transformed, corrected for multiple testing enrichment p-values, when testing 21 tumor-specific SNPs vs. all ENCODE data. The dimensions of the enrichment matrix:
@@ -52,11 +55,11 @@ After removing regulatory elements showing no enrichment in any of the tumor-ass
 numofsig<-1
 cutoff<- -log10(0.1) # q-value significance cutoff
 # What remains if we remove rows/cols with nothing significant
-dim(mtx[apply(mtx, 1, function(x) sum(abs(x)>cutoff))>=numofsig, 
-        apply(mtx, 2, function(x) sum(abs(x)>cutoff))>=numofsig])
+dim(mtx[apply(mtx, 1, function(x) sum(abs(x)>cutoff))>=numofsig, ]) 
+       # apply(mtx, 2, function(x) sum(abs(x)>cutoff))>=numofsig])
 # Trim the matrix
-mtx<-mtx[apply(mtx, 1, function(x) sum(abs(x)>cutoff))>=numofsig, 
-         apply(mtx, 2, function(x) sum(abs(x)>cutoff))>=numofsig]
+mtx<-mtx[apply(mtx, 1, function(x) sum(abs(x)>cutoff))>=numofsig, ]
+        # apply(mtx, 2, function(x) sum(abs(x)>cutoff))>=numofsig]
 ```
 
 ```{r preprocessCorrel, echo=FALSE}
@@ -86,7 +89,7 @@ my.breaks <- seq(min(mtx.cor[[1]][mtx.cor[[1]]!=min(mtx.cor[[1]])]),
                  length.out=(2*granularity + 1))
 #h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
 h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(1-cor(x))}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
-write.table(melt(mtx.cor[[1]][h$rowInd, h$colInd]), "results/tumorportal.cor.txt", sep="\t", quote=F, row.names=F, col.names=F)
+# write.table(melt(mtx.cor[[1]][h$rowInd, h$colInd]), "results/tumorportal.cor.txt", sep="\t", quote=F, row.names=F, col.names=F)
 ```
 
 The top 10 pairs of tumor-associated SNPs are most similar with each other.
@@ -102,7 +105,7 @@ mtx.maxMin <- mtx.maxMin[mtx.maxMin$value != 0, ]
 row.names(mtx.maxMin) <- NULL
 colnames(mtx.maxMin) <- c("Disease 1", "Disease 2", "Corr. coefficient")
 pander(head(mtx.maxMin, n=10))
-write.table(mtx.maxMin, "results//maxmin_correlations.txt", sep="\t", row.names=F)
+write.table(mtx.maxMin, fn_maxmin, sep="\t", row.names=F)
 ```
 
 The similarity dendrogram can be divided into two separate groups:
@@ -121,9 +124,9 @@ for (i in 1:length(c$lower)){
   cat(paste("\n", "\n"))
 }
 # Output the results into a file
-unlink("results//clustering.txt")
+unlink(fn_clust)
 for (i in 1:length(c$lower)){ 
-  write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), "results/clustering.txt", sep="\t", col.names=F, row.names=F, append=T)
+  write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), fn_clust, sep="\t", col.names=F, row.names=F, append=T)
 }
 ```
 
@@ -150,41 +153,55 @@ for (i in 1:length(c$lower)) { # Go through each cluster
 ```
 
 ```{r limmaOnClusters, echo=23, warning=FALSE}
-#mtx.ordered <- mtx[grep("Tfbs", rownames(mtx)), eset.labels] # Use the enrichment matrix ordered by clustering order, limited to TFBSs only
-mtx.ordered <- mtx[, eset.labels] # Use the enrichment matrix ordered by clustering order
-for (i in 1:length(c$lower)) { # Cycle through each cluster combinations
-  for (j in 1:length(c$lower)) {
-    if (i < j) { # Avoid testing the same pairs, e.g., do not repeat 1vs2 2vs1 tests
-      # Collect a list of p-values for differences in -log10 p-values distributions between the groups (differences p-values)
-      d <- apply(mtx.ordered, 1, function(x) {wilcox.test(x[eset.groups == i], x[eset.groups == j])$p.value})
+eset<-new("ExpressionSet", exprs=as.matrix(mtx[, eset.labels]))
+# Make model matrix
+design<-model.matrix(~ 0+factor(eset.groups)) 
+colnames(design)<-paste("c", unique(eset.groups), sep="")
+# Create a square matrix of counts of DEGs
+degs.matrix<-matrix(0, length(c$lower), length(c$lower))
+colnames(degs.matrix)<-paste("c", seq(1,length(c$lower)), sep="")
+rownames(degs.matrix)<-paste("c", seq(1, length(c$lower)), sep="") 
+# Tweak p-value and log2 fold change cutoffs
+cutoff.pval<-0.05
+cutoff.lfc<-log2(2)
+fname <- "clusters-degs_tfbs.txt"
+unlink(fn_degs)
+for(i in colnames(design)){ 
+  for(j in colnames(design)){
+    # Test only unique pairs of clusters
+    if (as.numeric(sub("c", "", i)) < as.numeric(sub("c", "", j))) {
+      # Contrasts between two clusters
+      contrast.matrix<-makeContrasts(contrasts=paste(i, j, sep="-"), levels=design)
+      fit <- lmFit(eset, design) 
+      fit2 <- contrasts.fit(fit, contrast.matrix)
+      fit2 <- eBayes(fit2)
+      degs<-topTable(fit2, number=dim(exprs(eset))[[1]], adjust.method="BH") #, p.value=cutoff.pval, lfc=cutoff.lfc)
+      if(dim(degs)[[1]]>0) {
+        print(paste(i, "vs.", j, ", number of degs significant at adj.p.val<0.5 and 2-fold diff:", dim(degs[degs$logFC > cutoff.lfc & degs$adj.P.Val < cutoff.pval, ])[[1]]))
+        # Keep the number of DEGs in the matrix
+        degs.matrix[as.numeric(sub("c", "", i)), as.numeric(sub("c", "", j))] <- dim(degs)[[1]]
+        # Average values in clusters i and j
+        i.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", i))], nrow=dim(degs)[[1]]))
+        j.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", j))], nrow=dim(degs)[[1]]))
+        # Merge and convert the values
+        degs.pvals.log <- cbind(i.av, j.av)
+        degs.pvals <- matrix(0, nrow=nrow(degs.pvals.log), ncol=ncol(degs.pvals.log), dimnames=list(rownames(degs.pvals.log), c(i, j))) # Empty matrix to hold converted p
+        for (ii in 1:nrow(degs.pvals.log)) {
+          for (jj in 1:ncol(degs.pvals.log)) {
+            if (degs.pvals.log[ii, jj] < 0) {sign = -1} else {sign = 1}
+            degs.pvals[ii, jj] <- sign/10^abs(degs.pvals.log[ii, jj])
+          }
+        }
+        degs <- cbind(degs, degs.pvals) # Bind the differences p-values with the converted averaged association p-values
+        degs <- degs[order(degs$logFC, decreasing=T), ] # Order them by the ratio of the differences
+        degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
+        pander(degs.table[1:10, c(1, 10, 8, 9, 6)])
+        # Put it all together in a file, keeping columns with average transformed p-value being significant in at least one condition
+        write.table(degs.table[, c(1, 10, 8, 9, 6, 5)], fn_degs, sep="\t", col.names=NA, append=T)
+      }
     }
   }
 }
-
-d <- p.adjust(d, method="fdr") # Adjust for multiple testing
-degs <- d[d < 0.1] # Keep only significant differences
-degs <-as.matrix(degs[order(degs)]) # Order them by significance
-# Get average -log10 p-values in each group for the regulatory elements differentially associated with each group (association p-values)
-degs.pvals.log <- cbind(rowMeans(mtx.ordered[rownames(degs), eset.groups == 1]), rowMeans(mtx.ordered[rownames(degs), eset.groups == 2]))
-# Convert them into regular scale, and add a "-" sign for depleted associations
-degs.pvals <- matrix(0, nrow = nrow(degs.pvals.log), ncol=ncol(degs.pvals.log))
-for (i in 1:nrow(degs.pvals.log)) {
-  for (j in 1:ncol(degs.pvals.log)) {
-    if (degs.pvals.log[i, j] < 0) {sign = -1} else {sign = 1}
-    degs.pvals[i, j] <- sign/10^abs(degs.pvals.log[i, j])
-  }
-}
-
-degs <- cbind(degs, degs.pvals) # Bind the differences p-values with the converted averaged association p-values
-degs <- degs[order(degs.pvals.log[, 1] - degs.pvals.log[, 2], decreasing=T), ] # Order them by the ratio of the differences
-degs <- degs[abs(degs[, 2]) < 0.05 | abs(degs[, 3]) < 0.05, ] # Keep rows that have at least one significant association p-value
-degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
-colnames(degs.table) <- c("Table_name", "p_value", "Enrichment_1", "Enrichment_2", "Description")
-#degs.table <- degs.table[with(degs.table, order(p_value, Table_name)), ] # Order by p-value, then by table name
-rownames(degs.table) <- NULL # Get rid of row names
-nrow(degs.table) # How many regulatory datasets are differentially associated?
-pander(degs.table[1:20, c(5, 3, 4, 2)])
-write.table(degs.table[, c(1, 5, 3, 4, 2)], "results/tumorportal.degs.txt", sep="\t", quote=F, row.names=F)
 ```
 
 ```{r counts, echo=FALSE, eval=FALSE}

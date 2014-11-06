@@ -45,6 +45,10 @@ mtx<-mtx.transform(mtx) # -log10 transform p-values
 # Optional: adjust columns for multiple testing. See utils.R for the function definition.
 # mtx<-mtx.adjust(mtx) 
 trackDb.hg19 <- read.table("data.gr//gf_descriptions.hg19.txt", sep="\t", row.names=1)
+# Define file names for results output
+fn_maxmin <- "results//maxmin_correlations_tfbs.txt"
+fn_clust <- "results/clustering_tfbs.txt"
+fn_degs <- "results/clusters-degs_tfbs.txt"
 ```
 
 ```{r preprocessData1, echo=FALSE}
@@ -83,6 +87,7 @@ my.breaks <- seq(min(mtx.cor[[1]][mtx.cor[[1]]!=min(mtx.cor[[1]])]),
                  max(mtx.cor[[1]][mtx.cor[[1]]!=max(mtx.cor[[1]])]),
                  length.out=(2*granularity + 1))
 h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
+# write.table(melt(mtx.cor[[1]][h$rowInd, h$colInd]), "results/tumorportal.cor.txt", sep="\t", quote=F, row.names=F, col.names=F)
 ```
 
 **Text mining question 1:** Are the diseases within a cluster share stronger literature similarity than the diseases between the clusters? To answer, we need literature similarity scores for each pair, then split the pairs into cluster-specific groups and compare score distributions with what can be expected by chance, calculating the p-values for it. *Expected answer:* Diseases within each cluster are related to each other by literature findings stronger than could be expected by chance. Diseases between the clusters are not related to each other by literature findings, and this also may be statistically significant.
@@ -100,7 +105,7 @@ mtx.maxMin <- mtx.maxMin[mtx.maxMin$value != 0, ]
 row.names(mtx.maxMin) <- NULL
 colnames(mtx.maxMin) <- c("Disease 1", "Disease 2", "Corr. coefficient")
 pander(head(mtx.maxMin, n=10))
-write.table(mtx.maxMin, "results//maxmin_correlations_tfbs.txt", sep="\t", row.names=F)
+write.table(mtx.maxMin, fn_maxmin, sep="\t", row.names=F)
 ```
 
 The similarity dendrogram can be divided into separate groups:
@@ -119,9 +124,9 @@ for (i in 1:length(c$lower)){
   cat(paste("\n", "\n"))
 }
 # Output the results into a file
-unlink("results/clustering_tfbs.txt")
+unlink(fn_clust)
 for (i in 1:length(c$lower)){ 
-  write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), "results/clustering_tfbs.txt", sep="\t", col.names=F, row.names=F, append=T)
+  write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), fn_clust, sep="\t", col.names=F, row.names=F, append=T)
 }
 ```
 
@@ -154,7 +159,7 @@ rownames(degs.matrix)<-paste("c", seq(1, length(c$lower)), sep="")
 cutoff.pval<-0.05
 cutoff.lfc<-log2(2)
 fname <- "clusters-degs_tfbs.txt"
-unlink(paste(rname, fname, sep=""))
+unlink(fn_degs)
 for(i in colnames(design)){ 
   for(j in colnames(design)){
     # Test only unique pairs of clusters
@@ -186,7 +191,7 @@ for(i in colnames(design)){
         degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
         pander(degs.table[1:10, c(1, 10, 8, 9, 6)])
         # Put it all together in a file, keeping columns with average transformed p-value being significant in at least one condition
-        write.table(degs.table[, c(1, 10, 8, 9, 6, 5)], paste(rname, fname, sep=""), sep="\t", col.names=NA, append=T)
+        write.table(degs.table[, c(1, 10, 8, 9, 6, 5)], fn_degs, sep="\t", col.names=NA, append=T)
       }
     }
   }
@@ -226,6 +231,9 @@ mtx<-mtx.transform(mtx) # -log10 transform p-values
 # Optional: adjust columns for multiple testing. See utils.R for the function definition.
 # mtx<-mtx.adjust(mtx) 
 trackDb.hg19 <- read.table("data.gr//gf_descriptions.hg19.txt", sep="\t", row.names=1)
+fn_maxmin <- "results//maxmin_correlations_histone.txt"
+fn_clust <- "results/clustering_histone.txt"
+fn_degs <- "results/clusters-degs_histone.txt"
 ```
 
 ```{r preprocessData2, echo=FALSE}
@@ -281,7 +289,7 @@ mtx.maxMin <- mtx.maxMin[mtx.maxMin$value != 0, ]
 row.names(mtx.maxMin) <- NULL
 colnames(mtx.maxMin) <- c("Disease 1", "Disease 2", "Corr. coefficient")
 pander(head(mtx.maxMin, n=10))
-write.table(mtx.maxMin, "results//maxmin_correlations_histone.txt", sep="\t", row.names=F)
+write.table(mtx.maxMin, fn_maxmin, sep="\t", row.names=F)
 ```
 
 The similarity dendrogram can be divided into separate groups:
@@ -300,9 +308,9 @@ for (i in 1:length(c$lower)){
   cat(paste("\n", "\n"))
 }
 # Output the results into a file
-unlink("results/clustering_histone.txt")
+unlink(fn_clust)
 for (i in 1:length(c$lower)){ 
-  write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), "results/clustering_histone.txt", sep="\t", col.names=F, row.names=F, append=T)
+  write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), fn_clust, sep="\t", col.names=F, row.names=F, append=T)
 }
 ```
 
@@ -334,8 +342,7 @@ rownames(degs.matrix)<-paste("c", seq(1, length(c$lower)), sep="")
 # Tweak p-value and log2 fold change cutoffs
 cutoff.pval<-0.05
 cutoff.lfc<-log2(2)
-fname <- "clusters-degs_histone.txt"
-unlink(paste(rname, fname, sep=""))
+unlink(fn_degs)
 for(i in colnames(design)){ 
   for(j in colnames(design)){
     # Test only unique pairs of clusters
@@ -367,7 +374,7 @@ for(i in colnames(design)){
         degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
         pander(degs.table[1:10, c(1, 10, 8, 9, 6)])
         # Put it all together in a file, keeping columns with average transformed p-value being significant in at least one condition
-        write.table(degs.table[, c(1, 10, 8, 9, 6, 5)], paste(rname, fname, sep=""), sep="\t", col.names=NA, append=T)
+        write.table(degs.table[, c(1, 10, 8, 9, 6, 5)], fn_degs, sep="\t", col.names=NA, append=T)
       }
     }
   }
@@ -408,6 +415,9 @@ mtx<-mtx.transform(mtx) # -log10 transform p-values
 # Optional: adjust columns for multiple testing. See utils.R for the function definition.
 # mtx<-mtx.adjust(mtx) 
 trackDb.hg19 <- read.table("data.gr//gf_descriptions.hg19.txt", sep="\t", row.names=1)
+fn_maxmin <- "results//maxmin_correlations_all.txt"
+fn_clust <- "results/clustering_all.txt"
+fn_degs <- "results/clusters-degs_all.txt"
 ```
 
 ```{r preprocessData3, echo=FALSE}
@@ -461,7 +471,7 @@ mtx.maxMin <- mtx.maxMin[mtx.maxMin$value != 0, ]
 row.names(mtx.maxMin) <- NULL
 colnames(mtx.maxMin) <- c("Disease 1", "Disease 2", "Corr. coefficient")
 pander(head(mtx.maxMin, n=10))
-write.table(mtx.maxMin, "results//maxmin_correlations_all.txt", sep="\t", row.names=F)
+write.table(mtx.maxMin, fn_maxmin, sep="\t", row.names=F)
 ```
 
 The similarity dendrogram can be divided into separate groups:
@@ -480,9 +490,9 @@ for (i in 1:length(c$lower)){
   cat(paste("\n", "\n"))
 }
 # Output the results into a file
-unlink("results/clustering_all.txt")
+unlink(fn_clust)
 for (i in 1:length(c$lower)){ 
-  write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), "results/clustering_all.txt", sep="\t", col.names=F, row.names=F, append=T)
+  write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), fn_clust, sep="\t", col.names=F, row.names=F, append=T)
 }
 ```
 
@@ -514,8 +524,7 @@ rownames(degs.matrix)<-paste("c", seq(1, length(c$lower)), sep="")
 # Tweak p-value and log2 fold change cutoffs
 cutoff.pval<-0.05
 cutoff.lfc<-log2(2)
-fname <- "clusters-degs_all.txt"
-unlink(paste(rname, fname, sep=""))
+unlink(fn_degs)
 for(i in colnames(design)){ 
   for(j in colnames(design)){
     # Test only unique pairs of clusters
@@ -547,7 +556,7 @@ for(i in colnames(design)){
         degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
         pander(degs.table[1:10, c(1, 10, 8, 9, 6)])
         # Put it all together in a file, keeping columns with average transformed p-value being significant in at least one condition
-        write.table(degs.table[, c(1, 10, 8, 9, 6, 5)], paste(rname, fname, sep=""), sep="\t", col.names=NA, append=T)
+        write.table(degs.table[, c(1, 10, 8, 9, 6, 5)], fn_degs, sep="\t", col.names=NA, append=T)
       }
     }
   }
@@ -556,8 +565,5 @@ for(i in colnames(design)){
 
 Summary
 ---
-<<<<<<< HEAD
 The picture is not as good as when we are taking subsets of regulatory datasets.
-=======
-The picture is not as good as when we are taking subsets of regulatory datasets.
->>>>>>> 864677b... Adding autoimmune folder, after reversing back to less strict .gitignore
+

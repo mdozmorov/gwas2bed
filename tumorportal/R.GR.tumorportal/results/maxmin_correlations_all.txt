@@ -1,0 +1,211 @@
+"Disease 1"	"Disease 2"	"Corr. coefficient"
+"Bladder cancer"	"Kidney clear cell carcinoma"	0.890745997428894
+"Bladder cancer"	"Multiple myeloma"	0.778966188430786
+"Head and neck cancer"	"Multiple myeloma"	0.766685843467712
+"Breast cancer"	"Kidney clear cell carcinoma"	0.764397382736206
+"Bladder cancer"	"Breast cancer"	0.762395083904266
+"Chronic lymphocytic leukemia"	"Diffuse large B-cell lymphoma"	0.746068477630615
+"Diffuse large B-cell lymphoma"	"Multiple myeloma"	0.74401992559433
+"Breast cancer"	"Ovarian cancer"	0.743747413158417
+"Colorectal cancer"	"Endometrial cancer"	0.736662447452545
+"Bladder cancer"	"Head and neck cancer"	0.72484940290451
+"Diffuse large B-cell lymphoma"	"Head and neck cancer"	0.711114346981049
+"Lung adenocarcinoma"	"Melanoma"	0.695774793624878
+"Chronic lymphocytic leukemia"	"Multiple myeloma"	0.676786839962006
+"Kidney clear cell carcinoma"	"Ovarian cancer"	0.650340735912323
+"Kidney clear cell carcinoma"	"Multiple myeloma"	0.647753417491913
+"Carcinoid"	"Multiple myeloma"	0.609431445598602
+"Breast cancer"	"Carcinoid"	0.606303930282593
+"Chronic lymphocytic leukemia"	"Head and neck cancer"	0.595515191555023
+"Bladder cancer"	"Carcinoid"	0.595468401908875
+"Bladder cancer"	"Ovarian cancer"	0.594305992126465
+"Carcinoid"	"Chronic lymphocytic leukemia"	0.586971879005432
+"Breast cancer"	"Multiple myeloma"	0.583579003810883
+"Head and neck cancer"	"Kidney clear cell carcinoma"	0.578315794467926
+"Carcinoid"	"Head and neck cancer"	0.577437400817871
+"Carcinoid"	"Diffuse large B-cell lymphoma"	0.542585790157318
+"Carcinoid"	"Kidney clear cell carcinoma"	0.531180799007416
+"Bladder cancer"	"Diffuse large B-cell lymphoma"	0.50289523601532
+"Breast cancer"	"Head and neck cancer"	0.502260029315948
+"Glioblastoma multiforme"	"Lung adenocarcinoma"	0.481326550245285
+"Esophageal adenocarcinoma"	"Lung adenocarcinoma"	0.462834805250168
+"Esophageal adenocarcinoma"	"Glioblastoma multiforme"	0.450292259454727
+"Acute myeloid leukemia"	"Ovarian cancer"	0.440141886472702
+"Acute myeloid leukemia"	"Kidney clear cell carcinoma"	0.438354283571243
+"Multiple myeloma"	"Ovarian cancer"	0.437148213386536
+"Acute myeloid leukemia"	"Breast cancer"	0.429653376340866
+"Bladder cancer"	"Chronic lymphocytic leukemia"	0.418762654066086
+"Breast cancer"	"Chronic lymphocytic leukemia"	0.392395853996277
+"Head and neck cancer"	"Ovarian cancer"	0.387108087539673
+"Carcinoid"	"Ovarian cancer"	0.384131669998169
+"Acute myeloid leukemia"	"Carcinoid"	0.369872152805328
+"Colorectal cancer"	"Neuroblastoma"	0.361213803291321
+"Acute myeloid leukemia"	"Multiple myeloma"	0.360591679811478
+"Glioblastoma multiforme"	"Melanoma"	0.359250068664551
+"Acute myeloid leukemia"	"Bladder cancer"	0.358213633298874
+"Esophageal adenocarcinoma"	"Lung squamous cell carcinoma"	0.353978723287582
+"Chronic lymphocytic leukemia"	"Rhabdoid cancer"	0.340336322784424
+"Breast cancer"	"Diffuse large B-cell lymphoma"	0.337657988071442
+"Lung adenocarcinoma"	"Lung squamous cell carcinoma"	0.328129559755325
+"Bladder cancer"	"Prostate cancer"	0.320020347833633
+"Colorectal cancer"	"Melanoma"	0.319286078214645
+"Multiple myeloma"	"Prostate cancer"	0.316944360733032
+"Diffuse large B-cell lymphoma"	"Rhabdoid cancer"	0.30433377623558
+"Acute myeloid leukemia"	"Chronic lymphocytic leukemia"	0.30223485827446
+"Carcinoid"	"Rhabdoid cancer"	0.299485117197037
+"Multiple myeloma"	"Rhabdoid cancer"	0.29859933257103
+"Diffuse large B-cell lymphoma"	"Kidney clear cell carcinoma"	0.295923858880997
+"Head and neck cancer"	"Rhabdoid cancer"	0.294415682554245
+"Esophageal adenocarcinoma"	"Melanoma"	0.290069699287415
+"Glioblastoma multiforme"	"Medulloblastoma"	0.287035465240479
+"Kidney clear cell carcinoma"	"Prostate cancer"	0.285825818777084
+"Breast cancer"	"Rhabdoid cancer"	0.283735990524292
+"Head and neck cancer"	"Prostate cancer"	0.280840933322906
+"Neuroblastoma"	"Endometrial cancer"	0.280627816915512
+"Chronic lymphocytic leukemia"	"Kidney clear cell carcinoma"	0.2806216776371
+"Acute myeloid leukemia"	"Medulloblastoma"	0.278940409421921
+"Medulloblastoma"	"Endometrial cancer"	0.277625560760498
+"Chronic lymphocytic leukemia"	"Ovarian cancer"	0.263191968202591
+"Acute myeloid leukemia"	"Prostate cancer"	0.26312655210495
+"Bladder cancer"	"Rhabdoid cancer"	0.261926710605621
+"Lung squamous cell carcinoma"	"Melanoma"	0.247836038470268
+"Acute myeloid leukemia"	"Head and neck cancer"	0.246400594711304
+"Medulloblastoma"	"Neuroblastoma"	0.245932266116142
+"Medulloblastoma"	"Prostate cancer"	0.217439964413643
+"Chronic lymphocytic leukemia"	"Medulloblastoma"	0.214664548635483
+"Diffuse large B-cell lymphoma"	"Esophageal adenocarcinoma"	0.213088870048523
+"Melanoma"	"Neuroblastoma"	0.207040771842003
+"Carcinoid"	"Prostate cancer"	0.203763425350189
+"Chronic lymphocytic leukemia"	"Prostate cancer"	0.201704174280167
+"Ovarian cancer"	"Rhabdoid cancer"	0.196185201406479
+"Neuroblastoma"	"Prostate cancer"	0.180504754185677
+"Head and neck cancer"	"Lung squamous cell carcinoma"	0.174444496631622
+"Kidney clear cell carcinoma"	"Rhabdoid cancer"	0.169173389673233
+"Colorectal cancer"	"Lung adenocarcinoma"	0.155886501073837
+"Diffuse large B-cell lymphoma"	"Lung squamous cell carcinoma"	0.155048698186874
+"Diffuse large B-cell lymphoma"	"Prostate cancer"	0.155013650655746
+"Diffuse large B-cell lymphoma"	"Ovarian cancer"	0.154292538762093
+"Glioblastoma multiforme"	"Neuroblastoma"	0.15144194662571
+"Glioblastoma multiforme"	"Lung squamous cell carcinoma"	0.138540148735046
+"Esophageal adenocarcinoma"	"Prostate cancer"	0.126452803611755
+"Acute myeloid leukemia"	"Endometrial cancer"	0.125464424490929
+"Carcinoid"	"Medulloblastoma"	0.124148294329643
+"Chronic lymphocytic leukemia"	"Glioblastoma multiforme"	0.111797094345093
+"Breast cancer"	"Prostate cancer"	0.110710509121418
+"Breast cancer"	"Medulloblastoma"	0.110605150461197
+"Lung squamous cell carcinoma"	"Rhabdoid cancer"	0.109554335474968
+"Acute myeloid leukemia"	"Diffuse large B-cell lymphoma"	0.104135632514954
+"Acute myeloid leukemia"	"Neuroblastoma"	0.100451357662678
+"Lung adenocarcinoma"	"Neuroblastoma"	0.0933396816253662
+"Glioblastoma multiforme"	"Prostate cancer"	0.0837962180376053
+"Melanoma"	"Endometrial cancer"	0.0831223651766777
+"Chronic lymphocytic leukemia"	"Esophageal adenocarcinoma"	0.0786062404513359
+"Esophageal adenocarcinoma"	"Head and neck cancer"	0.0698990523815155
+"Ovarian cancer"	"Prostate cancer"	0.0669869482517242
+"Esophageal adenocarcinoma"	"Rhabdoid cancer"	0.0665263384580612
+"Diffuse large B-cell lymphoma"	"Medulloblastoma"	0.0645683482289314
+"Medulloblastoma"	"Ovarian cancer"	0.0609173290431499
+"Glioblastoma multiforme"	"Rhabdoid cancer"	0.0603774860501289
+"Medulloblastoma"	"Rhabdoid cancer"	0.0596280097961426
+"Acute myeloid leukemia"	"Rhabdoid cancer"	0.0483310408890247
+"Medulloblastoma"	"Multiple myeloma"	0.0480642765760422
+"Lung adenocarcinoma"	"Endometrial cancer"	0.0436098761856556
+"Bladder cancer"	"Lung squamous cell carcinoma"	0.0377648770809174
+"Prostate cancer"	"Rhabdoid cancer"	0.03148153424263
+"Diffuse large B-cell lymphoma"	"Glioblastoma multiforme"	0.0284642428159714
+"Kidney clear cell carcinoma"	"Medulloblastoma"	0.0177001133561134
+"Bladder cancer"	"Medulloblastoma"	0.00946475844830275
+"Esophageal adenocarcinoma"	"Neuroblastoma"	0.00677820900455117
+"Lung squamous cell carcinoma"	"Multiple myeloma"	-0.000727806880604476
+"Colorectal cancer"	"Medulloblastoma"	-0.000828158052172512
+"Acute myeloid leukemia"	"Colorectal cancer"	-0.013816767372191
+"Esophageal adenocarcinoma"	"Medulloblastoma"	-0.0147918965667486
+"Chronic lymphocytic leukemia"	"Lung squamous cell carcinoma"	-0.0152396839112043
+"Head and neck cancer"	"Medulloblastoma"	-0.0173138678073883
+"Glioblastoma multiforme"	"Endometrial cancer"	-0.0473225936293602
+"Neuroblastoma"	"Ovarian cancer"	-0.0501210689544678
+"Esophageal adenocarcinoma"	"Multiple myeloma"	-0.0850458666682243
+"Lung adenocarcinoma"	"Medulloblastoma"	-0.092413492500782
+"Colorectal cancer"	"Prostate cancer"	-0.0946664065122604
+"Lung adenocarcinoma"	"Rhabdoid cancer"	-0.0956575497984886
+"Prostate cancer"	"Endometrial cancer"	-0.100135438144207
+"Kidney clear cell carcinoma"	"Lung squamous cell carcinoma"	-0.115487307310104
+"Carcinoid"	"Esophageal adenocarcinoma"	-0.117035605013371
+"Lung squamous cell carcinoma"	"Ovarian cancer"	-0.123051308095455
+"Lung squamous cell carcinoma"	"Prostate cancer"	-0.126190111041069
+"Carcinoid"	"Glioblastoma multiforme"	-0.139241889119148
+"Carcinoid"	"Lung squamous cell carcinoma"	-0.141249999403954
+"Melanoma"	"Rhabdoid cancer"	-0.142240107059479
+"Breast cancer"	"Lung squamous cell carcinoma"	-0.146244123578072
+"Colorectal cancer"	"Esophageal adenocarcinoma"	-0.159375160932541
+"Colorectal cancer"	"Glioblastoma multiforme"	-0.164270684123039
+"Lung squamous cell carcinoma"	"Neuroblastoma"	-0.167001873254776
+"Ovarian cancer"	"Endometrial cancer"	-0.168657585978508
+"Kidney clear cell carcinoma"	"Neuroblastoma"	-0.170176893472672
+"Medulloblastoma"	"Melanoma"	-0.173284307122231
+"Neuroblastoma"	"Rhabdoid cancer"	-0.174111425876617
+"Chronic lymphocytic leukemia"	"Neuroblastoma"	-0.188504233956337
+"Glioblastoma multiforme"	"Head and neck cancer"	-0.190704226493835
+"Breast cancer"	"Neuroblastoma"	-0.194757163524628
+"Acute myeloid leukemia"	"Glioblastoma multiforme"	-0.196671292185783
+"Carcinoid"	"Neuroblastoma"	-0.20038215816021
+"Breast cancer"	"Endometrial cancer"	-0.204454690217972
+"Glioblastoma multiforme"	"Multiple myeloma"	-0.214210569858551
+"Colorectal cancer"	"Ovarian cancer"	-0.234234884381294
+"Bladder cancer"	"Neuroblastoma"	-0.236834526062012
+"Carcinoid"	"Endometrial cancer"	-0.238813191652298
+"Head and neck cancer"	"Neuroblastoma"	-0.239327430725098
+"Chronic lymphocytic leukemia"	"Lung adenocarcinoma"	-0.240238472819328
+"Multiple myeloma"	"Neuroblastoma"	-0.24439325928688
+"Diffuse large B-cell lymphoma"	"Lung adenocarcinoma"	-0.246214434504509
+"Kidney clear cell carcinoma"	"Endometrial cancer"	-0.268792390823364
+"Melanoma"	"Prostate cancer"	-0.268951803445816
+"Esophageal adenocarcinoma"	"Endometrial cancer"	-0.290717363357544
+"Lung adenocarcinoma"	"Prostate cancer"	-0.296926498413086
+"Bladder cancer"	"Esophageal adenocarcinoma"	-0.298342317342758
+"Rhabdoid cancer"	"Endometrial cancer"	-0.306422770023346
+"Diffuse large B-cell lymphoma"	"Neuroblastoma"	-0.332944005727768
+"Lung squamous cell carcinoma"	"Medulloblastoma"	-0.34104311466217
+"Acute myeloid leukemia"	"Esophageal adenocarcinoma"	-0.346338838338852
+"Colorectal cancer"	"Kidney clear cell carcinoma"	-0.360986351966858
+"Bladder cancer"	"Glioblastoma multiforme"	-0.384193152189255
+"Colorectal cancer"	"Lung squamous cell carcinoma"	-0.401097655296326
+"Chronic lymphocytic leukemia"	"Melanoma"	-0.401255875825882
+"Acute myeloid leukemia"	"Melanoma"	-0.407180100679398
+"Chronic lymphocytic leukemia"	"Endometrial cancer"	-0.415646195411682
+"Breast cancer"	"Glioblastoma multiforme"	-0.419247984886169
+"Breast cancer"	"Colorectal cancer"	-0.440236359834671
+"Colorectal cancer"	"Rhabdoid cancer"	-0.454210042953491
+"Acute myeloid leukemia"	"Lung squamous cell carcinoma"	-0.455694049596786
+"Esophageal adenocarcinoma"	"Kidney clear cell carcinoma"	-0.457296937704086
+"Glioblastoma multiforme"	"Ovarian cancer"	-0.471091479063034
+"Bladder cancer"	"Endometrial cancer"	-0.47210493683815
+"Glioblastoma multiforme"	"Kidney clear cell carcinoma"	-0.47343498468399
+"Carcinoid"	"Lung adenocarcinoma"	-0.474703431129456
+"Acute myeloid leukemia"	"Lung adenocarcinoma"	-0.481849551200867
+"Melanoma"	"Ovarian cancer"	-0.484157234430313
+"Carcinoid"	"Colorectal cancer"	-0.496108025312424
+"Breast cancer"	"Esophageal adenocarcinoma"	-0.513670146465302
+"Diffuse large B-cell lymphoma"	"Melanoma"	-0.515047132968903
+"Multiple myeloma"	"Endometrial cancer"	-0.516171634197235
+"Head and neck cancer"	"Lung adenocarcinoma"	-0.517593562602997
+"Diffuse large B-cell lymphoma"	"Endometrial cancer"	-0.546345114707947
+"Head and neck cancer"	"Melanoma"	-0.547326683998108
+"Esophageal adenocarcinoma"	"Ovarian cancer"	-0.552837252616882
+"Bladder cancer"	"Colorectal cancer"	-0.56477028131485
+"Lung adenocarcinoma"	"Ovarian cancer"	-0.572632908821106
+"Lung adenocarcinoma"	"Multiple myeloma"	-0.586861789226532
+"Colorectal cancer"	"Multiple myeloma"	-0.611535012722015
+"Carcinoid"	"Melanoma"	-0.613758087158203
+"Head and neck cancer"	"Endometrial cancer"	-0.62437230348587
+"Colorectal cancer"	"Head and neck cancer"	-0.625852584838867
+"Chronic lymphocytic leukemia"	"Colorectal cancer"	-0.633315682411194
+"Breast cancer"	"Lung adenocarcinoma"	-0.653353989124298
+"Melanoma"	"Multiple myeloma"	-0.664081454277039
+"Lung squamous cell carcinoma"	"Endometrial cancer"	-0.66895604133606
+"Colorectal cancer"	"Diffuse large B-cell lymphoma"	-0.687176048755646
+"Breast cancer"	"Melanoma"	-0.71492463350296
+"Kidney clear cell carcinoma"	"Melanoma"	-0.751157402992249
+"Bladder cancer"	"Melanoma"	-0.769472658634186
+"Bladder cancer"	"Lung adenocarcinoma"	-0.770249366760254
+"Kidney clear cell carcinoma"	"Lung adenocarcinoma"	-0.812742531299591
