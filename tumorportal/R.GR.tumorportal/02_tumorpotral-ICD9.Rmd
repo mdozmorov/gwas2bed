@@ -314,59 +314,9 @@ tumorportal.cor.ICD9 <- tumorportal.cor.ICD9[ !(tumorportal.cor.ICD9$Disease1 ==
 
 The regulatory and co-morbidity-based (Phi-correlations) disease-disease correlations correlate with each other at Pearson's correlation coefficient of 0.54 (when keeping self-correlations, p-value = 0). Using "relative risk" co-morbidity correlations produces similar results.
 
-```{r diseaseNetwork4, echo=FALSE, eval=FALSE}
-# The diseases most different and similar when comparing regulatory similarity and comorbidities.
-# Create a data frame for comparing correlations vs. ICD relationships
-mtx.cor.ICD9 <- data.frame(disease1=melt(tumorportal.cor.mtx)$X1,
-                           disease2=melt(tumorportal.cor.mtx)$X2,
-                           x=melt(tumorportal.cor.mtx)$value,
-                           y=melt(tumorportal.ICD9.mtx)$value)
-# Replace ICD codes by disease names
-for (i in 1:nrow(mtx.cor.ICD9)) {
-  mtx.cor.ICD9$disease1[i] <- paste(tumorportal.mapping$Name[tumorportal.mapping$ICD.9.3.digits == mtx.cor.ICD9$disease1[i]], collapse="=")
-  mtx.cor.ICD9$disease2[i] <- paste(tumorportal.mapping$Name[tumorportal.mapping$ICD.9.3.digits == mtx.cor.ICD9$disease2[i]], collapse="=")  
-}
-# Fit linear model 
-fit <- lm(x ~ y, data=mtx.cor.ICD9)
-# Get residuals
-fit.res <- residuals(fit)
-# Check their distribution
-# summary(fit.res)
-# Check most differentially related diseases
-head(mtx.cor.ICD9[order(fit.res, decreasing=F), ])
-head(mtx.cor.ICD9[order(fit.res, decreasing=T), ])
-# Check most similarly related diseases
-(mtx.cor.ICD9[fit.res < 0.01 & fit.res > -0.01, ])
-```
-
-```{r epigenomicVisualization1, echo=FALSE, eval=FALSE}
-# Prepare matrixes for heatmap plotting by replacing ICD codes by disease names
-colnames(tumorportal.cor.mtx) <- tumorportal.mapping$Name[match(colnames(tumorportal.cor.mtx), tumorportal.mapping$ICD.9.3.digits)]
-rownames(tumorportal.cor.mtx) <- tumorportal.mapping$Name[match(rownames(tumorportal.cor.mtx), tumorportal.mapping$ICD.9.3.digits)]
-
-colnames(tumorportal.ICD9.mtx) <- tumorportal.mapping$Name[match(colnames(tumorportal.ICD9.mtx), tumorportal.mapping$ICD.9.3.digits)]
-rownames(tumorportal.ICD9.mtx) <- tumorportal.mapping$Name[match(rownames(tumorportal.ICD9.mtx), tumorportal.mapping$ICD.9.3.digits)]
-# Visualize them in a single PDF
-color<-colorRampPalette(c("blue","yellow")) # Define color gradient
-#color<-greenred #Standard green-black-red palette
-# Adjust clustering parameters.
-# Distance: "euclidean", "maximum","manhattan" or "minkowski". Do not use "canberra" or "binary"
-# Clustering: "ward", "single", "complete", "average", "mcquitty", "median" or "centroid"
-dist.method<-"euclidean"  
-hclust.method<-"ward.D2"
-# Setting breaks to go from minimum to maximum correlation coefficients,
-# excluding min/max outliers. This way we get rid of diagonale of 1's
-granularity = 10
-
-mtx.heatmap <- function(mtx) {
-  my.breaks <- seq(min(mtx[mtx!=min(mtx)]), max(mtx[mtx!=max(mtx)]), length.out=(2*granularity + 1))
-  h<-heatmap.2(as.matrix(mtx), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
-}
-pdf("results//tumorportal.pdf")
-par(mfrow=c(1, 2))
-par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
-mtx.heatmap(tumorportal.cor.mtx)
-mtx.heatmap(tumorportal.ICD9.mtx)
-dev.off()
+Iridescent literature similarity
+===
+```{r eval=FALSE}
+iridescent <- read.table("data/iridescent.txt", sep="\t", head=T)
 ```
 
