@@ -1,0 +1,355 @@
+---
+title: "Regulatory, co-morbidity (and literature) similarity among the tumor types on [TumorPortal](http://cancergenome.broadinstitute.org/)"
+author: "Mikhail Dozmorov"
+date: "October 9, 2014"
+output: html_document
+---
+```{r, echo=FALSE, warning=FALSE}
+source("utils.R")
+suppressMessages(library(Hmisc)) # For rcorr function
+suppressMessages(library(gplots))
+suppressMessages(library(Biobase))
+suppressMessages(library(limma))
+library(reshape)
+#library(qvalue)
+# Set up the environment
+library(knitr) 
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', echo=T, dpi=300, out.width=700)
+options(replace.assign=TRUE, width=120)
+suppressMessages(library(pander))
+panderOptions('table.split.table', Inf)
+set.seed(1)
+```
+
+```{r loadData, echo=FALSE}
+# One or more GenomeRunner Web results data folders.
+dname <- "data//tumorportal_vs_ENCODE3/"
+mtx<-do.call("rbind", lapply(dname, function(fn) as.matrix(read.table(paste(fn, "matrix.txt", sep=""), sep="\t", header=T, row.names=1))))
+# Optional: filter unused genomic features
+# mtx<-mtx[grep("snp", rownames(mtx), ignore.case=T, invert=T), ]
+mtx<-mtx.transform(mtx) # -log10 transform p-values
+# Read in deciphering of tumor abbreviations
+tumorportal.names <- read.table("data/tumorportal.txt", sep="\t", row.names=1, header=F)
+colnames(mtx) <- tumorportal.names[colnames(mtx), ]
+# Exploratory: check quantiles and remove diseaases showing no enrichments
+mtx.sumstat <- as.data.frame(apply(mtx, 2, quantile)) # Get quantiles
+mtx <- mtx[ , apply(mtx.sumstat, 2, function(x) sum(abs(x)) != 5)] # REmove those that have all "1" or "-1"
+# Optional: adjust columns for multiple testing, if not already done. See utils.R for the function definition.
+# mtx<-mtx.adjust(mtx) 
+trackDb.hg19 <- read.table("data//trackDb.hg19", sep="\t", row.names=1)
+```
+
+Input: a matrix of the -log10-transformed, corrected for multiple testing enrichment p-values, when testing 21 tumor-specific SNPs vs. all ENCODE data. The dimensions of the enrichment matrix:
+
+```{r preprocessData, echo=FALSE}
+dim(mtx) # Check original dimensions
+```
+
+After removing regulatory elements showing no enrichment in any of the tumor-associated SNPs, the dimensions become:
+
+```{r preprocessData1, echo=FALSE}
+# Define minimum number of times a row/col should have values above the cutoffs
+numofsig<-1
+cutoff<- -log10(0.1) # q-value significance cutoff
+# What remains if we remove rows/cols with nothing significant
+dim(mtx[apply(mtx, 1, function(x) sum(abs(x)>cutoff))>=numofsig, 
+        apply(mtx, 2, function(x) sum(abs(x)>cutoff))>=numofsig])
+# Trim the matrix
+mtx<-mtx[apply(mtx, 1, function(x) sum(abs(x)>cutoff))>=numofsig, 
+         apply(mtx, 2, function(x) sum(abs(x)>cutoff))>=numofsig]
+```
+
+```{r preprocessCorrel, echo=FALSE}
+# rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
+mtx.cor<-rcorr(as.matrix(mtx), type="spearman")
+# Optionally, try kendall correlation
+# mtx.cor[[1]]<-cor(as.matrix(mtx), method="kendall")
+```
+
+Visualization of Spearman correlation coefficients among tumor-specific regulatory enrichment profiles identifies at least 2 groups of cancers with SNPs associated with different regulatory elements
+
+```{r epigenomicVisualization, echo=FALSE}
+par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
+color<-colorRampPalette(c("blue","yellow")) # Define color gradient
+#color<-greenred #Standard green-black-red palette
+# Adjust clustering parameters.
+# Distance: "euclidean", "maximum","manhattan" or "minkowski". Do not use "canberra" or "binary"
+# Clustering: "ward", "single", "complete", "average", "mcquitty", "median" or "centroid"
+dist.method<-"euclidean"  
+hclust.method<-"ward.D2"
+# Setting breaks to go from minimum to maximum correlation coefficients,
+# excluding min/max outliers. This way we get rid of diagonale of 1's
+granularity = 10
+# Color gradient runs from second to minimum to second to maximum enrichment values
+my.breaks <- seq(min(mtx.cor[[1]][mtx.cor[[1]]!=min(mtx.cor[[1]])]),
+                 max(mtx.cor[[1]][mtx.cor[[1]]!=max(mtx.cor[[1]])]),
+                 length.out=(2*granularity + 1))
+#h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
+h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(1-cor(x))}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
+write.table(melt(mtx.cor[[1]][h$rowInd, h$colInd]), "results/tumorportal.cor.txt", sep="\t", quote=F, row.names=F, col.names=F)
+```
+
+The top 10 pairs of tumor-associated SNPs are most similar with each other.
+
+```{r maxMin, echo=FALSE}
+# Checking max/min correlations
+mtx.cor1<-mtx.cor[[1]]
+diag(mtx.cor1)<-0 # We don't need to consider self correlations, zero them out
+mtx.cor1[lower.tri(mtx.cor1)] <- 0 # Also zero out one matrix triangle, to avoid duplicate pairs
+mtx.maxMin <- melt(mtx.cor1) # Convert the matrix into tidy data
+mtx.maxMin <- mtx.maxMin[order(mtx.maxMin$value, decreasing=T), ] # Reorder the data by maxMin correlation
+mtx.maxMin <- mtx.maxMin[mtx.maxMin$value != 0, ]
+row.names(mtx.maxMin) <- NULL
+colnames(mtx.maxMin) <- c("Disease 1", "Disease 2", "Corr. coefficient")
+pander(head(mtx.maxMin, n=10))
+write.table(mtx.maxMin, "results//maxmin_correlations.txt", sep="\t", row.names=F)
+```
+
+The similarity dendrogram can be divided into two separate groups:
+
+```{r defineClusters, echo=FALSE}
+par(oma=c(0, 0, 0, 0), mar=c(5.1, 4.1, 4.1,25.1), cex=0.5)
+# Plot the dendrogram only, limit y axis. attr(h$colDendrogram, "height") has the maximum height of the dendrogram.
+plot(h$colDendrogram, horiz=T) 
+# Cut the dentrogram into separate clusters. Tweak the height
+abline(v=5) # Visually evaluate the height where to cut
+c<-cut(h$colDendrogram, h=5) 
+# Check the number of clusters, and the number of members.
+for (i in 1:length(c$lower)){
+  cat(paste("Cluster", formatC(i, width=2, flag="0"), sep=""), "has", formatC(attr(c$lower[[i]], "members"), width=3), "members", "\n")
+  cat(paste(t(labels(c$lower[[i]])), collapse="\n"))
+  cat(paste("\n", "\n"))
+}
+# Output the results into a file
+unlink("results//clustering.txt")
+for (i in 1:length(c$lower)){ 
+  write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), "results/clustering.txt", sep="\t", col.names=F, row.names=F, append=T)
+}
+```
+
+**Text mining question 1:** Are the tumors within a cluster share stronger literature similarity than the tumors between the clusters? To answer, we need literature similarity scores for each pair, then split the pairs into cluster-specific groups and compare score distributions with what can be expected by chance, calculating the p-values for it. *Expected answer:* Tumors within each cluster are related to each other by literature findings stronger than could be expected by chance. Tumors between the clusters are not related to each other by literature findings, and this also may be statistically significant.
+
+Analysis of regulatory elements differentially associated with the tumor-associated SNPs in the two groups identified a set of repressive histone modification marks (H3K27me3 and H3K9me3) and EZH2 binding sites as differentially associated with the two groups.
+
+The "Enrichment 1/2" columns show the average p-values of the group-specific SNPs-regulatory associations. A "-" sign indicates that an association is underrepresented. E.g., the H3K27me3 binding sites are significantly enriched in the tumor-associated SNPs from the first group, and are significantly depleted in the SNPs from the second group.
+
+The "p-value" column shows whether the difference in the associations bwtween the groups is statistically significantly different.
+
+```{r defineGroups, echo=FALSE}
+eset.labels<-character() # Empty vector to hold cluster labels
+eset.groups<-numeric() # Empty vector to hold cluster groups
+# Set the minimum number of members to be considered for the differential analysis
+minmembers<-3
+for (i in 1:length(c$lower)) { # Go through each cluster
+  # If the number of members is more than a minimum number of members
+  if (attr(c$lower[[i]], "members") > minmembers) { 
+    eset.labels<-append(eset.labels, labels(c$lower[[i]]))
+    eset.groups<-append(eset.groups, rep(i, length(labels(c$lower[[i]]))))
+  }
+}
+```
+
+```{r limmaOnClusters, echo=23, warning=FALSE}
+#mtx.ordered <- mtx[grep("Tfbs", rownames(mtx)), eset.labels] # Use the enrichment matrix ordered by clustering order, limited to TFBSs only
+mtx.ordered <- mtx[, eset.labels] # Use the enrichment matrix ordered by clustering order
+for (i in 1:length(c$lower)) { # Cycle through each cluster combinations
+  for (j in 1:length(c$lower)) {
+    if (i < j) { # Avoid testing the same pairs, e.g., do not repeat 1vs2 2vs1 tests
+      # Collect a list of p-values for differences in -log10 p-values distributions between the groups (differences p-values)
+      d <- apply(mtx.ordered, 1, function(x) {wilcox.test(x[eset.groups == i], x[eset.groups == j])$p.value})
+    }
+  }
+}
+
+d <- p.adjust(d, method="fdr") # Adjust for multiple testing
+degs <- d[d < 0.1] # Keep only significant differences
+degs <-as.matrix(degs[order(degs)]) # Order them by significance
+# Get average -log10 p-values in each group for the regulatory elements differentially associated with each group (association p-values)
+degs.pvals.log <- cbind(rowMeans(mtx.ordered[rownames(degs), eset.groups == 1]), rowMeans(mtx.ordered[rownames(degs), eset.groups == 2]))
+# Convert them into regular scale, and add a "-" sign for depleted associations
+degs.pvals <- matrix(0, nrow = nrow(degs.pvals.log), ncol=ncol(degs.pvals.log))
+for (i in 1:nrow(degs.pvals.log)) {
+  for (j in 1:ncol(degs.pvals.log)) {
+    if (degs.pvals.log[i, j] < 0) {sign = -1} else {sign = 1}
+    degs.pvals[i, j] <- sign/10^abs(degs.pvals.log[i, j])
+  }
+}
+
+degs <- cbind(degs, degs.pvals) # Bind the differences p-values with the converted averaged association p-values
+degs <- degs[order(degs.pvals.log[, 1] - degs.pvals.log[, 2], decreasing=T), ] # Order them by the ratio of the differences
+degs <- degs[abs(degs[, 2]) < 0.05 | abs(degs[, 3]) < 0.05, ] # Keep rows that have at least one significant association p-value
+degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
+colnames(degs.table) <- c("Table_name", "p_value", "Enrichment_1", "Enrichment_2", "Description")
+#degs.table <- degs.table[with(degs.table, order(p_value, Table_name)), ] # Order by p-value, then by table name
+rownames(degs.table) <- NULL # Get rid of row names
+nrow(degs.table) # How many regulatory datasets are differentially associated?
+pander(degs.table[1:20, c(5, 3, 4, 2)])
+write.table(degs.table[, c(1, 5, 3, 4, 2)], "results/tumorportal.degs.txt", sep="\t", quote=F, row.names=F)
+```
+
+```{r counts, echo=FALSE, eval=FALSE}
+# Investigate distribution of text labels
+degs.txt <- degs.table[degs.table$p_value == min(degs.table$p_value), "Description"] # Get descriptions of the most significant associations
+degs.txt <- gsub(" TFBS Uniform Peaks of ", " ", degs.txt) # Remove some extraneous text
+degs.txt <- gsub(" EtOH 0.02% ", " ", degs.txt)
+degs.txt <- gsub(" DEX 100 nM ", " ", degs.txt)
+degs.txt <- gsub(" Wb33676984 ", " ", degs.txt)
+degs.txt <- gsub(" Wb78495824 ", " ", degs.txt)
+degs.txt <- gsub(" C ", " ", degs.txt)
+degs.txt <- gsub("B cells CD20+ RO01778 ", "CD20+ ", degs.txt)
+degs.txt <- degs.txt[-75] # And an outlier
+table(sapply(degs.txt, function(x) as.character(strsplit(x, " ")[[1]][1]))) # How many cell lines we have
+table(sapply(degs.txt, function(x) as.character(strsplit(x, " ")[[1]][2]))) # How many TFBSs
+```
+
+**Text mining question 2:** Are the H3K27me3, H3K9me3 and EZH2 terms associated stronger with the tumors in the first cluster based on the literature strength? Are they associated (statistically significantly) weaker with the second cluster? Are the transcription factors themselves related based on the literature? *Expected answer:* Yes, the literature associations should confirm the relationships.
+
+Regulatory- and co-morbidity similarities
+-------------------------------------------
+
+To evaluate whether regulatory and co-morbidity measurements correlate, a matrix of disease-disease co-morbidity correlations ([AllNet3.txt](http://barabasilab.neu.edu/projects/hudine/resource/datasets/AllNet3.net)) is downloaded.
+
+Out of 21 tumor names, 14 can be mapped to the ICD9 codes.
+
+```{r diseaseNetwork, echo=FALSE}
+# All disease-disease relationships
+mtx.disease <- read.table("data//AllNet3.txt", sep="\t", header=F)
+# Mapping of tumorportal IDs to ICD9 codes
+tumorportal.mapping <- read.table("data/tumorportal_ICD9-3.txt", sep="\t", header=T, row.names=1)
+tumorportal.mapping <- tumorportal.mapping[complete.cases(tumorportal.mapping),  ] # Remove non-ICD9 mapped
+(tumorportal.mapping <- tumorportal.mapping[order(tumorportal.mapping$Name), ]) # Order by name
+# Sanity check, is there differences in disease codes? Should be 0
+# setdiff(unique(tumorportal.mapping$ICD.9.3.digits), unique(c(mtx.disease$V1, mtx.disease$V2)))
+```
+
+For those 14 mapped names, square matrixes (14x14) of disease-disease co-morbitity correlations and regulatory correlations are created.
+
+```{r diseaseNetwork1, echo=FALSE}
+# Create empty matrix of tumorportal disease-disease relationships
+tumorportal.ICD9.mtx <- matrix(0, nrow=nrow(tumorportal.mapping), ncol=nrow(tumorportal.mapping))
+rownames(tumorportal.ICD9.mtx) <- tumorportal.mapping$ICD.9.3.digits
+colnames(tumorportal.ICD9.mtx) <- tumorportal.mapping$ICD.9.3.digits
+# Populate this matrix with Barabasi relationship values
+for (i in 1:nrow(tumorportal.ICD9.mtx)) {
+  for (j in 1:ncol(tumorportal.ICD9.mtx)) {
+    # Index is either col1 and col2, or col2 and col1
+    idx <- mtx.disease$V1 == rownames(tumorportal.ICD9.mtx)[i] & mtx.disease$V2 == colnames(tumorportal.ICD9.mtx)[j] | 
+      mtx.disease$V1 == rownames(tumorportal.ICD9.mtx)[j] & mtx.disease$V2 == colnames(tumorportal.ICD9.mtx)[i]
+    if (sum(idx) == 1) {
+      # If exactly one matching pair found
+# V5 - Co-ocurrence between diseases 1 and 2
+# V6 - Relative risk
+# V9 - Phi-correlation
+      tumorportal.ICD9.mtx[i, j] <- mtx.disease$V9[idx] # Save it in the matrix
+      # cat(i, j, "\n")
+    } else if (sum(idx) > 1) {
+      # If there's more than one pair of the disease, print which one. Should be none
+      cat(rownames(tumorportal.ICD9.mtx)[i], rownames(tumorportal.ICD9.mtx)[j], sum(idx))      
+    }   
+  }
+}
+# dim(tumorportal.ICD9.mtx)
+# Check the distribution of disease-disease relationship values
+# summary(as.vector(tumorportal.ICD9.mtx))
+# Replace diagonal (which is disease vs. the same disease) by maximum relationship
+diag(tumorportal.ICD9.mtx) <- max(as.vector(tumorportal.ICD9.mtx)) + 0.01
+```
+
+```{r diseaseNetwork2, echo=FALSE}
+# Create comparable correlation matrix
+tumorportal.cor.mtx <- mtx.cor[[1]][rownames(mtx.cor[[1]]) %in% tumorportal.mapping$Name,
+                                    colnames(mtx.cor[[1]]) %in% tumorportal.mapping$Name]
+# Make alphabetical order of row/colnames
+tumorportal.cor.mtx <- tumorportal.cor.mtx[order(rownames(tumorportal.cor.mtx)), order(colnames(tumorportal.cor.mtx))]
+# Sanity check
+# rownames(tumorportal.cor.mtx) == tumorportal.mapping$Name # Check the order match 
+# colnames(tumorportal.cor.mtx) == tumorportal.mapping$Name # Should all be TRUE
+rownames(tumorportal.cor.mtx) <- tumorportal.mapping$ICD.9.3.digits # Remap names to ICD9 codes
+colnames(tumorportal.cor.mtx) <- tumorportal.mapping$ICD.9.3.digits
+# rownames(tumorportal.cor.mtx) == rownames(tumorportal.ICD9.mtx) # Check the order match 
+# colnames(tumorportal.cor.mtx) == colnames(tumorportal.ICD9.mtx) # Should all be TRUE
+```
+
+To evaluate correlation between the two methods of measurements, the matrixes are correlated with each other. A matrix of correlation coefficients, a total number of pairs used for correlation measurement, and a matrix of p-values are outputted.
+
+The ongoing debate is whether to remove or keep self-self associations.
+
+```{r diseaseNetwork3, echo=FALSE}
+# Finally, check correlation between pairwise relationships
+# head(melt(tumorportal.cor.mtx)) # Check how melt look like
+# head(melt(tumorportal.ICD9.mtx))
+# Manually merging two melted matrixes
+tumorportal.cor.melt <- melt(tumorportal.cor.mtx)
+rownames(tumorportal.cor.melt) <- paste(tumorportal.cor.melt$X1, tumorportal.cor.melt$X2, sep="-")
+tumorportal.ICD9.melt <- melt(tumorportal.ICD9.mtx)
+rownames(tumorportal.ICD9.melt) <- paste(tumorportal.ICD9.melt$X1, tumorportal.ICD9.melt$X2, sep="-")
+tumorportal.cor.ICD9 <- merge(tumorportal.cor.melt, tumorportal.ICD9.melt, by="row.names")
+tumorportal.cor.ICD9 <- tumorportal.cor.ICD9[, c(2, 3, 4, 7)]
+colnames(tumorportal.cor.ICD9) <- c("Disease1", "Disease2", "Episimilarity", "Comorbidity")
+tumorportal.cor.ICD9 <- tumorportal.cor.ICD9[ !(tumorportal.cor.ICD9$Disease1 == tumorportal.cor.ICD9$Disease2), ]
+# write.table(tumorportal.cor.ICD9, "results/tumorportal.ICD9.episim.occurr.txt", sep="\t", row.names=F)
+# Get correlations
+(rcorr(tumorportal.cor.ICD9$Episimilarity, tumorportal.cor.ICD9$Comorbidity, type="pearson"))
+# V5 - Co-ocurrence between diseases 1 and 2, Pearson 0.53 (p=0), Spearman 0.28 (p=0)
+# V6 - Relative risk, Pearson 0.52 (p=0), Spearman 0.23 (p=0.0002)
+# V9 - Phi-correlation,  Pearson 0.54 (p=0), Spearman 0.24 (p=0)
+```
+
+The regulatory and co-morbidity-based (Phi-correlations) disease-disease correlations correlate with each other at Pearson's correlation coefficient of 0.54 (when keeping self-correlations, p-value = 0). Using "relative risk" co-morbidity correlations produces similar results.
+
+```{r diseaseNetwork4, echo=FALSE, eval=FALSE}
+# The diseases most different and similar when comparing regulatory similarity and comorbidities.
+# Create a data frame for comparing correlations vs. ICD relationships
+mtx.cor.ICD9 <- data.frame(disease1=melt(tumorportal.cor.mtx)$X1,
+                           disease2=melt(tumorportal.cor.mtx)$X2,
+                           x=melt(tumorportal.cor.mtx)$value,
+                           y=melt(tumorportal.ICD9.mtx)$value)
+# Replace ICD codes by disease names
+for (i in 1:nrow(mtx.cor.ICD9)) {
+  mtx.cor.ICD9$disease1[i] <- paste(tumorportal.mapping$Name[tumorportal.mapping$ICD.9.3.digits == mtx.cor.ICD9$disease1[i]], collapse="=")
+  mtx.cor.ICD9$disease2[i] <- paste(tumorportal.mapping$Name[tumorportal.mapping$ICD.9.3.digits == mtx.cor.ICD9$disease2[i]], collapse="=")  
+}
+# Fit linear model 
+fit <- lm(x ~ y, data=mtx.cor.ICD9)
+# Get residuals
+fit.res <- residuals(fit)
+# Check their distribution
+# summary(fit.res)
+# Check most differentially related diseases
+head(mtx.cor.ICD9[order(fit.res, decreasing=F), ])
+head(mtx.cor.ICD9[order(fit.res, decreasing=T), ])
+# Check most similarly related diseases
+(mtx.cor.ICD9[fit.res < 0.01 & fit.res > -0.01, ])
+```
+
+```{r epigenomicVisualization1, echo=FALSE, eval=FALSE}
+# Prepare matrixes for heatmap plotting by replacing ICD codes by disease names
+colnames(tumorportal.cor.mtx) <- tumorportal.mapping$Name[match(colnames(tumorportal.cor.mtx), tumorportal.mapping$ICD.9.3.digits)]
+rownames(tumorportal.cor.mtx) <- tumorportal.mapping$Name[match(rownames(tumorportal.cor.mtx), tumorportal.mapping$ICD.9.3.digits)]
+
+colnames(tumorportal.ICD9.mtx) <- tumorportal.mapping$Name[match(colnames(tumorportal.ICD9.mtx), tumorportal.mapping$ICD.9.3.digits)]
+rownames(tumorportal.ICD9.mtx) <- tumorportal.mapping$Name[match(rownames(tumorportal.ICD9.mtx), tumorportal.mapping$ICD.9.3.digits)]
+# Visualize them in a single PDF
+color<-colorRampPalette(c("blue","yellow")) # Define color gradient
+#color<-greenred #Standard green-black-red palette
+# Adjust clustering parameters.
+# Distance: "euclidean", "maximum","manhattan" or "minkowski". Do not use "canberra" or "binary"
+# Clustering: "ward", "single", "complete", "average", "mcquitty", "median" or "centroid"
+dist.method<-"euclidean"  
+hclust.method<-"ward.D2"
+# Setting breaks to go from minimum to maximum correlation coefficients,
+# excluding min/max outliers. This way we get rid of diagonale of 1's
+granularity = 10
+
+mtx.heatmap <- function(mtx) {
+  my.breaks <- seq(min(mtx[mtx!=min(mtx)]), max(mtx[mtx!=max(mtx)]), length.out=(2*granularity + 1))
+  h<-heatmap.2(as.matrix(mtx), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
+}
+pdf("results//tumorportal.pdf")
+par(mfrow=c(1, 2))
+par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
+mtx.heatmap(tumorportal.cor.mtx)
+mtx.heatmap(tumorportal.ICD9.mtx)
+dev.off()
+```
+
