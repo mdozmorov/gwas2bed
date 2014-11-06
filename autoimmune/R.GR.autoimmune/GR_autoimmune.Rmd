@@ -10,7 +10,7 @@ suppressMessages(library(Hmisc)) # For rcorr function
 suppressMessages(library(gplots))
 suppressMessages(library(Biobase))
 suppressMessages(library(limma))
-library(reshape)
+library(reshape2)
 #library(qvalue)
 # Set up the environment
 library(knitr) 
@@ -115,8 +115,8 @@ par(oma=c(0, 0, 0, 0), mar=c(5.1, 4.1, 4.1,25.1), cex=0.5)
 # Plot the dendrogram only, limit y axis. attr(h$colDendrogram, "height") has the maximum height of the dendrogram.
 plot(h$colDendrogram, horiz=T) 
 # Cut the dentrogram into separate clusters. Tweak the height
-abline(v=3) # Visually evaluate the height where to cut
-c<-cut(h$colDendrogram, h=3) 
+abline(v=4) # Visually evaluate the height where to cut
+c<-cut(h$colDendrogram, h=4) 
 # Check the number of clusters, and the number of members.
 for (i in 1:length(c$lower)){
   cat(paste("Cluster", formatC(i, width=2, flag="0"), sep=""), "has", formatC(attr(c$lower[[i]], "members"), width=3), "members", "\n")
@@ -157,8 +157,7 @@ colnames(degs.matrix)<-paste("c", seq(1,length(c$lower)), sep="")
 rownames(degs.matrix)<-paste("c", seq(1, length(c$lower)), sep="") 
 # Tweak p-value and log2 fold change cutoffs
 cutoff.pval<-0.05
-cutoff.lfc<-log2(2)
-fname <- "clusters-degs_tfbs.txt"
+cutoff.lfc<-log2(1)
 unlink(fn_degs)
 for(i in colnames(design)){ 
   for(j in colnames(design)){
@@ -169,33 +168,42 @@ for(i in colnames(design)){
       fit <- lmFit(eset, design) 
       fit2 <- contrasts.fit(fit, contrast.matrix)
       fit2 <- eBayes(fit2)
-      degs<-topTable(fit2, number=dim(exprs(eset))[[1]], adjust.method="BH") #, p.value=cutoff.pval, lfc=cutoff.lfc)
+      degs<-topTable(fit2, number=dim(exprs(eset))[[1]], adjust.method="BH") # , p.value=cutoff.pval, lfc=cutoff.lfc)
       if(dim(degs)[[1]]>0) {
-        print(paste(i, "vs.", j, ", number of degs significant at adj.p.val<0.5 and 2-fold diff:", dim(degs[degs$logFC > cutoff.lfc & degs$adj.P.Val < cutoff.pval, ])[[1]]))
+        ndegs <- dim(degs[degs$logFC > cutoff.lfc & degs$adj.P.Val < cutoff.pval, ])[[1]]
+        print(paste(i, "vs.", j, ", number of degs significant at adj.p.val<0.5:", ndegs))
         # Keep the number of DEGs in the matrix
-        degs.matrix[as.numeric(sub("c", "", i)), as.numeric(sub("c", "", j))] <- dim(degs)[[1]]
-        # Average values in clusters i and j
-        i.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", i))], nrow=dim(degs)[[1]]))
-        j.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", j))], nrow=dim(degs)[[1]]))
-        # Merge and convert the values
-        degs.pvals.log <- cbind(i.av, j.av)
-        degs.pvals <- matrix(0, nrow=nrow(degs.pvals.log), ncol=ncol(degs.pvals.log), dimnames=list(rownames(degs.pvals.log), c(i, j))) # Empty matrix to hold converted p
-        for (ii in 1:nrow(degs.pvals.log)) {
-          for (jj in 1:ncol(degs.pvals.log)) {
-            if (degs.pvals.log[ii, jj] < 0) {sign = -1} else {sign = 1}
-            degs.pvals[ii, jj] <- sign/10^abs(degs.pvals.log[ii, jj])
+        degs.matrix[as.numeric(sub("c", "", i)), as.numeric(sub("c", "", j))] <- ndegs
+        if(ndegs > 0) {
+          # Average values in clusters i and j
+          i.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", i))], nrow=dim(degs)[[1]]))
+          j.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", j))], nrow=dim(degs)[[1]]))
+          # Merge and convert the values
+          degs.pvals.log <- cbind(i.av, j.av)
+          degs.pvals <- matrix(0, nrow=nrow(degs.pvals.log), ncol=ncol(degs.pvals.log), dimnames=list(rownames(degs.pvals.log), c(i, j))) # Empty matrix to hold converted p
+          for (ii in 1:nrow(degs.pvals.log)) {
+            for (jj in 1:ncol(degs.pvals.log)) {
+              if (degs.pvals.log[ii, jj] < 0) {sign = -1} else {sign = 1}
+              degs.pvals[ii, jj] <- sign/10^abs(degs.pvals.log[ii, jj])
+            }
           }
+          degs <- cbind(degs, degs.pvals) # Bind the differences p-values with the converted averaged association p-values
+          degs <- degs[order(degs$adj.P.Val, decreasing=F), ] # Order them by the ratio of the differences
+          degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
+          write.table(degs.table[1:ndegs, c(1, 10, 8, 9, 6, 5)], fn_degs, sep="\t", col.names=NA, append=T)
+          if(ndegs > 20) {
+            ndegs <- 20
+          }
+          pander(degs.table[1:ndegs, c(1, 10, 8, 9, 6)])
+          # Put it all together in a file, keeping columns with average transformed p-value being significant in at least one condition
+         
         }
-        degs <- cbind(degs, degs.pvals) # Bind the differences p-values with the converted averaged association p-values
-        degs <- degs[order(degs$logFC, decreasing=T), ] # Order them by the ratio of the differences
-        degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
-        pander(degs.table[1:10, c(1, 10, 8, 9, 6)])
-        # Put it all together in a file, keeping columns with average transformed p-value being significant in at least one condition
-        write.table(degs.table[, c(1, 10, 8, 9, 6, 5)], fn_degs, sep="\t", col.names=NA, append=T)
       }
     }
   }
 }
+print("Counts of regulatory elements differentially associated with each group")
+pander(degs.matrix)
 ```
 
 **Text mining question 2:** Are the terms associated stronger with the diseases in one vs. the other cluster based on the literature strength? Are the terms themselves related based on the literature? *Expected answer:* Yes, the literature associations should confirm the relationships.
@@ -299,8 +307,8 @@ par(oma=c(0, 0, 0, 0), mar=c(5.1, 4.1, 4.1,25.1), cex=0.5)
 # Plot the dendrogram only, limit y axis. attr(h$colDendrogram, "height") has the maximum height of the dendrogram.
 plot(h$colDendrogram, horiz=T) 
 # Cut the dentrogram into separate clusters. Tweak the height
-abline(v=3) # Visually evaluate the height where to cut
-c<-cut(h$colDendrogram, h=3) 
+abline(v=2.8) # Visually evaluate the height where to cut
+c<-cut(h$colDendrogram, h=2.8) 
 # Check the number of clusters, and the number of members.
 for (i in 1:length(c$lower)){
   cat(paste("Cluster", formatC(i, width=2, flag="0"), sep=""), "has", formatC(attr(c$lower[[i]], "members"), width=3), "members", "\n")
@@ -341,7 +349,7 @@ colnames(degs.matrix)<-paste("c", seq(1,length(c$lower)), sep="")
 rownames(degs.matrix)<-paste("c", seq(1, length(c$lower)), sep="") 
 # Tweak p-value and log2 fold change cutoffs
 cutoff.pval<-0.05
-cutoff.lfc<-log2(2)
+cutoff.lfc<-log2(1)
 unlink(fn_degs)
 for(i in colnames(design)){ 
   for(j in colnames(design)){
@@ -354,31 +362,40 @@ for(i in colnames(design)){
       fit2 <- eBayes(fit2)
       degs<-topTable(fit2, number=dim(exprs(eset))[[1]], adjust.method="BH") # , p.value=cutoff.pval, lfc=cutoff.lfc)
       if(dim(degs)[[1]]>0) {
-        print(paste(i, "vs.", j, ", number of degs significant at adj.p.val<0.5 and 2-fold diff:", dim(degs[degs$logFC > cutoff.lfc & degs$adj.P.Val < cutoff.pval, ])[[1]]))
+        ndegs <- dim(degs[degs$logFC > cutoff.lfc & degs$adj.P.Val < cutoff.pval, ])[[1]]
+        print(paste(i, "vs.", j, ", number of degs significant at adj.p.val<0.5:", ndegs))
         # Keep the number of DEGs in the matrix
-        degs.matrix[as.numeric(sub("c", "", i)), as.numeric(sub("c", "", j))] <- dim(degs)[[1]]
-        # Average values in clusters i and j
-        i.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", i))], nrow=dim(degs)[[1]]))
-        j.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", j))], nrow=dim(degs)[[1]]))
-        # Merge and convert the values
-        degs.pvals.log <- cbind(i.av, j.av)
-        degs.pvals <- matrix(0, nrow=nrow(degs.pvals.log), ncol=ncol(degs.pvals.log), dimnames=list(rownames(degs.pvals.log), c(i, j))) # Empty matrix to hold converted p
-        for (ii in 1:nrow(degs.pvals.log)) {
-          for (jj in 1:ncol(degs.pvals.log)) {
-            if (degs.pvals.log[ii, jj] < 0) {sign = -1} else {sign = 1}
-            degs.pvals[ii, jj] <- sign/10^abs(degs.pvals.log[ii, jj])
+        degs.matrix[as.numeric(sub("c", "", i)), as.numeric(sub("c", "", j))] <- ndegs
+        if(ndegs > 0) {
+          # Average values in clusters i and j
+          i.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", i))], nrow=dim(degs)[[1]]))
+          j.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", j))], nrow=dim(degs)[[1]]))
+          # Merge and convert the values
+          degs.pvals.log <- cbind(i.av, j.av)
+          degs.pvals <- matrix(0, nrow=nrow(degs.pvals.log), ncol=ncol(degs.pvals.log), dimnames=list(rownames(degs.pvals.log), c(i, j))) # Empty matrix to hold converted p
+          for (ii in 1:nrow(degs.pvals.log)) {
+            for (jj in 1:ncol(degs.pvals.log)) {
+              if (degs.pvals.log[ii, jj] < 0) {sign = -1} else {sign = 1}
+              degs.pvals[ii, jj] <- sign/10^abs(degs.pvals.log[ii, jj])
+            }
           }
+          degs <- cbind(degs, degs.pvals) # Bind the differences p-values with the converted averaged association p-values
+          degs <- degs[order(degs$adj.P.Val, decreasing=F), ] # Order them by the ratio of the differences
+          degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
+          write.table(degs.table[1:ndegs, c(1, 10, 8, 9, 6, 5)], fn_degs, sep="\t", col.names=NA, append=T)
+          if(ndegs > 20) {
+            ndegs <- 20
+          }
+          pander(degs.table[1:ndegs, c(1, 10, 8, 9, 6)])
+          # Put it all together in a file, keeping columns with average transformed p-value being significant in at least one condition
+         
         }
-        degs <- cbind(degs, degs.pvals) # Bind the differences p-values with the converted averaged association p-values
-        degs <- degs[order(degs$logFC, decreasing=T), ] # Order them by the ratio of the differences
-        degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
-        pander(degs.table[1:10, c(1, 10, 8, 9, 6)])
-        # Put it all together in a file, keeping columns with average transformed p-value being significant in at least one condition
-        write.table(degs.table[, c(1, 10, 8, 9, 6, 5)], fn_degs, sep="\t", col.names=NA, append=T)
       }
     }
   }
 }
+print("Counts of regulatory elements differentially associated with each group")
+pander(degs.matrix)
 ```
 
 **Text mining question 2:** Are the terms associated stronger with the diseases in one vs. the other cluster based on the literature strength? Are the terms themselves related based on the literature? *Expected answer:* Yes, the literature associations should confirm the relationships.
@@ -481,8 +498,8 @@ par(oma=c(0, 0, 0, 0), mar=c(5.1, 4.1, 4.1,25.1), cex=0.5)
 # Plot the dendrogram only, limit y axis. attr(h$colDendrogram, "height") has the maximum height of the dendrogram.
 plot(h$colDendrogram, horiz=T) 
 # Cut the dentrogram into separate clusters. Tweak the height
-abline(v=5) # Visually evaluate the height where to cut
-c<-cut(h$colDendrogram, h=5) 
+abline(v=2.5) # Visually evaluate the height where to cut
+c<-cut(h$colDendrogram, h=2.5) 
 # Check the number of clusters, and the number of members.
 for (i in 1:length(c$lower)){
   cat(paste("Cluster", formatC(i, width=2, flag="0"), sep=""), "has", formatC(attr(c$lower[[i]], "members"), width=3), "members", "\n")
@@ -523,7 +540,7 @@ colnames(degs.matrix)<-paste("c", seq(1,length(c$lower)), sep="")
 rownames(degs.matrix)<-paste("c", seq(1, length(c$lower)), sep="") 
 # Tweak p-value and log2 fold change cutoffs
 cutoff.pval<-0.05
-cutoff.lfc<-log2(2)
+cutoff.lfc<-log2(1)
 unlink(fn_degs)
 for(i in colnames(design)){ 
   for(j in colnames(design)){
@@ -536,34 +553,79 @@ for(i in colnames(design)){
       fit2 <- eBayes(fit2)
       degs<-topTable(fit2, number=dim(exprs(eset))[[1]], adjust.method="BH") # , p.value=cutoff.pval, lfc=cutoff.lfc)
       if(dim(degs)[[1]]>0) {
-        print(paste(i, "vs.", j, ", number of degs significant at adj.p.val<0.5 and 2-fold diff:", dim(degs[degs$logFC > cutoff.lfc & degs$adj.P.Val < cutoff.pval, ])[[1]]))
+        ndegs <- dim(degs[degs$logFC > cutoff.lfc & degs$adj.P.Val < cutoff.pval, ])[[1]]
+        print(paste(i, "vs.", j, ", number of degs significant at adj.p.val<0.5:", ndegs))
         # Keep the number of DEGs in the matrix
-        degs.matrix[as.numeric(sub("c", "", i)), as.numeric(sub("c", "", j))] <- dim(degs)[[1]]
-        # Average values in clusters i and j
-        i.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", i))], nrow=dim(degs)[[1]]))
-        j.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", j))], nrow=dim(degs)[[1]]))
-        # Merge and convert the values
-        degs.pvals.log <- cbind(i.av, j.av)
-        degs.pvals <- matrix(0, nrow=nrow(degs.pvals.log), ncol=ncol(degs.pvals.log), dimnames=list(rownames(degs.pvals.log), c(i, j))) # Empty matrix to hold converted p
-        for (ii in 1:nrow(degs.pvals.log)) {
-          for (jj in 1:ncol(degs.pvals.log)) {
-            if (degs.pvals.log[ii, jj] < 0) {sign = -1} else {sign = 1}
-            degs.pvals[ii, jj] <- sign/10^abs(degs.pvals.log[ii, jj])
+        degs.matrix[as.numeric(sub("c", "", i)), as.numeric(sub("c", "", j))] <- ndegs
+        if(ndegs > 0) {
+          # Average values in clusters i and j
+          i.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", i))], nrow=dim(degs)[[1]]))
+          j.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", j))], nrow=dim(degs)[[1]]))
+          # Merge and convert the values
+          degs.pvals.log <- cbind(i.av, j.av)
+          degs.pvals <- matrix(0, nrow=nrow(degs.pvals.log), ncol=ncol(degs.pvals.log), dimnames=list(rownames(degs.pvals.log), c(i, j))) # Empty matrix to hold converted p
+          for (ii in 1:nrow(degs.pvals.log)) {
+            for (jj in 1:ncol(degs.pvals.log)) {
+              if (degs.pvals.log[ii, jj] < 0) {sign = -1} else {sign = 1}
+              degs.pvals[ii, jj] <- sign/10^abs(degs.pvals.log[ii, jj])
+            }
           }
+          degs <- cbind(degs, degs.pvals) # Bind the differences p-values with the converted averaged association p-values
+          degs <- degs[order(degs$adj.P.Val, decreasing=F), ] # Order them by the ratio of the differences
+          degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
+          write.table(degs.table[1:ndegs, c(1, 10, 8, 9, 6, 5)], fn_degs, sep="\t", col.names=NA, append=T)
+          if(ndegs > 20) {
+            ndegs <- 20
+          }
+          pander(degs.table[1:ndegs, c(1, 10, 8, 9, 6)])
+          # Put it all together in a file, keeping columns with average transformed p-value being significant in at least one condition
+         
         }
-        degs <- cbind(degs, degs.pvals) # Bind the differences p-values with the converted averaged association p-values
-        degs <- degs[order(degs$logFC, decreasing=T), ] # Order them by the ratio of the differences
-        degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
-        pander(degs.table[1:10, c(1, 10, 8, 9, 6)])
-        # Put it all together in a file, keeping columns with average transformed p-value being significant in at least one condition
-        write.table(degs.table[, c(1, 10, 8, 9, 6, 5)], fn_degs, sep="\t", col.names=NA, append=T)
       }
     }
   }
 }
+print("Counts of regulatory elements differentially associated with each group")
+pander(degs.matrix)
 ```
 
 Summary
 ---
 The picture is not as good as when we are taking subsets of regulatory datasets.
+
+Overlap analysis
+===
+```{r loadOverlapMtx}
+mtx.overlap <- read.table("data/overlapMatrix.txt", sep="\t", head=F)
+mtx.overlap.carpet <- dcast(mtx.overlap, V1~V2, mean)
+rownames(mtx.overlap.carpet) <- mtx.overlap.carpet$V1
+mtx.overlap.carpet <- as.matrix(mtx.overlap.carpet[, -1])
+mtx.overlap$V1 <- sub(".bed", "", mtx.overlap$V1)
+mtx.overlap$V2 <- sub(".bed", "", mtx.overlap$V2)
+```
+
+```{r visualizeOverlapMtx}
+par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
+color<-colorRampPalette(c("blue","yellow")) # Define color gradient
+#color<-greenred #Standard green-black-red palette
+# Adjust clustering parameters.
+# Distance: "euclidean", "maximum","manhattan" or "minkowski". Do not use "canberra" or "binary"
+# Clustering: "ward", "single", "complete", "average", "mcquitty", "median" or "centroid"
+dist.method<-"euclidean"  
+hclust.method<-"ward.D2"
+# Setting breaks to go from minimum to maximum correlation coefficients,
+# excluding min/max outliers. This way we get rid of diagonale of 1's
+h<-heatmap.2(mtx.overlap.carpet, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, scale="row")
+```
+
+```{r}
+a <- mtx.overlap[!(mtx.overlap[, 1] == mtx.overlap[, 2]), 3, drop=F]
+rownames(a) <- paste(mtx.overlap[, 1], mtx.overlap[, 2], sep="-")
+mtx.cor.melted <- melt(mtx.cor[[1]])
+b <- mtx.cor.melted[!(mtx.cor.melted[, 1] == mtx.cor.melted[, 2]), 3, drop=F]
+rownames(b) <- paste(mtx.cor.melted[, 1], mtx.cor.melted[, 2], sep="-")
+b <- b[!(b[, 1] == b[, 2]), ]
+c <- merge(a, b, by="row.names")
+cor(c[, 2], c[, 3])
+```
 

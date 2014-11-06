@@ -8,3 +8,5 @@ Genetic and epigenetic fine mapping of causal autoimmune disease variants
 Prerequisites: Download [Supplemental table 1](http://www.nature.com/nature/journal/vaop/ncurrent/extref/nature13835-s1.xls) and save it as text file into a folder, such as *bed*.
 
 Copy *Makefile* into that folder and run `make`. It will extract disease-specific SNPs into separate BED files.
+
+*Makefile* also contains a command for making pair-wise overlap counts, stored in `overlapMatrix.txt` file.
