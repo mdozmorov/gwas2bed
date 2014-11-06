@@ -556,4 +556,8 @@ for(i in colnames(design)){
 
 Summary
 ---
+<<<<<<< HEAD
 The picture is not as good as when we are taking subsets of regulatory datasets.
+=======
+The picture is not as good as when we are taking subsets of regulatory datasets.
+>>>>>>> 864677b... Adding autoimmune folder, after reversing back to less strict .gitignore
