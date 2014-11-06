@@ -1,22 +1,22 @@
-AML_SNP	Acute myeloid leukemia
-BLCA_SNP	Bladder cancer
-BRCA_SNP	Breast cancer
-CARC_SNP	Carcinoid
-CLL_SNP	Chronic lymphocytic leukemia
-CRC_SNP	Colorectal cancer
-DLBCL_SNP	Diffuse large B-cell lymphoma
-UCEC_SNP	Endometrial cancer
-ESO_SNP	Esophageal adenocarcinoma
-GBM_SNP	Glioblastoma multiforme
-HNSC_SNP	Head and neck cancer
-KIRC_SNP	Kidney clear cell carcinoma
-LUAD_SNP	Lung adenocarcinoma
-LUSC_SNP	Lung squamous cell carcinoma
-MED_SNP	Medulloblastoma
-MEL_SNP	Melanoma
-MM_SNP	Multiple myeloma
-NB_SNP	Neuroblastoma
-OV_SNP	Ovarian cancer
-PRAD_SNP	Prostate cancer
-RHAB_SNP	Rhabdoid cancer
-PanCan_SNP	Combined cohort
+AML_SNP	Acute myeloid leukemia		AML
+BLCA_SNP	Bladder cancer		BLADDER CANCER
+BRCA_SNP	Breast cancer		Breast cancer
+CARC_SNP	Carcinoid		Carcinoid tumors
+CLL_SNP	Chronic lymphocytic leukemia		CHRONIC LYMPHOCYTIC LEUKEMIA
+CRC_SNP	Colorectal cancer		colorectal cancer
+DLBCL_SNP	Diffuse large B-cell lymphoma		diffuse large B-cell lymphoma
+ESO_SNP	Esophageal adenocarcinoma		esophageal adenocarcinoma
+GBM_SNP	Glioblastoma multiforme		GLIOBLASTOMA MULTIFORME
+HNSC_SNP	Head and neck cancer		Head and Neck cancer
+KIRC_SNP	Kidney clear cell carcinoma		Renal carcinoma
+LUAD_SNP	Lung adenocarcinoma		Lung adenocarcinoma
+LUSC_SNP	Lung squamous cell carcinoma		lung squamous cell carcinoma
+MED_SNP	Medulloblastoma		Medulloblastoma
+MEL_SNP	Melanoma		Melanoma
+MM_SNP	Multiple myeloma		MULTIPLE MYELOMA
+NB_SNP	Neuroblastoma		Neuroblastoma
+OV_SNP	Ovarian cancer		ovarian cancer
+PRAD_SNP	Prostate cancer		Prostate cancer
+RHAB_SNP	Rhabdoid cancer		Malignant rhabdoid tumour
+UCEC_SNP	Endometrial cancer		ENDOMETRIAL CANCER
+PanCan_SNP	Combined cohort		
