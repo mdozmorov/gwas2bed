@@ -18,5 +18,4 @@ NB_SNP	Neuroblastoma		Neuroblastoma
 OV_SNP	Ovarian cancer		ovarian cancer
 PRAD_SNP	Prostate cancer		Prostate cancer
 RHAB_SNP	Rhabdoid cancer		Malignant rhabdoid tumour
-UCEC_SNP	Endometrial cancer		ENDOMETRIAL CANCER
-PanCan_SNP	Combined cohort		
+UCEC_SNP	Endometrial cancer		ENDOMETRIAL CANCER	

@@ -23,20 +23,20 @@ set.seed(1)
 
 ```{r loadData, echo=FALSE}
 # One or more GenomeRunner Web results data folders.
-dname <- "data//tumorportal_vs_ENCODE3/"
+dname <- "data.gr//ENCODE2/"
 mtx<-do.call("rbind", lapply(dname, function(fn) as.matrix(read.table(paste(fn, "matrix.txt", sep=""), sep="\t", header=T, row.names=1))))
 # Optional: filter unused genomic features
 # mtx<-mtx[grep("snp", rownames(mtx), ignore.case=T, invert=T), ]
 mtx<-mtx.transform(mtx) # -log10 transform p-values
 # Read in deciphering of tumor abbreviations
 tumorportal.names <- read.table("data/tumorportal.txt", sep="\t", row.names=1, header=F)
-colnames(mtx) <- tumorportal.names[colnames(mtx), ]
+colnames(mtx) <- tumorportal.names[colnames(mtx), "V2"]
 # Exploratory: check quantiles and remove diseaases showing no enrichments
-mtx.sumstat <- as.data.frame(apply(mtx, 2, quantile)) # Get quantiles
-mtx <- mtx[ , apply(mtx.sumstat, 2, function(x) sum(abs(x)) != 5)] # REmove those that have all "1" or "-1"
+# mtx.sumstat <- as.data.frame(apply(mtx, 2, quantile)) # Get quantiles
+# mtx <- mtx[ , apply(mtx.sumstat, 2, function(x) sum(abs(x)) != 5)] # Remove those that have all "1" or "-1"
 # Optional: adjust columns for multiple testing, if not already done. See utils.R for the function definition.
 # mtx<-mtx.adjust(mtx) 
-trackDb.hg19 <- read.table("data//trackDb.hg19", sep="\t", row.names=1)
+trackDb.hg19 <- read.table("data//gf_descriptions.hg19.txt", sep="\t", row.names=1)
 ```
 
 Input: a matrix of the -log10-transformed, corrected for multiple testing enrichment p-values, when testing 21 tumor-specific SNPs vs. all ENCODE data. The dimensions of the enrichment matrix:
