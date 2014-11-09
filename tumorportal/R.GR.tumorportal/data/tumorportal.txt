@@ -17,5 +17,5 @@ MM_SNP	Multiple myeloma		MULTIPLE MYELOMA
 NB_SNP	Neuroblastoma		Neuroblastoma
 OV_SNP	Ovarian cancer		ovarian cancer
 PRAD_SNP	Prostate cancer		Prostate cancer
-RHAB_SNP	Rhabdoid cancer		Malignant rhabdoid tumour
-UCEC_SNP	Endometrial cancer		ENDOMETRIAL CANCER	
+RHAB_SNP	Rhabdoid cancer		rhabdoid tumor
+UCEC_SNP	Endometrial cancer		ENDOMETRIAL CANCER

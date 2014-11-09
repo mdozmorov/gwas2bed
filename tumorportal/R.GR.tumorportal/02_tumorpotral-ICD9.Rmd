@@ -10,7 +10,8 @@ suppressMessages(library(Hmisc)) # For rcorr function
 suppressMessages(library(gplots))
 suppressMessages(library(Biobase))
 suppressMessages(library(limma))
-library(reshape)
+library(reshape2)
+library(dplyr)
 #library(qvalue)
 # Set up the environment
 library(knitr) 
@@ -297,13 +298,13 @@ The ongoing debate is whether to remove or keep self-self associations.
 # head(melt(tumorportal.ICD9.mtx))
 # Manually merging two melted matrixes
 tumorportal.cor.melt <- melt(tumorportal.cor.mtx)
-rownames(tumorportal.cor.melt) <- paste(tumorportal.cor.melt$X1, tumorportal.cor.melt$X2, sep="-")
+rownames(tumorportal.cor.melt) <- paste(tumorportal.cor.melt$Var1, tumorportal.cor.melt$Var2, sep="-")
 tumorportal.ICD9.melt <- melt(tumorportal.ICD9.mtx)
-rownames(tumorportal.ICD9.melt) <- paste(tumorportal.ICD9.melt$X1, tumorportal.ICD9.melt$X2, sep="-")
+rownames(tumorportal.ICD9.melt) <- paste(tumorportal.ICD9.melt$Var1, tumorportal.ICD9.melt$Var2, sep="-")
 tumorportal.cor.ICD9 <- merge(tumorportal.cor.melt, tumorportal.ICD9.melt, by="row.names")
 tumorportal.cor.ICD9 <- tumorportal.cor.ICD9[, c(2, 3, 4, 7)]
 colnames(tumorportal.cor.ICD9) <- c("Disease1", "Disease2", "Episimilarity", "Comorbidity")
-tumorportal.cor.ICD9 <- tumorportal.cor.ICD9[ !(tumorportal.cor.ICD9$Disease1 == tumorportal.cor.ICD9$Disease2), ]
+#tumorportal.cor.ICD9 <- tumorportal.cor.ICD9[ !(tumorportal.cor.ICD9$Disease1 == tumorportal.cor.ICD9$Disease2), ]
 # write.table(tumorportal.cor.ICD9, "results/tumorportal.ICD9.episim.occurr.txt", sep="\t", row.names=F)
 # Get correlations
 (rcorr(tumorportal.cor.ICD9$Episimilarity, tumorportal.cor.ICD9$Comorbidity, type="pearson"))
@@ -316,23 +317,26 @@ The regulatory and co-morbidity-based (Phi-correlations) disease-disease correla
 
 Iridescent literature similarity
 ===
-```{r eval=FALSE}
+```{r iridescent, echo=FALSE}
 iridescent <- read.table("data/iridescent.txt", sep="\t", head=T)
+#x <- iridescent %>%
+#  select(Entity..A., Implicit.relationship..C., Shared.rels) %>%
+#  spread(key = Implicit.relationship..C., Shared.rels)
+#y <- x %>% gather(key = variable, value = temp, -Entity..A.)
+# Re-map iridescent names to tumorportal names
+tmp1 <- left_join(iridescent, tumorportal.names, by=c("term1" = "V4"))
+tmp2 <- left_join(tmp1, tumorportal.names, by=c("term2" = "V4"))
+iridescent.names <- tmp2[, c(9, 11, 3:8)] # Reconstruct original dataset
+colnames(iridescent.names)[1:2] <- c("term1", "term2")
 
-x <- iridescent %>%
-  select(Entity..A., Implicit.relationship..C., Shared.rels) %>%
-  spread(key = Implicit.relationship..C., Shared.rels)
+mtx.cor.melt <- melt(mtx.cor[[1]])
+i <- 3
+mtx.cor.irid <- left_join(mtx.cor.melt, iridescent.names, by=c("Var1" = "term1", "Var2" = "term2"))
+colnames(mtx.cor.irid)[1:3] <- c("term1", "term2", "episim")
 
-y <- x %>% gather(key = variable, value = temp, -Entity..A.)
-
-z <- left_join(iridescent, y, by =)
-
-rownames(x) <- x[, 1]
-
-
-
-a <- iridescent[1:381,]
-
-
+for (i in 4:9) {
+  print(paste(colnames(mtx.cor.irid)[i], "correlation with episimilarity"))
+  pander(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i])[[1]])
+}
 ```
 
