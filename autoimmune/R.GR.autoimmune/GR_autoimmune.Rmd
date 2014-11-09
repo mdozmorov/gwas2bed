@@ -107,8 +107,8 @@ mtx.cor<-rcorr(as.matrix(mtx), type="spearman")
 We check how regulatory similarity correlates with overlap similarity.
 
 ```{r RegOverlapCorrel1}
-mtx.cor.melted <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
-b <- mtx.cor.melted[!(mtx.cor.melted[, 1] == mtx.cor.melted[, 2]), , drop=F] # Exclude self-self associations
+mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
+b <- mtx.cor.melt[!(mtx.cor.melt[, 1] == mtx.cor.melt[, 2]), , drop=F] # Exclude self-self associations
 # rownames(b) <- paste(b[, 1], b[, 2], sep="-") # Make names like term1-term2
 # b <- b[, 3, drop=F] # Keep only REGULATORY counts
 # c <- merge(a, b, by="row.names") # Combine OVERLAP and REGULATORY counts
@@ -134,7 +134,7 @@ my.breaks <- seq(min(mtx.cor[[1]][mtx.cor[[1]]!=min(mtx.cor[[1]])]),
                  max(mtx.cor[[1]][mtx.cor[[1]]!=max(mtx.cor[[1]])]),
                  length.out=(2*granularity + 1))
 h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
-# write.table(melt(mtx.cor[[1]][h$rowInd, h$colInd]), "results/tumorportal.cor.txt", sep="\t", quote=F, row.names=F, col.names=F)
+# write.table(melt(mtx.cor[[1]][h$rowInd, h$colInd]), "results/term.cor.txt", sep="\t", quote=F, row.names=F, col.names=F)
 ```
 
 **Text mining question 1:** Are the diseases within a cluster share stronger literature similarity than the diseases between the clusters? To answer, we need literature similarity scores for each pair, then split the pairs into cluster-specific groups and compare score distributions with what can be expected by chance, calculating the p-values for it. *Expected answer:* Diseases within each cluster are related to each other by literature findings stronger than could be expected by chance. Diseases between the clusters are not related to each other by literature findings, and this also may be statistically significant.
@@ -310,8 +310,8 @@ mtx.cor<-rcorr(as.matrix(mtx), type="spearman")
 We check how regulatory similarity correlates with overlap similarity.
 
 ```{r RegOverlapCorrel2}
-mtx.cor.melted <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
-b <- mtx.cor.melted[!(mtx.cor.melted[, 1] == mtx.cor.melted[, 2]), , drop=F] # Exclude self-self associations
+mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
+b <- mtx.cor.melt[!(mtx.cor.melt[, 1] == mtx.cor.melt[, 2]), , drop=F] # Exclude self-self associations
 # rownames(b) <- paste(b[, 1], b[, 2], sep="-") # Make names like term1-term2
 # b <- b[, 3, drop=F] # Keep only REGULATORY counts
 # c <- merge(a, b, by="row.names") # Combine OVERLAP and REGULATORY counts
@@ -513,8 +513,8 @@ mtx.cor<-rcorr(as.matrix(mtx), type="spearman")
 We check how regulatory similarity correlates with overlap similarity.
 
 ```{r RegOverlapCorrel3}
-mtx.cor.melted <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
-b <- mtx.cor.melted[!(mtx.cor.melted[, 1] == mtx.cor.melted[, 2]), , drop=F] # Exclude self-self associations
+mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
+b <- mtx.cor.melt[!(mtx.cor.melt[, 1] == mtx.cor.melt[, 2]), , drop=F] # Exclude self-self associations
 # rownames(b) <- paste(b[, 1], b[, 2], sep="-") # Make names like term1-term2
 # b <- b[, 3, drop=F] # Keep only REGULATORY counts
 # c <- merge(a, b, by="row.names") # Combine OVERLAP and REGULATORY counts
@@ -670,6 +670,74 @@ maxmin <- rbind(mtx.maxMin.tfbs, mtx.maxMin.histone, mtx.maxMin.all)
 ggplot(maxmin, aes(coef, fill=type)) + geom_density(alpha=0.2)
 ```
 
+Regulatory- and co-morbidity similarities
+-------------------------------------------
+
+To evaluate whether regulatory and co-morbidity measurements correlate, a matrix of disease-disease co-morbidity correlations ([AllNet3.txt](http://barabasilab.neu.edu/projects/hudine/resource/datasets/AllNet3.net)) is downloaded.
+
+```{r diseaseNetwork, echo=FALSE}
+# All disease-disease relationships
+mtx.disease <- read.table("../../AllNet3.net", sep="\t", header=F)
+# Mapping of term IDs to ICD9 codes
+term.mapping <- read.table("data/icd9_mapping.txt", sep="\t", header=F, row.names=1)
+colnames(term.mapping) <- "ICD9"
+# Sanity check, is there differences in disease codes? Should be 0
+# setdiff(unique(term.mapping$ICD9), unique(mtx.disease$V1))
+```
+
+We create square matrixes (14x14) of disease-disease co-morbitity correlations and regulatory correlations.
+
+```{r diseaseNetwork1, echo=FALSE}
+# Create empty matrix of term disease-disease relationships ($V5 - co-occurrence)
+term.ICD9.occur <- matrix(0, nrow=nrow(term.mapping), ncol=nrow(term.mapping))
+rownames(term.ICD9.occur) <- rownames(term.mapping)
+colnames(term.ICD9.occur) <- rownames(term.mapping)
+# Create two others, to hold relative risk ($V6) and phi-correlation ($V9)
+term.ICD9.risk <- term.ICD9.occur; term.ICD9.phi <- term.ICD9.occur
+# Populate this matrix with Barabasi relationship values
+for (i in 1:nrow(term.mapping)) {
+  for (j in 1:nrow(term.mapping)) {
+    # The disease associations matrix is not symmetrical - we pull up the index with either disease1-disease2 relationship, or disease2-disease1 relationship
+    idx <- (mtx.disease$V1 == term.mapping$ICD9[i] & mtx.disease$V2 == term.mapping$ICD9[j]) | (mtx.disease$V2 == term.mapping$ICD9[i] & mtx.disease$V1 == term.mapping$ICD9[j])
+    # If relationship pair is found, store it. Self-self relationships will be 0
+    if (sum(idx) == 1) { 
+    term.ICD9.occur[i, j] <- mtx.disease$V5[idx]
+    term.ICD9.risk[i, j] <- mtx.disease$V6[idx]
+    term.ICD9.phi[i, j] <- mtx.disease$V9[idx]  
+    }
+  }
+  # For each row, replace self-self associations (zeros) by row maximum
+  term.ICD9.occur[i, term.ICD9.occur[i, ] == 0] <- max(term.ICD9.occur[i, ]) + 0.01
+  term.ICD9.risk[i, term.ICD9.risk[i, ] == 0] <- max(term.ICD9.risk[i, ]) + 0.01
+  term.ICD9.phi[i, term.ICD9.phi[i, ] == 0] <- max(term.ICD9.phi[i, ]) + 0.01
+}
+```
+
+To evaluate correlation between the two methods of measurements, the matrixes are correlated with each other. A matrix of correlation coefficients, a total number of pairs used for correlation measurement, and a matrix of p-values are outputted.
+
+The ongoing debate is whether to remove or keep self-self associations.
+
+```{r diseaseNetwork3, echo=FALSE}
+# Finally, check correlation between pairwise relationships
+print("Co-occurrence")
+term.ICD9.occur.melt <- melt(term.ICD9.occur)
+term.cor.occur <- left_join(mtx.cor.melt, term.ICD9.occur.melt, by=c("Var1" = "Var1", "Var2" = "Var2"))
+#term.cor.occur <- term.cor.occur[ term.cor.occur$Var1 != term.cor.occur$Var2, ]
+(rcorr(term.cor.occur$value.x, term.cor.occur$value.y))
+print("Relative risk")
+term.ICD9.risk.melt <- melt(term.ICD9.risk)
+term.cor.risk <- left_join(mtx.cor.melt, term.ICD9.risk.melt, by=c("Var1" = "Var1", "Var2" = "Var2"))
+#term.cor.risk <- term.cor.risk[ term.cor.risk$Var1 != term.cor.risk$Var2, ]
+(rcorr(term.cor.risk$value.x, term.cor.risk$value.y))
+print("Phi-correlation")
+term.ICD9.phi.melt <- melt(term.ICD9.phi)
+term.cor.phi <- left_join(mtx.cor.melt, term.ICD9.phi.melt, by=c("Var1" = "Var1", "Var2" = "Var2"))
+#term.cor.phi <- term.cor.phi[ term.cor.phi$Var1 != term.cor.phi$Var2, ]
+(rcorr(term.cor.phi$value.x, term.cor.phi$value.y))
+
+```
+
+The regulatory and co-morbidity-based (Phi-correlations) disease-disease correlations correlate with each other at Pearson's correlation coefficient of 0.54 (when keeping self-correlations, p-value = 0). Using "relative risk" co-morbidity correlations produces similar results.
 
 
 
