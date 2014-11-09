@@ -318,5 +318,21 @@ Iridescent literature similarity
 ===
 ```{r eval=FALSE}
 iridescent <- read.table("data/iridescent.txt", sep="\t", head=T)
+
+x <- iridescent %>%
+  select(Entity..A., Implicit.relationship..C., Shared.rels) %>%
+  spread(key = Implicit.relationship..C., Shared.rels)
+
+y <- x %>% gather(key = variable, value = temp, -Entity..A.)
+
+z <- left_join(iridescent, y, by =)
+
+rownames(x) <- x[, 1]
+
+
+
+a <- iridescent[1:381,]
+
+
 ```
 

@@ -1,1 +1,1 @@
-`overlapMatrix.txt` - pair-wise overlap counts using intersectBed.
+`overlapMatrix.txt` - pair-wise overlap counts using intersectBed.`icd9_mapping.txt`  - mapping of terms to ICD9 codes.

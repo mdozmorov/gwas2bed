@@ -8,6 +8,6 @@ extractSnps:	nature13835-s1.txt
 
 overlapMatrix.txt:	bed
 	cd $< ; \
-	for file1 in *.bed; do for file2 in *.bed; do echo -e -n $$file1'\t'$$file2; intersectBed -a $$file1 -b $$file2 | wc -l; done; done | sed 's/ \+/\t/g'> $@ ; \
+	for file1 in *.bed; do for file2 in *.bed; do echo -e -n $$file1'\t'$$file2; intersectBed -a $$file1 -b $$file2 | wc -l; done; done | tr -s ' ' | tr ' ' '\t' > $@ ; \
 	cd .. ; \
 	mv bed/$@ .
