@@ -1,39 +1,39 @@
-Kawasaki_disease	446
-Systemic_lupus_erythematosus	710
-Celiac_disease	579
-Ulcerative_colitis	556
-Psoriasis	696
-Multiple_sclerosis	340
-Rheumatoid_arthritis	714
-Allergy	995
-Systemic_sclerosis	710
-Primary_biliary_cirrhosis	571
-Atopic_dermatitis	691
-Juvenile_idiopathic_arthritis	714
-Ankylosing_spondylitis	720
-Crohns_disease	555
-Type_1_diabetes	250
-Autoimmune_thyroiditis	245
-Primary_sclerosing_cholangitis	576
-Urate_levels	274
-Liver_enzyme_levels_gamma_glutamyl_transferase	796
-LDL_cholesterol	272
-HDL_cholesterol	272
-Triglycerides	272
-Renal_function_related_traits_BUN	584
-Platelet_counts	287
-Red_blood_cell_traits	282
-C_reactive_protein	790
-Fasting_glucose_related_traits	790
-Chronic_kidney_disease	585
-Alzheimers_combined	331
-Bone_mineral_density	733
-Type_2_diabetes	250
-Vitiligo	709
-Migraine	346
-Alopecia_areata	704
-Asthma	493
-Creatinine_levels	790
-Behcets_disease	136
-Progressive_supranuclear_palsy	333
-Restless_legs_syndrome	333
+Kawasaki_disease	446	KAWASAKI DISEASE
+Systemic_lupus_erythematosus	710	Systemic lupus erythematosus
+Celiac_disease	579	Celiac disease
+Ulcerative_colitis	556	Ulcerative colitis
+Psoriasis	696	Psoriasis
+Multiple_sclerosis	340	Multiple Sclerosis
+Rheumatoid_arthritis	714	Rheumatoid Arthritis
+Allergy	995	Allergies
+Systemic_sclerosis	710	Systemic sclerosis
+Primary_biliary_cirrhosis	571	primary biliary cirrhosis
+Atopic_dermatitis	691	atopic dermatitis
+Juvenile_idiopathic_arthritis	714	Juvenile idiopathic arthritis
+Ankylosing_spondylitis	720	ankylosing spondylitis
+Crohns_disease	555	Crohns disease
+Type_1_diabetes	250	Type 1 diabetes
+Autoimmune_thyroiditis	245	Autoimmune thyroiditis
+Primary_sclerosing_cholangitis	576	PRIMARY SCLEROSING CHOLANGITIS
+Urate_levels	274	Urate levels
+Liver_enzyme_levels_gamma_glutamyl_transferase	796	Liver enzyme levels
+LDL_cholesterol	272	LDL Cholesterol
+HDL_cholesterol	272	HDL Cholesterol
+Triglycerides	272	triglycerides
+Renal_function_related_traits_BUN	584	Renal failure
+Platelet_counts	287	platelets
+Red_blood_cell_traits	282	red blood cells
+C_reactive_protein	790	C-Reactive Protein
+Fasting_glucose_related_traits	790	fasting glucose
+Chronic_kidney_disease	585	chronic kidney disease
+Alzheimers_combined	331	Alzheimers disease
+Bone_mineral_density	733	Bone mineral density
+Type_2_diabetes	250	Type 2 diabetes
+Vitiligo	709	Vitiligo
+Migraine	346	Migraine headache
+Alopecia_areata	704	Alopecia areata
+Asthma	493	asthma attacks
+Creatinine_levels	790	Creatinine levels
+Behcets_disease	136	Behets disease
+Progressive_supranuclear_palsy	333	progressive supranuclear palsy
+Restless_legs_syndrome	333	Restless Legs Syndrome

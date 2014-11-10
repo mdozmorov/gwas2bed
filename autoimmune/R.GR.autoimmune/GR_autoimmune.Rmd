@@ -679,8 +679,8 @@ To evaluate whether regulatory and co-morbidity measurements correlate, a matrix
 # All disease-disease relationships
 mtx.disease <- read.table("../../AllNet3.net", sep="\t", header=F)
 # Mapping of term IDs to ICD9 codes
-term.mapping <- read.table("data/icd9_mapping.txt", sep="\t", header=F, row.names=1)
-colnames(term.mapping) <- "ICD9"
+term.mapping <- read.table("data/icd9_mapping.txt", sep="\t", header=F)
+colnames(term.mapping) <- c("term", "ICD9", "iridescent")
 # Sanity check, is there differences in disease codes? Should be 0
 # setdiff(unique(term.mapping$ICD9), unique(mtx.disease$V1))
 ```
@@ -690,8 +690,8 @@ We create square matrixes (14x14) of disease-disease co-morbitity correlations a
 ```{r diseaseNetwork1, echo=FALSE}
 # Create empty matrix of term disease-disease relationships ($V5 - co-occurrence)
 term.ICD9.occur <- matrix(0, nrow=nrow(term.mapping), ncol=nrow(term.mapping))
-rownames(term.ICD9.occur) <- rownames(term.mapping)
-colnames(term.ICD9.occur) <- rownames(term.mapping)
+rownames(term.ICD9.occur) <- term.mapping$term
+colnames(term.ICD9.occur) <- term.mapping$term
 # Create two others, to hold relative risk ($V6) and phi-correlation ($V9)
 term.ICD9.risk <- term.ICD9.occur; term.ICD9.phi <- term.ICD9.occur
 # Populate this matrix with Barabasi relationship values
@@ -738,6 +738,30 @@ term.cor.phi <- left_join(mtx.cor.melt, term.ICD9.phi.melt, by=c("Var1" = "Var1"
 ```
 
 The regulatory and co-morbidity-based (Phi-correlations) disease-disease correlations correlate with each other at Pearson's correlation coefficient of 0.54 (when keeping self-correlations, p-value = 0). Using "relative risk" co-morbidity correlations produces similar results.
+
+Iridescent literature similarity
+===
+```{r iridescent, echo=FALSE}
+iridescent <- read.table("data/iridescent.txt", sep="\t", head=T)
+#x <- iridescent %>%
+#  select(Entity..A., Implicit.relationship..C., Shared.rels) %>%
+#  spread(key = Implicit.relationship..C., Shared.rels)
+#y <- x %>% gather(key = variable, value = temp, -Entity..A.)
+# Re-map iridescent names to tumorportal names
+tmp1 <- left_join(iridescent, term.mapping, by=c("term1" = "iridescent"))
+tmp2 <- left_join(tmp1, term.mapping, by=c("term2" = "iridescent"))
+iridescent.names <- tmp2[, c(11, 9, 3:8)] # Reconstruct original dataset
+colnames(iridescent.names)[1:2] <- c("term1", "term2")
+
+mtx.cor.melt <- melt(mtx.cor[[1]])
+mtx.cor.irid <- left_join(mtx.cor.melt, iridescent.names, by=c("Var1" = "term1", "Var2" = "term2"))
+colnames(mtx.cor.irid)[1:3] <- c("term1", "term2", "episim")
+
+for (i in c(4, 5, 7, 8, 9)) {
+  print(paste(colnames(mtx.cor.irid)[i], "correlation with episimilarity"))
+  pander(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i])[[1]])
+}
+```
 
 
 
