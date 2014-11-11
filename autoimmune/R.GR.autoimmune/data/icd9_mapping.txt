@@ -13,7 +13,7 @@ Juvenile_idiopathic_arthritis	714	Juvenile idiopathic arthritis
 Ankylosing_spondylitis	720	ankylosing spondylitis
 Crohns_disease	555	Crohns disease
 Type_1_diabetes	250	Type 1 diabetes
-Autoimmune_thyroiditis	245	Autoimmune thyroiditis
+Autoimmune_thyroiditis	242	Autoimmune thyroiditis
 Primary_sclerosing_cholangitis	576	PRIMARY SCLEROSING CHOLANGITIS
 Urate_levels	274	Urate levels
 Liver_enzyme_levels_gamma_glutamyl_transferase	796	Liver enzyme levels
