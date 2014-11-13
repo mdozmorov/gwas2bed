@@ -12,6 +12,7 @@ suppressMessages(library(Biobase))
 suppressMessages(library(limma))
 suppressMessages(library(reshape2))
 suppressMessages(library(dplyr))
+suppressMessages(library(plyr))
 suppressMessages(library(ggplot2))
 #library(qvalue)
 # Set up the environment
@@ -31,6 +32,22 @@ term.mapping <- read.table("data/icd9_mapping.txt", sep="\t", header=F)
 colnames(term.mapping) <- c("term", "ICD9", "iridescent")
 # Sanity check, is there differences in disease codes? Should be 0
 # setdiff(unique(term.mapping$ICD9), unique(mtx.disease$V1))
+# Iridescent literature analysis
+iridescent <- read.table("data/iridescent.txt", sep="\t", head=T)
+tmp1 <- left_join(iridescent, term.mapping, by=c("term1" = "iridescent"))
+tmp2 <- left_join(tmp1, term.mapping, by=c("term2" = "iridescent"))
+iridescent.names <- tmp2[, c(11, 9, 3:8)] # Reconstruct original dataset
+colnames(iridescent.names)[1:2] <- c("term1", "term2")
+rm(tmp1, tmp2)
+# UMLS Literature analysis
+mtx.lit1 <- read.table("data/terms.msh.path.txt", sep="\t", stringsAsFactors=F)
+mtx.lit2 <- read.table("data/terms.snomed.path.txt", sep="\t", stringsAsFactors=F)
+mtx.lit3 <- read.table("data/terms.snomed.vector.txt", sep="\t", stringsAsFactors=F)
+mtx.lit <- join(mtx.lit1, mtx.lit2, by=c("V1" = "V1", "V2" = "V2"))
+mtx.lit <- join(mtx.lit, mtx.lit3, by=c("V1" = "V1", "V2" = "V2"))
+colnames(mtx.lit) <- c("term1", "term2", "msh.path", "snomed.path", "snomed.vec")
+# Type of correlation coefficient to use
+cortype <- "pearson"
 ```
 
 We analyzed 39 autoimmune disease- and trait-associated SNP sets, obtained from the [Supplemental table 1](http://www.nature.com/nature/journal/vaop/ncurrent/extref/nature13835-s1.xls) of the Farh, K. K.-H., Marson, A., Zhu, J., Kleinewietfeld, M., Housley, W. J., Beik, S., … Bernstein, B. E. (2014). ["Genetic and epigenetic fine mapping of causal autoimmune disease variants""](http://www.nature.com/nature/journal/vaop/ncurrent/pdf/nature13835.pdf) Nature. [doi:10.1038/nature13835](doi:10.1038/nature13835).
@@ -114,12 +131,12 @@ mtx<-mtx[apply(mtx, 1, function(x) sum(abs(x) > cutoff)) >= numofsig, ]
 
 ```{r preprocessCorrel1, echo=FALSE}
 # rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
-mtx.cor<-rcorr(as.matrix(mtx), type="spearman")
+mtx.cor<-rcorr(as.matrix(mtx), type=cortype)
 # Optionally, try kendall correlation
 # mtx.cor[[1]]<-cor(as.matrix(mtx), method="kendall")
 ```
 
-We visualized the matrix of pair-wise Spearman correlation coefficients among the term-specific regulatory enrichment profiles.
+We visualized the matrix of pair-wise `r (cortype)` correlation coefficients among the term-specific regulatory enrichment profiles.
 
 ```{r epigenomicVisualization1, echo=FALSE, fig.height=6}
 par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
@@ -139,23 +156,23 @@ my.breaks <- seq(min(mtx.cor[[1]][mtx.cor[[1]]!=min(mtx.cor[[1]])]),
 h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
 ```
 
-We then compared how regulatory similarity correlates with shared genomic features similarity. Spearman correlation coefficient between the two is:
+We then compared how regulatory similarity correlates with shared genomic features similarity. `r (cortype)` correlation coefficient between the two is:
 
 ```{r RegOverlapCorrel1_own, eval=FALSE}
 # Using self-made overlap matrix
 mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
 c <- left_join(mtx.overlap, mtx.cor.melt, by = c("V1" = "Var1", "V2" = "Var2"))
-(rcorr(c[, 3], c[, 4], type="spearman")[[1]][1, 2]) # Finally, correlation between the two
+(rcorr(c[, 3], c[, 4], type=cortype)[[1]][1, 2]) # Finally, correlation between the two
 ```
 
 ```{r RegOverlapCorrel1_original}
 # Using authors-provided overlap matrix
 mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
 c <- left_join(mtx.fig1a.melt, mtx.cor.melt, by=c("term1" = "Var1", "term2" = "Var2"))
-(rcorr(c[, 3], c[, 4], type="spearman")[[1]][1, 2]) # Finally, correlation between the two
+(rcorr(c[, 3], c[, 4], type=cortype)[[1]][1, 2]) # Finally, correlation between the two
 ```
 
-The top 10 pairs of disease- aassociated SNPs are most similar with each other. The correlation coefficient shows Spearman correlation coefficient among the regulatory enrichment profiles for each term-specific SNP set.
+The top 10 pairs of disease- aassociated SNPs are most similar with each other. The correlation coefficient shows `r (cortype)` correlation coefficient among the regulatory enrichment profiles for each term-specific SNP set.
 
 ```{r maxMin1, echo=FALSE}
 # Checking max/min correlations
@@ -269,53 +286,15 @@ pander(degs.matrix)
 
 Summary
 ---
-The cluster 2 was the most different from cluster 1 and cluster 4. Disease- and trait associated SNPs from this cluster were enriched in signal  B-cells, such as Gm12878 B-cell leukemia and other cells from Gm family of cell types, CD20+ B Lymphocytes. 
+The differences in regulatory associations are attributed to the clusters 1 and 3. 
 
-Most significantly enriched in cluster 2 were H3K9me3, H3K4me1, H3K9ac, H3K4me1, H3K27me3, H2A.Z, H3K4me2, H3K4me2 histone modification marks, and the NFkB, CTCF and MTA3 transcription factor binding sites
+The cluster 1 (Platelet_counts, Triglycerides, Liver_enzyme_levels_gamma_glutamyl_transferase, LDL_cholesterol, HDL_cholesterol) showed enrichment in PolII, H3K36me3 and H3K79me2 histone modification marks. The signals was derived predominantly from cancer-related cell lines, such as HepG2 (liver hepatocellular carcinoma), K562 (myelogeneous leukemia), A549 (adenocarcinomic human alveolar basal epithelial cells). 
 
-| Cell_type | Frequency |   |   Factor  | Frequency |
-|:---------:|:---------:|---|:---------:|:---------:|
-|  gm12878  |     75    |   |   dnasei  |     45    |
-|   cd20+   |     12    |   |    pol2   |     25    |
-|    th1    |     12    |   |  h3k4me3  |     23    |
-|  gm12892  |     10    |   |  pol2-4h8 |     11    |
-|    th2    |     10    |   |   faire   |     6     |
-|   dnd41   |     9     |   |  h3k4me2  |     5     |
-|  gm12865  |     9     |   |  rna-pet  |     5     |
-|  gm12891  |     9     |   |  h3k4me1  |     5     |
-|    treg   |     6     |   |   h3k9ac  |     4     |
-|  gm06990  |     5     |   |    atf2   |     4     |
-|    cd4+   |     4     |   |   stat5a  |     4     |
-|  gm12864  |     4     |   |  h3k27ac  |     4     |
-|  gm18505  |     3     |   |    mta3   |     4     |
-|  hela-s3  |     3     |   |   runx3   |     4     |
-|  gm12875  |     2     |   |  h3k9me3  |     3     |
-|  gm19193  |     2     |   |    h2az   |     3     |
-|   cd14+   |     2     |   |  h3k27me3 |     3     |
-|  gm18507  |     2     |   |    p300   |     2     |
-|  gm15510  |     2     |   |   foxm1   |     2     |
-|    th17   |     1     |   |   nfatc1  |     2     |
-|    hcm    |     1     |   |    chd1   |     2     |
-|  nhdf-neo |     1     |   |   bclaf1  |     2     |
-|   hepg2   |     1     |   |   tblr1   |     2     |
-|    nh-a   |     1     |   |  bhlhe40  |     2     |
-|    hsmm   |     1     |   |    ctcf   |     2     |
-|    k562   |     1     |   |    cnv    |     2     |
-|  gm10847  |     1     |   |    pml    |     2     |
-|  hct-116  |     1     |   |    nfic   |     2     |
-|    raji   |     1     |   |    whip   |     2     |
-|           |           |   |    nfkb   |     2     |
-|           |           |   |    ebf1   |     2     |
-|           |           |   |  h3k79me2 |     1     |
-|           |           |   |    ezh2   |     1     |
-|           |           |   |    mxi1   |     1     |
-|           |           |   |  h4k20me1 |     1     |
-|           |           |   | junctions |     1     |
+The cluster 3 (Multiple_sclerosis, Celiac_disease, Primary_biliary_cirrhosis, Systemic_lupus_erythematosus, Kawasaki_disease) showed strong enrichment in B-cell derived signal. The most predominant cell type was Gm12878 (B lymphoblastoid cell line), CD20+ B cells, although some signal came from Dnd41 cells (T-ALL), T helper cells 1 and 2, and CD14+ monocytes. DNAse hypersensitive sites were predominant type of signal enriched in the disease-associated SNPs from this cluster, followed by H3K4 mono-/di- and trimethylation, PolII, H3K79me2, H3K27 trimethylation and acetylation, and the CTCF, NFkB, NFATC1, STAT5A and other transcription factor binding sites
 
 Co-morbidity similarity analysis
 ---
-We used the data from [Hidalgo CA, Blumm N, Barabasi A-L, Christakis NA. PLoS Computational Biology, 5(4):e1000353 doi:10.1371/journal.pcbi.1000353](http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1000353), available at [http://barabasilab.neu.edu/projects/hudine/resource/data/data.html](http://barabasilab.neu.edu/projects/hudine/resource/data/data.html). These data provide co-morbidity measurements among pairs of diseases. We map autoimmune disease- and trait names to 3-digits ICD9 codes and evaluate how co-morbidity measurements correlate with regulatory similarity measurements. We used Phi measurement of co-morbidity. The Spearman correlation coefficient of Phi and regulatory similarity is:
-
+We used the data from [Hidalgo CA, Blumm N, Barabasi A-L, Christakis NA. PLoS Computational Biology, 5(4):e1000353 doi:10.1371/journal.pcbi.1000353](http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1000353), available at [http://barabasilab.neu.edu/projects/hudine/resource/data/data.html](http://barabasilab.neu.edu/projects/hudine/resource/data/data.html). These data provide co-morbidity measurements among pairs of diseases. We map autoimmune disease- and trait names to 3-digits ICD9 codes and evaluate how co-morbidity measurements correlate with regulatory similarity measurements. We used Phi measurement of co-morbidity. The `r (cortype)` correlation coefficient of Phi and regulatory similarity is:
 
 ```{r diseaseNetwork1, echo=FALSE}
 # Create empty matrix of term disease-disease relationships ($V5 - co-occurrence)
@@ -359,34 +338,34 @@ for (i in 1:nrow(term.mapping)) {
 term.ICD9.phi.melt <- melt(term.ICD9.phi)
 term.cor.phi <- left_join(mtx.cor.melt, term.ICD9.phi.melt, by=c("Var1" = "Var1", "Var2" = "Var2"))
 #term.cor.phi <- term.cor.phi[ term.cor.phi$Var1 != term.cor.phi$Var2, ]
-(rcorr(term.cor.phi$value.x, term.cor.phi$value.y)[[1]][1, 2])
+(rcorr(term.cor.phi$value.x, term.cor.phi$value.y, type=cortype)[[1]][1, 2])
 ```
 
 Iridescent literature similarity
 ---
 
 ```{r iridescent1, echo=FALSE, dependson="RegOverlapCorrel1_original"}
-iridescent <- read.table("data/iridescent.txt", sep="\t", head=T)
-#x <- iridescent %>%
-#  select(Entity..A., Implicit.relationship..C., Shared.rels) %>%
-#  spread(key = Implicit.relationship..C., Shared.rels)
-#y <- x %>% gather(key = variable, value = temp, -Entity..A.)
-# Re-map iridescent names to tumorportal names
-tmp1 <- left_join(iridescent, term.mapping, by=c("term1" = "iridescent"))
-tmp2 <- left_join(tmp1, term.mapping, by=c("term2" = "iridescent"))
-iridescent.names <- tmp2[, c(11, 9, 3:8)] # Reconstruct original dataset
-colnames(iridescent.names)[1:2] <- c("term1", "term2")
-
-#mtx.cor.melt <- melt(mtx.cor[[1]])
 mtx.cor.irid <- left_join(mtx.cor.melt, iridescent.names, by=c("Var1" = "term1", "Var2" = "term2"))
 colnames(mtx.cor.irid)[1:3] <- c("term1", "term2", "episim")
 
 for (i in 4:9) {
   print(paste(colnames(mtx.cor.irid)[i], "correlation with regulatory similarity"))
-  print(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i], type="spearman")[[1]][1, 2])
+  print(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i], type=cortype)[[1]][1, 2])
 }
 ```
 
+UMLS literature similarity
+---
+
+```{r umsl1, echo=FALSE, dependson="RegOverlapCorrel1_original"}
+mtx.cor.lit <- left_join(mtx.cor.melt, mtx.lit, by=c("Var1" = "term1", "Var2" = "term2"))
+colnames(mtx.cor.lit)[1:3] <- c("term1", "term2", "episim")
+
+for (i in 4:ncol(mtx.cor.lit)) {
+  print(paste(colnames(mtx.cor.lit)[i], "correlation with regulatory similarity"))
+  print(rcorr(mtx.cor.lit$episim, mtx.cor.lit[, i], type=cortype)[[1]][1, 2])
+}
+```
 
 Analysis of TFBSs
 ===
@@ -429,12 +408,12 @@ mtx<-mtx[apply(mtx, 1, function(x) sum(abs(x) > cutoff)) >= numofsig, ]
 
 ```{r preprocessCorrel2, echo=FALSE}
 # rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
-mtx.cor<-rcorr(as.matrix(mtx), type="spearman")
+mtx.cor<-rcorr(as.matrix(mtx), type=cortype)
 # Optionally, try kendall correlation
 # mtx.cor[[1]]<-cor(as.matrix(mtx), method="kendall")
 ```
 
-We visualized the matrix of pair-wise Spearman correlation coefficients among the term-specific regulatory enrichment profiles.
+We visualized the matrix of pair-wise `r (cortype)` correlation coefficients among the term-specific regulatory enrichment profiles.
 
 ```{r epigenomicVisualization2, echo=FALSE}
 par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
@@ -455,20 +434,20 @@ h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=col
 # write.table(melt(mtx.cor[[1]][h$rowInd, h$colInd]), "results/term.cor.txt", sep="\t", quote=F, row.names=F, col.names=F)
 ```
 
-We then compared how regulatory similarity correlates with shared genomic features similarity. Spearman correlation coefficient between the two is:
+We then compared how regulatory similarity correlates with shared genomic features similarity. `r (cortype)` correlation coefficient between the two is:
 
 ```{r RegOverlapCorrel2_own, eval=FALSE}
 # Using self-made overlap matrix
 mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
 c <- left_join(mtx.overlap, mtx.cor.melt, by = c("V1" = "Var1", "V2" = "Var2"))
-(rcorr(c[, 3], c[, 4], type="spearman")[[1]][1, 2]) # Finally, correlation between the two
+(rcorr(c[, 3], c[, 4], type=cortype)[[1]][1, 2]) # Finally, correlation between the two
 ```
 
 ```{r RegOverlapCorrel2_original}
 # Using authors-provided overlap matrix
 mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
 c <- left_join(mtx.fig1a.melt, mtx.cor.melt, by=c("term1" = "Var1", "term2" = "Var2"))
-(rcorr(c[, 3], c[, 4], type="spearman")[[1]][1, 2]) # Finally, correlation between the two
+(rcorr(c[, 3], c[, 4], type=cortype)[[1]][1, 2]) # Finally, correlation between the two
 ```
 
 The top 10 pairs of disease-associated SNPs are most similar with each other.
@@ -496,8 +475,8 @@ par(oma=c(0, 0, 0, 0), mar=c(5.1, 4.1, 4.1,25.1), cex=0.5)
 # Plot the dendrogram only, limit y axis. attr(h$colDendrogram, "height") has the maximum height of the dendrogram.
 plot(h$colDendrogram, horiz=T) 
 # Cut the dentrogram into separate clusters. Tweak the height
-abline(v=3) # Visually evaluate the height where to cut
-c<-cut(h$colDendrogram, h=3) 
+abline(v=2.5) # Visually evaluate the height where to cut
+c<-cut(h$colDendrogram, h=2.5) 
 # Check the number of clusters, and the number of members.
 for (i in 1:length(c$lower)){
   cat(paste("Cluster", formatC(i, width=2, flag="0"), sep=""), "has", formatC(attr(c$lower[[i]], "members"), width=3), "members", "\n")
@@ -589,7 +568,7 @@ Now, the same set of diseases is different from the others.
 
 Co-morbidity similarity analysis
 ---
-We used the data from [Hidalgo CA, Blumm N, Barabasi A-L, Christakis NA. PLoS Computational Biology, 5(4):e1000353 doi:10.1371/journal.pcbi.1000353](http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1000353), available at [http://barabasilab.neu.edu/projects/hudine/resource/data/data.html](http://barabasilab.neu.edu/projects/hudine/resource/data/data.html). These data provide co-morbidity measurements among pairs of diseases. We map autoimmune disease- and trait names to 3-digits ICD9 codes and evaluate how co-morbidity measurements correlate with regulatory similarity measurements. We used Phi measurement of co-morbidity. The Spearman correlation coefficient of Phi and regulatory similarity is:
+We used the data from [Hidalgo CA, Blumm N, Barabasi A-L, Christakis NA. PLoS Computational Biology, 5(4):e1000353 doi:10.1371/journal.pcbi.1000353](http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1000353), available at [http://barabasilab.neu.edu/projects/hudine/resource/data/data.html](http://barabasilab.neu.edu/projects/hudine/resource/data/data.html). These data provide co-morbidity measurements among pairs of diseases. We map autoimmune disease- and trait names to 3-digits ICD9 codes and evaluate how co-morbidity measurements correlate with regulatory similarity measurements. We used Phi measurement of co-morbidity. The `r (cortype)` correlation coefficient of Phi and regulatory similarity is:
 
 
 ```{r diseaseNetwork2, echo=FALSE}
@@ -634,31 +613,32 @@ for (i in 1:nrow(term.mapping)) {
 term.ICD9.phi.melt <- melt(term.ICD9.phi)
 term.cor.phi <- left_join(mtx.cor.melt, term.ICD9.phi.melt, by=c("Var1" = "Var1", "Var2" = "Var2"))
 #term.cor.phi <- term.cor.phi[ term.cor.phi$Var1 != term.cor.phi$Var2, ]
-(rcorr(term.cor.phi$value.x, term.cor.phi$value.y)[[1]][1, 2])
+(rcorr(term.cor.phi$value.x, term.cor.phi$value.y, type=cortype)[[1]][1, 2])
 ```
 
 Iridescent literature similarity
 ---
 
 ```{r iridescent2, echo=FALSE, dependson="RegOverlapCorrel2_original"}
-iridescent <- read.table("data/iridescent.txt", sep="\t", head=T)
-#x <- iridescent %>%
-#  select(Entity..A., Implicit.relationship..C., Shared.rels) %>%
-#  spread(key = Implicit.relationship..C., Shared.rels)
-#y <- x %>% gather(key = variable, value = temp, -Entity..A.)
-# Re-map iridescent names to tumorportal names
-tmp1 <- left_join(iridescent, term.mapping, by=c("term1" = "iridescent"))
-tmp2 <- left_join(tmp1, term.mapping, by=c("term2" = "iridescent"))
-iridescent.names <- tmp2[, c(11, 9, 3:8)] # Reconstruct original dataset
-colnames(iridescent.names)[1:2] <- c("term1", "term2")
-
-#mtx.cor.melt <- melt(mtx.cor[[1]])
 mtx.cor.irid <- left_join(mtx.cor.melt, iridescent.names, by=c("Var1" = "term1", "Var2" = "term2"))
 colnames(mtx.cor.irid)[1:3] <- c("term1", "term2", "episim")
 
 for (i in 4:9) {
   print(paste(colnames(mtx.cor.irid)[i], "correlation with regulatory similarity"))
-  print(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i], type="spearman")[[1]][1, 2])
+  print(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i], type=cortype)[[1]][1, 2])
+}
+```
+
+UMLS literature similarity
+---
+
+```{r umsl2, echo=FALSE, dependson="RegOverlapCorrel2_original"}
+mtx.cor.lit <- left_join(mtx.cor.melt, mtx.lit, by=c("Var1" = "term1", "Var2" = "term2"))
+colnames(mtx.cor.lit)[1:3] <- c("term1", "term2", "episim")
+
+for (i in 4:ncol(mtx.cor.lit)) {
+  print(paste(colnames(mtx.cor.lit)[i], "correlation with regulatory similarity"))
+  print(rcorr(mtx.cor.lit$episim, mtx.cor.lit[, i], type=cortype)[[1]][1, 2])
 }
 ```
 
@@ -702,12 +682,12 @@ mtx<-mtx[apply(mtx, 1, function(x) sum(abs(x) > cutoff)) >= numofsig, ]
 
 ```{r preprocessCorrel3, echo=FALSE}
 # rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
-mtx.cor<-rcorr(as.matrix(mtx), type="spearman")
+mtx.cor<-rcorr(as.matrix(mtx), type=cortype)
 # Optionally, try kendall correlation
 # mtx.cor[[1]]<-cor(as.matrix(mtx), method="kendall")
 ```
 
-We visualized the matrix of pair-wise Spearman correlation coefficients among the term-specific regulatory enrichment profiles.
+We visualized the matrix of pair-wise `r (cortype)` correlation coefficients among the term-specific regulatory enrichment profiles.
 
 ```{r epigenomicVisualization3, echo=FALSE}
 par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
@@ -727,20 +707,20 @@ my.breaks <- seq(min(mtx.cor[[1]][mtx.cor[[1]]!=min(mtx.cor[[1]])]),
 h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
 ```
 
-We then compared how regulatory similarity correlates with shared genomic features similarity. Spearman correlation coefficient between the two is:
+We then compared how regulatory similarity correlates with shared genomic features similarity. `r (cortype)` correlation coefficient between the two is:
 
 ```{r RegOverlapCorrel3_own, eval=FALSE}
 # Using self-made overlap matrix
 mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
 c <- left_join(mtx.overlap, mtx.cor.melt, by = c("V1" = "Var1", "V2" = "Var2"))
-(rcorr(c[, 3], c[, 4], type="spearman")[[1]][1, 2]) # Finally, correlation between the two
+(rcorr(c[, 3], c[, 4], type=cortype)[[1]][1, 2]) # Finally, correlation between the two
 ```
 
 ```{r RegOverlapCorrel3_original}
 # Using authors-provided overlap matrix
 mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
 c <- left_join(mtx.fig1a.melt, mtx.cor.melt, by=c("term1" = "Var1", "term2" = "Var2"))
-(rcorr(c[, 3], c[, 4], type="spearman")[[1]][1, 2]) # Finally, correlation between the two
+(rcorr(c[, 3], c[, 4], type=cortype)[[1]][1, 2]) # Finally, correlation between the two
 ```
 
 The top 10 pairs of disease-associated SNPs are most similar with each other.
@@ -768,8 +748,8 @@ par(oma=c(0, 0, 0, 0), mar=c(5.1, 4.1, 4.1,25.1), cex=0.5)
 # Plot the dendrogram only, limit y axis. attr(h$colDendrogram, "height") has the maximum height of the dendrogram.
 plot(h$colDendrogram, horiz=T) 
 # Cut the dentrogram into separate clusters. Tweak the height
-abline(v=2.8) # Visually evaluate the height where to cut
-c<-cut(h$colDendrogram, h=2.8) 
+abline(v=3) # Visually evaluate the height where to cut
+c<-cut(h$colDendrogram, h=3) 
 # Check the number of clusters, and the number of members.
 for (i in 1:length(c$lower)){
   cat(paste("Cluster", formatC(i, width=2, flag="0"), sep=""), "has", formatC(attr(c$lower[[i]], "members"), width=3), "members", "\n")
@@ -860,7 +840,7 @@ Summary
 
 Co-morbidity similarity analysis
 ---
-We used the data from [Hidalgo CA, Blumm N, Barabasi A-L, Christakis NA. PLoS Computational Biology, 5(4):e1000353 doi:10.1371/journal.pcbi.1000353](http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1000353), available at [http://barabasilab.neu.edu/projects/hudine/resource/data/data.html](http://barabasilab.neu.edu/projects/hudine/resource/data/data.html). These data provide co-morbidity measurements among pairs of diseases. We map autoimmune disease- and trait names to 3-digits ICD9 codes and evaluate how co-morbidity measurements correlate with regulatory similarity measurements. We used Phi measurement of co-morbidity. The Spearman correlation coefficient of Phi and regulatory similarity is:
+We used the data from [Hidalgo CA, Blumm N, Barabasi A-L, Christakis NA. PLoS Computational Biology, 5(4):e1000353 doi:10.1371/journal.pcbi.1000353](http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1000353), available at [http://barabasilab.neu.edu/projects/hudine/resource/data/data.html](http://barabasilab.neu.edu/projects/hudine/resource/data/data.html). These data provide co-morbidity measurements among pairs of diseases. We map autoimmune disease- and trait names to 3-digits ICD9 codes and evaluate how co-morbidity measurements correlate with regulatory similarity measurements. We used Phi measurement of co-morbidity. The `r (cortype)` correlation coefficient of Phi and regulatory similarity is:
 
 
 ```{r diseaseNetwork3, echo=FALSE}
@@ -905,31 +885,32 @@ for (i in 1:nrow(term.mapping)) {
 term.ICD9.phi.melt <- melt(term.ICD9.phi)
 term.cor.phi <- left_join(mtx.cor.melt, term.ICD9.phi.melt, by=c("Var1" = "Var1", "Var2" = "Var2"))
 #term.cor.phi <- term.cor.phi[ term.cor.phi$Var1 != term.cor.phi$Var2, ]
-(rcorr(term.cor.phi$value.x, term.cor.phi$value.y)[[1]][1, 2])
+(rcorr(term.cor.phi$value.x, term.cor.phi$value.y, type=cortype)[[1]][1, 2])
 ```
 
 Iridescent literature similarity
 ---
 
 ```{r iridescent3, echo=FALSE, dependson="RegOverlapCorrel3_original"}
-iridescent <- read.table("data/iridescent.txt", sep="\t", head=T)
-#x <- iridescent %>%
-#  select(Entity..A., Implicit.relationship..C., Shared.rels) %>%
-#  spread(key = Implicit.relationship..C., Shared.rels)
-#y <- x %>% gather(key = variable, value = temp, -Entity..A.)
-# Re-map iridescent names to tumorportal names
-tmp1 <- left_join(iridescent, term.mapping, by=c("term1" = "iridescent"))
-tmp2 <- left_join(tmp1, term.mapping, by=c("term2" = "iridescent"))
-iridescent.names <- tmp2[, c(11, 9, 3:8)] # Reconstruct original dataset
-colnames(iridescent.names)[1:2] <- c("term1", "term2")
-
-#mtx.cor.melt <- melt(mtx.cor[[1]])
 mtx.cor.irid <- left_join(mtx.cor.melt, iridescent.names, by=c("Var1" = "term1", "Var2" = "term2"))
 colnames(mtx.cor.irid)[1:3] <- c("term1", "term2", "episim")
 
 for (i in 4:9) {
   print(paste(colnames(mtx.cor.irid)[i], "correlation with regulatory similarity"))
-  print(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i], type="spearman")[[1]][1, 2])
+  print(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i], type=cortype)[[1]][1, 2])
+}
+```
+
+UMLS literature similarity
+---
+
+```{r umsl3, echo=FALSE, dependson="RegOverlapCorrel3_original"}
+mtx.cor.lit <- left_join(mtx.cor.melt, mtx.lit, by=c("Var1" = "term1", "Var2" = "term2"))
+colnames(mtx.cor.lit)[1:3] <- c("term1", "term2", "episim")
+
+for (i in 4:ncol(mtx.cor.lit)) {
+  print(paste(colnames(mtx.cor.lit)[i], "correlation with regulatory similarity"))
+  print(rcorr(mtx.cor.lit$episim, mtx.cor.lit[, i], type=cortype)[[1]][1, 2])
 }
 ```
 
