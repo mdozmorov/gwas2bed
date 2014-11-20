@@ -1,7 +1,6 @@
 ---
-title: "Genetic and epigenetic fine mapping of causal autoimmune disease variants"
-author: "Mikhail Dozmorov"
-date: "November 1, 2014"
+title: "Supplemental Results. Analysis of autoimmune disease- and trait-associated SNP sets"
+author: "Mikhail Dozmorov, Lukas R. Cara, Cory B. Giles, Bridget T. McInnes, Jonathan D. Wren"
 output: html_document
 ---
 ```{r setup, echo=FALSE, message=FALSE}
@@ -42,10 +41,10 @@ rm(tmp1, tmp2)
 # UMLS Literature analysis
 mtx.lit1 <- read.table("data/terms.msh.path.txt", sep="\t", stringsAsFactors=F)
 mtx.lit2 <- read.table("data/terms.snomed.path.txt", sep="\t", stringsAsFactors=F)
-mtx.lit3 <- read.table("data/terms.snomed.vector.txt", sep="\t", stringsAsFactors=F)
+#mtx.lit3 <- read.table("data/terms.snomed.vector.txt", sep="\t", stringsAsFactors=F)
 mtx.lit <- join(mtx.lit1, mtx.lit2, by=c("V1" = "V1", "V2" = "V2"))
-mtx.lit <- join(mtx.lit, mtx.lit3, by=c("V1" = "V1", "V2" = "V2"))
-colnames(mtx.lit) <- c("term1", "term2", "msh.path", "snomed.path", "snomed.vec")
+#mtx.lit <- join(mtx.lit, mtx.lit3, by=c("V1" = "V1", "V2" = "V2"))
+colnames(mtx.lit) <- c("term1", "term2", "msh.path", "snomedct.path")
 # Type of correlation coefficient to use
 cortype <- "pearson"
 ```
