@@ -1,0 +1,376 @@
+---
+title: Supplemental Results. Analysis of autoimmune disease- and trait-associated
+  SNP sets
+author: Mikhail Dozmorov, Lukas R. Cara, Cory B. Giles, Bridget T. McInnes, Jonathan
+  D. Wren
+output: html_document
+---
+```{r setup, echo=FALSE, message=FALSE}
+source("utils.R")
+suppressMessages(library(Hmisc)) # For rcorr function
+suppressMessages(library(gplots))
+suppressMessages(library(Biobase))
+suppressMessages(library(limma))
+suppressMessages(library(reshape2))
+suppressMessages(library(dplyr))
+suppressMessages(library(plyr))
+suppressMessages(library(ggplot2))
+#library(qvalue)
+# Set up the environment
+library(knitr) 
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', echo=F, dpi=300, out.width=700)
+options(replace.assign=TRUE, width=120)
+suppressMessages(library(pander))
+panderOptions('table.split.table', Inf)
+set.seed(1)
+```
+
+```{r loadSharedData}
+# All disease-disease relationships
+mtx.disease <- read.table("../../AllNet3.net", sep="\t", header=F)
+# Mapping of term IDs to ICD9 codes
+term.mapping <- read.table("data/icd9_mapping.txt", sep="\t", header=F)
+colnames(term.mapping) <- c("term", "ICD9", "iridescent")
+# Sanity check, is there differences in disease codes? Should be 0
+# setdiff(unique(term.mapping$ICD9), unique(mtx.disease$V1))
+# Iridescent literature analysis
+iridescent <- read.table("data/iridescent.txt", sep="\t", head=T)
+tmp1 <- left_join(iridescent, term.mapping, by=c("term1" = "iridescent"))
+tmp2 <- left_join(tmp1, term.mapping, by=c("term2" = "iridescent"))
+iridescent.names <- tmp2[, c(11, 9, 3:8)] # Reconstruct original dataset
+colnames(iridescent.names)[1:2] <- c("term1", "term2")
+rm(tmp1, tmp2)
+# UMLS Literature analysis
+mtx.lit1 <- read.table("data/terms.msh.path.txt", sep="\t", stringsAsFactors=F)
+mtx.lit2 <- read.table("data/terms.snomed.path.txt", sep="\t", stringsAsFactors=F)
+#mtx.lit3 <- read.table("data/terms.snomed.vector.txt", sep="\t", stringsAsFactors=F)
+mtx.lit <- join(mtx.lit1, mtx.lit2, by=c("V1" = "V1", "V2" = "V2"))
+#mtx.lit <- join(mtx.lit, mtx.lit3, by=c("V1" = "V1", "V2" = "V2"))
+colnames(mtx.lit) <- c("term1", "term2", "msh.path", "snomedct.path")
+# Type of correlation coefficient to use
+cortype <- "pearson"
+```
+
+We analyzed 39 autoimmune disease- and trait-associated SNP sets, obtained from the [Supplemental table 1](http://www.nature.com/nature/journal/vaop/ncurrent/extref/nature13835-s1.xls) of the Farh, K. K.-H., Marson, A., Zhu, J., Kleinewietfeld, M., Housley, W. J., Beik, S., … Bernstein, B. E. (2014). ["Genetic and epigenetic fine mapping of causal autoimmune disease variants""](http://www.nature.com/nature/journal/vaop/ncurrent/pdf/nature13835.pdf) Nature. [doi:10.1038/nature13835](doi:10.1038/nature13835).
+
+We used the original heatmap of shared genetic features among the autoimmune diseases and traits (Figure 1a in the original paper, re-created here as Figure 1) as a reference to compare our regulatory similarity measurements with. We thank the authors for providing us with the original numerical matrix of the heatmap.
+
+```{r loadOverlapMtx_own, warning=FALSE, message=FALSE, fig.height=6, eval=FALSE}
+# Self-prepared overlap analysis
+mtx.overlap <- read.table("data/overlapMatrix.txt", sep="\t", head=F)
+mtx.overlap.carpet <- dcast(mtx.overlap, V1~V2, mean)
+rownames(mtx.overlap.carpet) <- mtx.overlap.carpet$V1
+mtx.overlap.carpet <- as.matrix(mtx.overlap.carpet[, -1])
+mtx.overlap$V1 <- sub(".bed", "", mtx.overlap$V1)
+mtx.overlap$V2 <- sub(".bed", "", mtx.overlap$V2)
+```
+
+```{r visualizeOverlapMtx_own, eval=FALSE}
+# We visualize clustering of disease-specific SNP sets based on the number of overlapping SNPs.
+par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
+color<-colorRampPalette(c("blue","yellow")) # Define color gradient
+#color<-greenred #Standard green-black-red palette
+# Adjust clustering parameters.
+# Distance: "euclidean", "maximum","manhattan" or "minkowski". Do not use "canberra" or "binary"
+# Clustering: "ward", "single", "complete", "average", "mcquitty", "median" or "centroid"
+dist.method<-"euclidean"  
+hclust.method<-"ward.D2"
+# Setting breaks to go from minimum to maximum correlation coefficients,
+# excluding min/max outliers. This way we get rid of diagonale of 1's
+h<-heatmap.2(mtx.overlap.carpet, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, scale="row")
+```
+
+```{r visualizeOverlapMtx_original, warning=FALSE, message=FALSE, fig.height=6}
+mtx.fig1a <- read.table("data/fig1a_matrix", sep="\t", header=F, stringsAsFactors=F)
+a <- as.matrix(mtx.fig1a) # For heatmap
+labels.fig1a <- readLines("data/fig1a_labels")
+colnames(mtx.fig1a) <- labels.fig1a; mtx.fig1a <- cbind(labels.fig1a, mtx.fig1a)
+mtx.fig1a.melt <- melt(mtx.fig1a)
+colnames(mtx.fig1a.melt) <- c("term1", "term2", "overlap")
+# Plotting
+colnames(a) <- labels.fig1a; rownames(a) <- labels.fig1a
+par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
+par(cex.main=0.6)
+heatmap.2(a, trace="none", density.info="none", col=color, scale="none", cexRow=0.7, cexCol=0.7, main="Figure 1. Disease/trait clustering by shared genetic features")
+```
+
+Analysis of all regulatory datasets
+===
+Although we used 4,498 regulatory datasets from the ENCODE project processed with the use with GenomeRunner, some regulatory datasets show no statistically significant enrichments in any of the 39 SNP sets. We removed these datasets as non-informative, and kept the remaining 2,969 regulatory datasets.
+
+```{r loadData1, echo=FALSE}
+# Define output and data subfolders to use, change to analyze different data
+rname<-"results//" # Output folder
+# One or more GenomeRunner Web results data folders.
+dname <- "data.gr//ENCODE_FDR/"
+mtx<-do.call("rbind", lapply(dname, function(fn) as.matrix(read.table(paste(fn, "matrix.txt", sep=""), sep="\t", header=T, row.names=1))))
+# mtx <- mtx[grep("histone", rownames(mtx), ignore.case=T), ] # Limit the GFs to TFBSs and Histone marks
+# Exploratory: check quantiles and remove diseaases showing no enrichments
+# mtx.sumstat <- as.data.frame(apply(mtx, 2, quantile)) # Get quantiles
+# mtx <- mtx[ , apply(mtx.sumstat, 2, function(x) sum(abs(x)) != 5)] # REmove those that have all "1" or "-1"
+# Optional: filter unused genomic features
+# mtx<-mtx[grep("snp", rownames(mtx), ignore.case=T, invert=T), ]
+mtx<-mtx.transform(mtx) # -log10 transform p-values
+# Optional: adjust columns for multiple testing. See utils.R for the function definition.
+# mtx<-mtx.adjust(mtx) 
+trackDb.hg19 <- read.table("data.gr//gf_descriptions.hg19.txt", sep="\t", row.names=1)
+fn_maxmin <- "results//maxmin_correlations_all.txt"
+fn_clust <- "results/clustering_all.txt"
+fn_degs <- "results/clusters-degs_all.txt"
+```
+
+```{r preprocessData1, echo=FALSE}
+dim(mtx) # Check original dimensions
+# Define minimum number of times a row/col should have values above the cutoffs
+numofsig<-1
+cutoff<- -log10(0.1) # q-value significance cutoff
+# What remains if we remove rows/cols with nothing significant
+dim(mtx[apply(mtx, 1, function(x) sum(abs(x) > cutoff)) >= numofsig, ])
+        # apply(mtx, 2, function(x) sum(abs(x)>cutoff))>=numofsig])
+# Trim the matrix
+mtx<-mtx[apply(mtx, 1, function(x) sum(abs(x) > cutoff)) >= numofsig, ]
+        # apply(mtx, 2, function(x) sum(abs(x)>cutoff))>=numofsig]
+```
+
+```{r preprocessCorrel1, echo=FALSE}
+# rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
+mtx.cor<-rcorr(as.matrix(mtx), type=cortype)
+# Optionally, try kendall correlation
+# mtx.cor[[1]]<-cor(as.matrix(mtx), method="kendall")
+```
+
+We visualized the matrix of pair-wise `r (cortype)` correlation coefficients among the term-specific regulatory enrichment profiles.
+
+```{r epigenomicVisualization1, echo=FALSE, fig.height=6}
+par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
+par(cex.main=0.65)
+color<-colorRampPalette(c("blue","yellow")) # Define color gradient
+#color<-greenred #Standard green-black-red palette
+# Adjust clustering parameters.
+# Distance: "euclidean", "maximum","manhattan" or "minkowski". Do not use "canberra" or "binary"
+# Clustering: "ward", "single", "complete", "average", "mcquitty", "median" or "centroid"
+dist.method<-"euclidean"  
+hclust.method<-"ward.D2"
+# Setting breaks to go from minimum to maximum correlation coefficients,
+# excluding min/max outliers. This way we get rid of diagonale of 1's
+granularity = 10
+my.breaks <- seq(min(mtx.cor[[1]][mtx.cor[[1]]!=min(mtx.cor[[1]])]),
+                 max(mtx.cor[[1]][mtx.cor[[1]]!=max(mtx.cor[[1]])]),
+                 length.out=(2*granularity + 1))
+h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks, main="Figure 2. Disease/trait clustering by regulatory similarity")
+```
+
+We then compared how regulatory similarity correlates with shared genomic features similarity. The `r (cortype)` correlation coefficient between the two is:
+
+```{r RegOverlapCorrel1_own, eval=FALSE}
+# Using self-made overlap matrix
+mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
+c <- left_join(mtx.overlap, mtx.cor.melt, by = c("V1" = "Var1", "V2" = "Var2"))
+(rcorr(c[, 3], c[, 4], type=cortype)[[1]][1, 2]) # Finally, correlation between the two
+```
+
+```{r RegOverlapCorrel1_original}
+# Using authors-provided overlap matrix
+mtx.cor.melt <- melt(mtx.cor[[1]]) # Convert correlation matrix to long format
+c <- left_join(mtx.fig1a.melt, mtx.cor.melt, by=c("term1" = "Var1", "term2" = "Var2"))
+(rcorr(c[, 3], c[, 4], type=cortype)[[1]][1, 2]) # Finally, correlation between the two
+```
+
+We observed the top 10 pairs of disease- and trait-aassociated SNPs that are most similar with each other (Table 1). 
+
+**Table 1. Disease/trait pairs best correlated with each other based on regulatory similarity.** The correlation coefficient shows the `r (cortype)` correlation coefficient among the regulatory enrichment profiles for each term-specific SNP set.
+
+```{r maxMin1, echo=FALSE}
+# Checking max/min correlations
+mtx.cor1<-mtx.cor[[1]]
+diag(mtx.cor1)<-0 # We don't need to consider self correlations, zero them out
+mtx.cor1[lower.tri(mtx.cor1)] <- 0 # Also zero out one matrix triangle, to avoid duplicate pairs
+mtx.maxMin <- melt(mtx.cor1) # Convert the matrix into tidy data
+mtx.maxMin <- mtx.maxMin[order(mtx.maxMin$value, decreasing=T), ] # Reorder the data by maxMin correlation
+mtx.maxMin <- mtx.maxMin[mtx.maxMin$value != 0, ]
+row.names(mtx.maxMin) <- NULL
+colnames(mtx.maxMin) <- c("Disease 1", "Disease 2", "Corr. coefficient")
+pander(head(mtx.maxMin, n=10))
+write.table(mtx.maxMin, fn_maxmin, sep="\t", quote=F,  row.names=F)
+mtx.maxMin.all <- data.frame(coef=mtx.maxMin[, 3]) # Save the data for future plotting
+mtx.maxMin.all$type <- "all" # Label it
+```
+
+We divided the regulatory similarity dendrogram into four separate clusters:
+
+```{r defineClusters1, echo=FALSE}
+par(oma=c(0, 0, 0, 0), mar=c(5.1, 4.1, 4.1,25.1), cex=0.5)
+# Plot the dendrogram only, limit y axis. attr(h$colDendrogram, "height") has the maximum height of the dendrogram.
+plot(h$colDendrogram, horiz=T) 
+# Cut the dentrogram into separate clusters. Tweak the height
+abline(v=2.55) # Visually evaluate the height where to cut
+c<-cut(h$colDendrogram, h=2.55) 
+# Check the number of clusters, and the number of members.
+for (i in 1:length(c$lower)){
+  cat(paste("Cluster", formatC(i, width=2, flag="0"), sep=""), "has", formatC(attr(c$lower[[i]], "members"), width=3), "members", "\n")
+  cat(paste(t(labels(c$lower[[i]])), collapse="\n"))
+  cat(paste("\n", "\n"))
+}
+# Output the results into a file
+unlink(fn_clust)
+for (i in 1:length(c$lower)){ 
+  write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), fn_clust, sep="\t", quote=F,  col.names=F, row.names=F, append=T)
+}
+```
+
+```{r defineGroups1, echo=FALSE}
+eset.labels<-character() # Empty vector to hold cluster labels
+eset.groups<-numeric() # Empty vector to hold cluster groups
+# Set the minimum number of members to be considered for the differential analysis
+minmembers<-3
+for (i in 1:length(c$lower)) { # Go through each cluster
+  # If the number of members is more than a minimum number of members
+  if (attr(c$lower[[i]], "members") > minmembers) { 
+    eset.labels<-append(eset.labels, labels(c$lower[[i]]))
+    eset.groups<-append(eset.groups, rep(i, length(labels(c$lower[[i]]))))
+  }
+}
+```
+
+We then estimated the differences in regulatory associations of among the groups of term-secific SNP sets (Table 2).
+
+**Table 2. Top ten regulatory datasets differentially enriched in group-specific SNP sets.** The first column shows the names of regulatory datasets. The following two columns show the average p-values of the group-specific SNP sets-regulatory enrichments. A "-" sign indicates that an association is underrepresented (depleted). The "adj.P.Val" column shows whether a difference in the enrichments between the groups is statistically significantly different. The last column shows the descriptions of the regulatory datasets.
+
+```{r limmaOnClusters1, warning=FALSE}
+eset<-new("ExpressionSet", exprs=as.matrix(mtx[, eset.labels]))
+# Make model matrix
+design<-model.matrix(~ 0+factor(eset.groups)) 
+colnames(design)<-paste("c", unique(eset.groups), sep="")
+# Create an empty square matrix to hold counts of DEGs
+degs.matrix<-matrix(0, length(c$lower), length(c$lower))
+colnames(degs.matrix)<-paste("c", seq(1,length(c$lower)), sep="")
+rownames(degs.matrix)<-paste("c", seq(1, length(c$lower)), sep="") 
+unlink(fn_degs)
+for(i in colnames(design)){ 
+  for(j in colnames(design)){
+    # Test only unique pairs of clusters
+    if (as.numeric(sub("c", "", i)) < as.numeric(sub("c", "", j))) {
+      # Contrasts between two clusters
+      contrast.matrix<-makeContrasts(contrasts=paste(i, j, sep="-"), levels=design)
+      fit <- lmFit(eset, design) 
+      fit2 <- contrasts.fit(fit, contrast.matrix)
+      fit2 <- eBayes(fit2)
+      degs<-topTable(fit2, number=dim(exprs(eset))[[1]], adjust.method="BH") # , p.value=cutoff.pval, lfc=cutoff.lfc)
+      if(nrow(degs)>0) {
+        # Average values in clusters i and j
+        i.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", i))], nrow=nrow(degs)))
+        j.av<-rowMeans(matrix(exprs(eset)[rownames(degs), eset.groups == as.numeric(sub("c", "", j))], nrow=nrow(degs)))
+        # Merge and convert the values
+        degs.pvals.log <- cbind(i.av, j.av)
+        degs.pvals <- matrix(0, nrow=nrow(degs.pvals.log), ncol=ncol(degs.pvals.log), dimnames=list(rownames(degs.pvals.log), c(i, j))) # Empty matrix to hold converted p
+        for (ii in 1:nrow(degs.pvals.log)) {
+          for (jj in 1:ncol(degs.pvals.log)) {
+            if (degs.pvals.log[ii, jj] < 0) {sign = -1} else {sign = 1}
+            degs.pvals[ii, jj] <- sign/10^abs(degs.pvals.log[ii, jj])
+          }
+        }
+        degs <- cbind(degs, degs.pvals) # Bind the differences p-values with the converted averaged association p-values
+        degs <- degs[ degs$adj.P.Val < 0.1 & (abs(degs[, 7]) < 0.01 | abs(degs[, 8]) < 0.01), ] # Filter non-significant differences. Warning: Hardcoded thresholds
+        if(dim(degs)[[1]] > 0) {
+          ndegs <- nrow(degs) # The number of differentially associated regulatory datasets
+          degs <- degs[order(degs$adj.P.Val, decreasing=F), ] # Order them by the ratio of the differences
+          print(paste(i, "vs.", j, ", number of degs significant at adj.p.val<0.5:", ndegs))
+          # Keep the number of DEGs in the matrix
+          degs.matrix[as.numeric(sub("c", "", i)), as.numeric(sub("c", "", j))] <- ndegs
+          degs.table <- merge(degs, trackDb.hg19, by="row.names", all.x=TRUE, sort=FALSE) # Merge with the descriptions
+          if(ndegs > 10) { ndegs <- 10 }
+          pandoc.table(degs.table[1:ndegs, c(1, 8, 9, 6, 10)])
+          write.table(degs.table[, c(1, 8, 9, 6, 10)], fn_degs, sep="\t", quote=F,  col.names=NA, append=T)
+        }
+      }
+    } 
+  }
+}
+print("Counts of regulatory elements differentially associated with each group")
+pander(degs.matrix)
+```
+
+Summary
+---
+The differences in regulatory enrichments are attributed to the disease- and trait-associated SNPs in clusters 1 and 3. 
+
+The cluster 1 (Platelet_counts, Triglycerides, Liver_enzyme_levels_gamma_glutamyl_transferase, LDL_cholesterol, HDL_cholesterol) showed enrichment in PolII, H3K36me3 and H3K79me2 histone modification marks. The signals was derived predominantly from cancer-related cell lines, such as HepG2 (liver hepatocellular carcinoma), K562 (myelogeneous leukemia), A549 (adenocarcinomic human alveolar basal epithelial cells). 
+
+The cluster 3 (Multiple_sclerosis, Celiac_disease, Primary_biliary_cirrhosis, Systemic_lupus_erythematosus, Kawasaki_disease) showed strong enrichment in B-cell derived signal. The most predominant cell type was Gm12878 (B lymphoblastoid cell line), CD20+ B cells, although some signal came from Dnd41 cells (T-ALL), T helper cells 1 and 2, and CD14+ monocytes. DNAse hypersensitive sites were predominant type of signal enriched in the disease-associated SNPs from this cluster, followed by H3K4 mono-/di- and trimethylation, PolII, H3K79me2, H3K27 trimethylation and acetylation, and the CTCF, NFkB, NFATC1, STAT5A and other transcription factor binding sites
+
+Co-morbidity similarity analysis
+---
+We used the data from [Hidalgo CA, Blumm N, Barabasi A-L, Christakis NA. PLoS Computational Biology, 5(4):e1000353 doi:10.1371/journal.pcbi.1000353](http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1000353), available at [http://barabasilab.neu.edu/projects/hudine/resource/data/data.html](http://barabasilab.neu.edu/projects/hudine/resource/data/data.html). These data provide co-morbidity measurements among pairs of diseases. We mapped autoimmune disease- and trait names to 3-digits ICD9 codes and evaluated how co-morbidity measurements correlates with regulatory similarity measurements. We used Phi measurement of co-morbidity. The `r (cortype)` correlation coefficient of Phi and regulatory similarity is:
+
+```{r diseaseNetwork1, echo=FALSE}
+# Create empty matrix of term disease-disease relationships ($V5 - co-occurrence)
+term.ICD9.occur <- matrix(0, nrow=nrow(term.mapping), ncol=nrow(term.mapping))
+rownames(term.ICD9.occur) <- term.mapping$term
+colnames(term.ICD9.occur) <- term.mapping$term
+# Create two others, to hold relative risk ($V6) and phi-correlation ($V9)
+term.ICD9.risk <- term.ICD9.occur; term.ICD9.phi <- term.ICD9.occur
+# Populate this matrix with Barabasi relationship values
+for (i in 1:nrow(term.mapping)) {
+  for (j in 1:nrow(term.mapping)) {
+    # The disease associations matrix is not symmetrical - we pull up the index with either disease1-disease2 relationship, or disease2-disease1 relationship
+    idx <- (mtx.disease$V1 == term.mapping$ICD9[i] & mtx.disease$V2 == term.mapping$ICD9[j]) | (mtx.disease$V2 == term.mapping$ICD9[i] & mtx.disease$V1 == term.mapping$ICD9[j])
+    # If relationship pair is found, store it. Self-self relationships will be 0
+    if (sum(idx) == 1) { 
+    term.ICD9.occur[i, j] <- mtx.disease$V5[idx]
+    term.ICD9.risk[i, j] <- mtx.disease$V6[idx]
+    term.ICD9.phi[i, j] <- mtx.disease$V9[idx]  
+    }
+  }
+  # For each row, replace self-self associations (zeros) by row maximum
+  term.ICD9.occur[i, term.ICD9.occur[i, ] == 0] <- max(term.ICD9.occur[i, ]) + 0.01
+  term.ICD9.risk[i, term.ICD9.risk[i, ] == 0] <- max(term.ICD9.risk[i, ]) + 0.01
+  term.ICD9.phi[i, term.ICD9.phi[i, ] == 0] <- max(term.ICD9.phi[i, ]) + 0.01
+}
+```
+
+```{r diseaseNetworkCorrel1, echo=FALSE, dependson="RegOverlapCorrel1_original"}
+# Finally, check correlation between pairwise relationships
+# print("Co-occurrence")
+# term.ICD9.occur.melt <- melt(term.ICD9.occur)
+# term.cor.occur <- left_join(mtx.cor.melt, term.ICD9.occur.melt, by=c("Var1" = "Var1", "Var2" = "Var2"))
+# #term.cor.occur <- term.cor.occur[ term.cor.occur$Var1 != term.cor.occur$Var2, ]
+# (rcorr(term.cor.occur$value.x, term.cor.occur$value.y))
+# print("Relative risk")
+# term.ICD9.risk.melt <- melt(term.ICD9.risk)
+# term.cor.risk <- left_join(mtx.cor.melt, term.ICD9.risk.melt, by=c("Var1" = "Var1", "Var2" = "Var2"))
+# #term.cor.risk <- term.cor.risk[ term.cor.risk$Var1 != term.cor.risk$Var2, ]
+# (rcorr(term.cor.risk$value.x, term.cor.risk$value.y))
+# print("Phi-correlation")
+term.ICD9.phi.melt <- melt(term.ICD9.phi)
+term.cor.phi <- left_join(mtx.cor.melt, term.ICD9.phi.melt, by=c("Var1" = "Var1", "Var2" = "Var2"))
+#term.cor.phi <- term.cor.phi[ term.cor.phi$Var1 != term.cor.phi$Var2, ]
+(rcorr(term.cor.phi$value.x, term.cor.phi$value.y, type=cortype)[[1]][1, 2])
+```
+
+UMLS semantic similarity
+---
+We obtained semantic similarity between pairs of terms, and compared these measurements with the regulatory similarity using the `r (cortype)` correlation coefficient, shown below.
+
+```{r umsl1, echo=FALSE, dependson="RegOverlapCorrel1_original"}
+mtx.cor.lit <- left_join(mtx.cor.melt, mtx.lit, by=c("Var1" = "term1", "Var2" = "term2"))
+colnames(mtx.cor.lit)[1:3] <- c("term1", "term2", "episim")
+
+for (i in 4:ncol(mtx.cor.lit)) {
+  print(paste(colnames(mtx.cor.lit)[i], "correlation with regulatory similarity"))
+  print(rcorr(mtx.cor.lit$episim, mtx.cor.lit[, i], type=cortype)[[1]][1, 2])
+}
+```
+
+IRIDESCENT literature similarity
+---
+We used another method for estimating literature similarity among pairs, IRIDESCENT (see Methods). Comparison of different literature similarity measurements with the regulatory similarity using the `r (cortype)` correlation coefficient is shown below.
+```{r iridescent1, echo=FALSE, dependson="RegOverlapCorrel1_original"}
+mtx.cor.irid <- left_join(mtx.cor.melt, iridescent.names, by=c("Var1" = "term1", "Var2" = "term2"))
+colnames(mtx.cor.irid)[1:3] <- c("term1", "term2", "episim")
+
+for (i in 4:9) {
+  print(paste(colnames(mtx.cor.irid)[i], "correlation with regulatory similarity"))
+  print(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i], type=cortype)[[1]][1, 2])
+}
+```
+
