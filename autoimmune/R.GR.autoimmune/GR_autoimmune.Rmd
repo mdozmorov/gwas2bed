@@ -51,7 +51,7 @@ cortype <- "pearson"
 
 We analyzed 39 autoimmune disease- and trait-associated SNP sets, obtained from the [Supplemental table 1](http://www.nature.com/nature/journal/vaop/ncurrent/extref/nature13835-s1.xls) of the Farh, K. K.-H., Marson, A., Zhu, J., Kleinewietfeld, M., Housley, W. J., Beik, S., … Bernstein, B. E. (2014). ["Genetic and epigenetic fine mapping of causal autoimmune disease variants""](http://www.nature.com/nature/journal/vaop/ncurrent/pdf/nature13835.pdf) Nature. [doi:10.1038/nature13835](doi:10.1038/nature13835).
 
-First, we re-created the heatmap of shared genetic features among the autoimmune diseases and traits, that is, counts of genomic elements overlapping between pairs of terms. We will use this heatmap as a reference point to compare with the heatmaps produced by the regulatory similarity analysis.
+We used the original heatmap of shared genetic features among the autoimmune diseases and traits (Figure 1a in the original paper, re-created here as Figure 1) as a reference to compare our regulatory similarity measurements with. We thank the authors for providing us with the original numerical matrix of the heatmap.
 
 ```{r loadOverlapMtx_own, warning=FALSE, message=FALSE, fig.height=6, eval=FALSE}
 # Self-prepared overlap analysis
@@ -87,12 +87,14 @@ mtx.fig1a.melt <- melt(mtx.fig1a)
 colnames(mtx.fig1a.melt) <- c("term1", "term2", "overlap")
 # Plotting
 colnames(a) <- labels.fig1a; rownames(a) <- labels.fig1a
-heatmap.2(a, trace="none", density.info="none", col=color, scale="none", cexRow=0.7, cexCol=0.7)
+par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
+par(cex.main=0.6)
+heatmap.2(a, trace="none", density.info="none", col=color, scale="none", cexRow=0.7, cexCol=0.7, main="Figure 1. Disease/trait clustering by shared genetic features")
 ```
 
 Analysis of all regulatory datasets
 ===
-Although we used 4,498 regulatory datasets from the ENCODE project processed with the use with GenomeRunner, some regulatory datasets show not statistically significant enrichments in any of the 39 SNP sets. We removed these datasets as non-informative, and kept the remaining 2,969 regulatory datasets.
+Although we used 4,498 regulatory datasets from the ENCODE project processed with the use with GenomeRunner, some regulatory datasets show no statistically significant enrichments in any of the 39 SNP sets. We removed these datasets as non-informative, and kept the remaining 2,969 regulatory datasets.
 
 ```{r loadData1, echo=FALSE}
 # Define output and data subfolders to use, change to analyze different data
@@ -139,6 +141,7 @@ We visualized the matrix of pair-wise `r (cortype)` correlation coefficients amo
 
 ```{r epigenomicVisualization1, echo=FALSE, fig.height=6}
 par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
+par(cex.main=0.65)
 color<-colorRampPalette(c("blue","yellow")) # Define color gradient
 #color<-greenred #Standard green-black-red palette
 # Adjust clustering parameters.
@@ -152,10 +155,10 @@ granularity = 10
 my.breaks <- seq(min(mtx.cor[[1]][mtx.cor[[1]]!=min(mtx.cor[[1]])]),
                  max(mtx.cor[[1]][mtx.cor[[1]]!=max(mtx.cor[[1]])]),
                  length.out=(2*granularity + 1))
-h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks)
+h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks, main="Figure 2. Disease/trait clustering by regulatory similarity")
 ```
 
-We then compared how regulatory similarity correlates with shared genomic features similarity. `r (cortype)` correlation coefficient between the two is:
+We then compared how regulatory similarity correlates with shared genomic features similarity. The `r (cortype)` correlation coefficient between the two is:
 
 ```{r RegOverlapCorrel1_own, eval=FALSE}
 # Using self-made overlap matrix
@@ -171,7 +174,9 @@ c <- left_join(mtx.fig1a.melt, mtx.cor.melt, by=c("term1" = "Var1", "term2" = "V
 (rcorr(c[, 3], c[, 4], type=cortype)[[1]][1, 2]) # Finally, correlation between the two
 ```
 
-The top 10 pairs of disease- aassociated SNPs are most similar with each other. The correlation coefficient shows `r (cortype)` correlation coefficient among the regulatory enrichment profiles for each term-specific SNP set.
+We observed the top 10 pairs of disease- and trait-aassociated SNPs that are most similar with each other (Table 1). 
+
+**Table 1. Disease/trait pairs best correlated with each other based on regulatory similarity.** The correlation coefficient shows the `r (cortype)` correlation coefficient among the regulatory enrichment profiles for each term-specific SNP set.
 
 ```{r maxMin1, echo=FALSE}
 # Checking max/min correlations
@@ -189,7 +194,7 @@ mtx.maxMin.all <- data.frame(coef=mtx.maxMin[, 3]) # Save the data for future pl
 mtx.maxMin.all$type <- "all" # Label it
 ```
 
-The regulatory similarity dendrogram can be divided into four separate clusters:
+We divided the regulatory similarity dendrogram into four separate clusters:
 
 ```{r defineClusters1, echo=FALSE}
 par(oma=c(0, 0, 0, 0), mar=c(5.1, 4.1, 4.1,25.1), cex=0.5)
@@ -225,9 +230,9 @@ for (i in 1:length(c$lower)) { # Go through each cluster
 }
 ```
 
-We estimated the differences in regulatory associations of term-secific SNP sets.  
+We then estimated the differences in regulatory associations of among the groups of term-secific SNP sets (Table 2).
 
-The first column shows names of regulatory datasets. The following two columns show the average p-values of the cluster-specific SNP sets-regulatory associations. The smaller a p-value is, the more SNPs in a cluster enriched in corresponsing regulatory dataset. A "-" sign indicates that an association is underrepresented (depleted). The "adj.P.Val" column shows whether a difference in the associations between the clusters is statistically significantly different. The last column shows descriptions of the regulatory datasets. The tables were sorted by "adj.P.Val" column; the top 10 or less most significantly different associations are shown.
+**Table 2. Top ten regulatory datasets differentially enriched in group-specific SNP sets.** The first column shows the names of regulatory datasets. The following two columns show the average p-values of the group-specific SNP sets-regulatory enrichments. A "-" sign indicates that an association is underrepresented (depleted). The "adj.P.Val" column shows whether a difference in the enrichments between the groups is statistically significantly different. The last column shows the descriptions of the regulatory datasets.
 
 ```{r limmaOnClusters1, warning=FALSE}
 eset<-new("ExpressionSet", exprs=as.matrix(mtx[, eset.labels]))
@@ -285,7 +290,7 @@ pander(degs.matrix)
 
 Summary
 ---
-The differences in regulatory associations are attributed to the clusters 1 and 3. 
+The differences in regulatory enrichments are attributed to the disease- and trait-associated SNPs in clusters 1 and 3. 
 
 The cluster 1 (Platelet_counts, Triglycerides, Liver_enzyme_levels_gamma_glutamyl_transferase, LDL_cholesterol, HDL_cholesterol) showed enrichment in PolII, H3K36me3 and H3K79me2 histone modification marks. The signals was derived predominantly from cancer-related cell lines, such as HepG2 (liver hepatocellular carcinoma), K562 (myelogeneous leukemia), A549 (adenocarcinomic human alveolar basal epithelial cells). 
 
@@ -293,7 +298,7 @@ The cluster 3 (Multiple_sclerosis, Celiac_disease, Primary_biliary_cirrhosis, Sy
 
 Co-morbidity similarity analysis
 ---
-We used the data from [Hidalgo CA, Blumm N, Barabasi A-L, Christakis NA. PLoS Computational Biology, 5(4):e1000353 doi:10.1371/journal.pcbi.1000353](http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1000353), available at [http://barabasilab.neu.edu/projects/hudine/resource/data/data.html](http://barabasilab.neu.edu/projects/hudine/resource/data/data.html). These data provide co-morbidity measurements among pairs of diseases. We map autoimmune disease- and trait names to 3-digits ICD9 codes and evaluate how co-morbidity measurements correlate with regulatory similarity measurements. We used Phi measurement of co-morbidity. The `r (cortype)` correlation coefficient of Phi and regulatory similarity is:
+We used the data from [Hidalgo CA, Blumm N, Barabasi A-L, Christakis NA. PLoS Computational Biology, 5(4):e1000353 doi:10.1371/journal.pcbi.1000353](http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1000353), available at [http://barabasilab.neu.edu/projects/hudine/resource/data/data.html](http://barabasilab.neu.edu/projects/hudine/resource/data/data.html). These data provide co-morbidity measurements among pairs of diseases. We mapped autoimmune disease- and trait names to 3-digits ICD9 codes and evaluated how co-morbidity measurements correlates with regulatory similarity measurements. We used Phi measurement of co-morbidity. The `r (cortype)` correlation coefficient of Phi and regulatory similarity is:
 
 ```{r diseaseNetwork1, echo=FALSE}
 # Create empty matrix of term disease-disease relationships ($V5 - co-occurrence)
@@ -340,21 +345,9 @@ term.cor.phi <- left_join(mtx.cor.melt, term.ICD9.phi.melt, by=c("Var1" = "Var1"
 (rcorr(term.cor.phi$value.x, term.cor.phi$value.y, type=cortype)[[1]][1, 2])
 ```
 
-Iridescent literature similarity
+UMLS semantic similarity
 ---
-
-```{r iridescent1, echo=FALSE, dependson="RegOverlapCorrel1_original"}
-mtx.cor.irid <- left_join(mtx.cor.melt, iridescent.names, by=c("Var1" = "term1", "Var2" = "term2"))
-colnames(mtx.cor.irid)[1:3] <- c("term1", "term2", "episim")
-
-for (i in 4:9) {
-  print(paste(colnames(mtx.cor.irid)[i], "correlation with regulatory similarity"))
-  print(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i], type=cortype)[[1]][1, 2])
-}
-```
-
-UMLS literature similarity
----
+We obtained semantic similarity between pairs of terms, and compared these measurements with the regulatory similarity using the `r (cortype)` correlation coefficient, shown below.
 
 ```{r umsl1, echo=FALSE, dependson="RegOverlapCorrel1_original"}
 mtx.cor.lit <- left_join(mtx.cor.melt, mtx.lit, by=c("Var1" = "term1", "Var2" = "term2"))
@@ -363,6 +356,19 @@ colnames(mtx.cor.lit)[1:3] <- c("term1", "term2", "episim")
 for (i in 4:ncol(mtx.cor.lit)) {
   print(paste(colnames(mtx.cor.lit)[i], "correlation with regulatory similarity"))
   print(rcorr(mtx.cor.lit$episim, mtx.cor.lit[, i], type=cortype)[[1]][1, 2])
+}
+```
+
+IRIDESCENT literature similarity
+---
+We used another method for estimating literature similarity among pairs, IRIDESCENT (see Methods). Comparison of different literature similarity measurements with the regulatory similarity using the `r (cortype)` correlation coefficient is shown below.
+```{r iridescent1, echo=FALSE, dependson="RegOverlapCorrel1_original"}
+mtx.cor.irid <- left_join(mtx.cor.melt, iridescent.names, by=c("Var1" = "term1", "Var2" = "term2"))
+colnames(mtx.cor.irid)[1:3] <- c("term1", "term2", "episim")
+
+for (i in 4:9) {
+  print(paste(colnames(mtx.cor.irid)[i], "correlation with regulatory similarity"))
+  print(rcorr(mtx.cor.irid$episim, mtx.cor.irid[, i], type=cortype)[[1]][1, 2])
 }
 ```
 
