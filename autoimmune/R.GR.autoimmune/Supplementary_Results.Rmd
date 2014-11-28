@@ -142,7 +142,7 @@ mtx.cor<-rcorr(as.matrix(mtx), type=cortype)
 We visualized the matrix of pair-wise `r (cortype)` correlation coefficients among the term-specific regulatory enrichment profiles.
 
 ```{r epigenomicVisualization1, echo=FALSE, fig.height=6}
-par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
+par(oma=c(12,0,0,12), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
 par(cex.main=0.65)
 color<-colorRampPalette(c("blue","yellow")) # Define color gradient
 #color<-greenred #Standard green-black-red palette
@@ -157,7 +157,8 @@ granularity = 10
 my.breaks <- seq(min(mtx.cor[[1]][mtx.cor[[1]]!=min(mtx.cor[[1]])]),
                  max(mtx.cor[[1]][mtx.cor[[1]]!=max(mtx.cor[[1]])]),
                  length.out=(2*granularity + 1))
-h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks, main="Figure 2. Disease/trait clustering by regulatory similarity")
+clustercolors <- readRDS("data/clustercolord.rds") # Cluster color labeling, made later
+h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks, main="Figure 2. Disease/trait clustering by regulatory similarity", ColSideColors=clustercolors)
 ```
 
 We then compared how regulatory similarity correlates with shared genomic features similarity. The `r (cortype)` correlation coefficient between the two is:
@@ -216,6 +217,14 @@ unlink(fn_clust)
 for (i in 1:length(c$lower)){ 
   write.table(paste(i, t(labels(c$lower[[i]])), sep="\t"), fn_clust, sep="\t", quote=F,  col.names=F, row.names=F, append=T)
 }
+# Create cluster color labeling manually
+clustercolors <- vector(mode="character", length=ncol(mtx.cor[[1]]))
+names(clustercolors) <- (colnames(mtx.cor[[1]]))
+clustercolors[labels(c$lower[[1]])] <- "green"
+clustercolors[labels(c$lower[[2]])] <- "blue"
+clustercolors[labels(c$lower[[3]])] <- "red"
+clustercolors[labels(c$lower[[4]])] <- "yellow"
+saveRDS(clustercolors, "data/clustercolord.rds")
 ```
 
 ```{r defineGroups1, echo=FALSE}
