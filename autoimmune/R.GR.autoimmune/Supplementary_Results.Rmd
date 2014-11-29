@@ -18,7 +18,7 @@ suppressMessages(library(ggplot2))
 #library(qvalue)
 # Set up the environment
 library(knitr) 
-opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', echo=F, dpi=300, out.width=700)
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', echo=F, dpi=300, out.width=700, comment=NA)
 options(replace.assign=TRUE, width=120)
 suppressMessages(library(pander))
 panderOptions('table.split.table', Inf)
@@ -208,9 +208,9 @@ abline(v=2.55) # Visually evaluate the height where to cut
 c<-cut(h$colDendrogram, h=2.55) 
 # Check the number of clusters, and the number of members.
 for (i in 1:length(c$lower)){
-  cat(paste("Cluster", formatC(i, width=2, flag="0"), sep=""), "has", formatC(attr(c$lower[[i]], "members"), width=3), "members", "\n")
-  cat(paste(t(labels(c$lower[[i]])), collapse="\n"))
-  cat(paste("\n", "\n"))
+  cat(paste("Cluster", formatC(i, width=2, flag="0"), sep=""), "has", formatC(attr(c$lower[[i]], "members"), width=3), "members")
+  print(kable(matrix((labels(c$lower[[i]])))))
+  cat("\n")
 }
 # Output the results into a file
 unlink(fn_clust)
