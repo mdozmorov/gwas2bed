@@ -1,0 +1,149 @@
+---
+title: "Analysis of schizophrenia and bipolar disorder differentially methylated regions"
+author: "Mikhail Dozmorov"
+date: "November 29, 2014"
+output: html_document
+---
+
+```{r setup, echo=FALSE, include=FALSE, cache=FALSE}
+# Set up the environment
+library(knitr) 
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=300, out.width=700, echo=F, autodep=T, width=200, comment=NA)
+options(replace.assign=TRUE, width=500)
+tidy.opts=list(width.cutoff=200)
+suppressMessages(library(pander))
+panderOptions('table.split.table', Inf)
+set.seed(1)
+```
+
+```{r loadLibraries, warning=FALSE, message=FALSE}
+library(gridExtra)
+source("utils.R")
+library(pander)
+library(Hmisc)
+```
+
+[Jerez, A., Rubin, L., Li, X., & Xu, C. (n.d.). Genome-wide methylome analyses reveal novel epigenetic regulation patterns in schizophrenia and bipolar disorder.](http://www.hindawi.com/journals/bmri/aa/201587/)
+
+Supplementary tables 1 and 3 have genomic coordinates of  hyper/hypomethylated DMRs for schizophrenia and bipolar disorder, respectively. Note, coordinates are in hg18 genome assembly, and were lifted over to hg19 assembly. 
+
+Number of DMRs:
+
+- 128 bp_hyper.bed
+- 198 bp_hypo.bed
+- 351 sz_hyper.bed
+- 602 sz_hypo.bed
+
+Also included are [all MWAS results](http://www.people.vcu.edu/~ejvandenoord/Supplemental%20table%20-%20All%20MWAS%20results%20with%20q-value%20better%20than%200%2001.csv) with q-value better than 0.01 in “Methylome-Wide Association Study of Schizophrenia: Identifying Blood Biomarker Signatures of Environmental Insults. JAMA Psychiatry “ by Aberg KA, McClay JL, Nerella S, Clark S, Kumar G, Chen W, Khachane AN, Xie LY, Hudson A, Gao G, Harada A, Hultman CM, Sullivan PF, Magnusson PKE, van den Oord EJCG (2014), JAMA Psychiatry 2014; ePub Jan 8.
+
+- 139 MWAS.bed
+
+These MWAS do not overlap with the aforementioned DMRs.
+
+**Hypothesis:** The disease-associated sets from the two studies will show similar regulatory enrichments.
+
+These sets were tested for enrichment in 3 categories of regulatory datasets:
+
+1) Experimental TFBSs - cell type-specific ChIP-seq-obtained TFBSs from the ENCODE project;
+2) Experimental Histones - cell type-specific ChIP-seq-obtained histone modification marks from the ENCODE;
+3) Selected TFBSs - non-cell type-specific TFBSs, manually pre-assemble from most reliably detected peaks
+
+P-values are corrected for multiple testing using FDR. For each analysis, only the significant enrichment results (p.adj < 0.1) are shown. Negative p-value indicates depletion. Tables show top 10 or less enriched/depleted associations, barplots visualize the same results. If an analysis does not have any significant results, it is not displayed at all.
+
+As a 'background' for estimating random chance we are using whole genome - thus, p-values  are a bit over-optimistic. We are specifically answering the question "What is so special about the sets of methylated regions?"
+
+Information about histone modification marks can be looked up on [Histome: the Histone Infobase](http://www.actrec.gov.in/histome/searchgoog.php).
+
+Summary
+===
+Bipolar disorder
+---
+- Non-cell type-specific enrichment in Pol2
+- Non-cell type-specific enrichment in H3K4me3, depletion in H3K9me3
+- Hypomethylated peaks show stronger enrichments
+
+Schizophrenia
+---
+- Non-cell type-specific enrichment in mostly Pol2, SIN3A, MAZ, HMGN3. Selected TFBSs include TAF1, EGR1, TBP, REST, MYV, MAX. Depletion in FOSL2, GATA3, P300
+- Non-cell type-specific enrichment in H3K4me3, depletion in H3K9me3
+- Hypomethylated peaks show stronger enrichments
+
+MWAS only
+---
+- CEBPB appears to bind in these regions more often than can happen by chance. This confirmation comes from the analysis of the combined high-quality dataset, and from the individual ENCODE tracks.
+- There is a strong monocyte-specific signature of activating histone marks (H3K4me1, H3K4me2) enriched with the 139 schisophrenia-associated DMRs. An artefact of blood-derived methylation profiling?
+- The DMRs are highly conserved, and devoid of low complexity regions and gaps.
+
+Differences between BP and SZ
+---
+- Differences in Pol2 and H3K4me3 are not interesting, they both significant, only to a different extent.
+- BP is significantly enriched in SP1 and ARID1A, while SZ is not. Same with H3K27me3 and NCOR
+
+Bottom line
+---
+Hypothesis did not confirm - both studies show different regulatory associations
+
+Results
+===
+
+Bipolar disorder
+---
+
+```{r}
+dirs <- list.dirs("data.gr/", full.names=T, recursive=F) # Paths the SNP sets analyses
+for (i in (1:length(dirs))){
+  mtx <- read.table(paste(dirs[i], "matrix.txt", sep="/"), sep="\t", row.names=1, header=T)
+  mtx <- mtx[, grep("all", colnames(mtx), invert=T)] # Remove 'all' sets that wereincorrectly created and run
+  mtx <- mtx[, sort(colnames(mtx))]
+  showTable(mtx[, sort(grep("bp", colnames(mtx)))], adjust="fdr", pval=0.1)
+}
+```
+
+Schizophrenia
+---
+
+```{r}
+dirs <- list.dirs("data.gr/", full.names=T, recursive=F) # Paths the SNP sets analyses
+for (i in (1:length(dirs))){
+  mtx <- read.table(paste(dirs[i], "matrix.txt", sep="/"), sep="\t", row.names=1, header=T)
+  mtx <- mtx[, grep("all", colnames(mtx), invert=T)] # Remove 'all' sets that wereincorrectly created and run
+  mtx <- mtx[, sort(colnames(mtx))]
+  showTable(mtx[, sort(grep("sz|MWAS", colnames(mtx)))], adjust="fdr", pval=0.1)
+}
+```
+
+MWAS
+---
+
+```{r}
+dirs <- list.dirs("data.gr/", full.names=T, recursive=F) # Paths the SNP sets analyses
+for (i in (1:length(dirs))){
+  mtx <- read.table(paste(dirs[i], "matrix.txt", sep="/"), sep="\t", row.names=1, header=T)
+  mtx <- mtx[, grep("all", colnames(mtx), invert=T)] # Remove 'all' sets that wereincorrectly created and run
+  mtx <- mtx[, sort(colnames(mtx))]
+  showTable(mtx[, sort(grep("MWAS", colnames(mtx))), drop=F], adjust="fdr", pval=0.1)
+}
+```
+
+Differences between BP and SZ
+---
+We are looking here at the regulatory datasets showing differential enrichment with HYPOmethylated disease-associated regions.
+```{r}
+dirs <- list.dirs("data.gr/", full.names=T, recursive=F) # Paths the SNP sets analyses
+for (i in (1:length(dirs))){
+  mtx <- read.table(paste(dirs[i], "matrix.txt", sep="/"), sep="\t", row.names=1, header=T)
+  mtx <- mtx[, grep("all", colnames(mtx), invert=T)] # Remove 'all' sets that wereincorrectly created and run
+  mtx <- mtx[, sort(colnames(mtx))]
+  mtx.subset <- mtx[, grep("hypo", colnames(mtx))]
+  mtx.subset <- mtx.subset[order(mtx.subset[, grep("bp", colnames(mtx.subset))] - 
+                                   mtx.subset[, grep("sz", colnames(mtx.subset))]), ]
+  print(dirs[[i]])
+  print("Top differentially enriched")
+  print(kable(head(mtx.subset)))
+  cat("\n")
+  print("Bottom differentially enriched")
+  print(kable(tail(mtx.subset)))
+  cat("\n")
+}
+```
+
