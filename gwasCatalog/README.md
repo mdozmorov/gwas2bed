@@ -12,3 +12,9 @@ make
 ```
 
 Output: A 'gwasCatalog-[date].bed' file with the coordinates of all GWAS SNPs. Two subfolders under 'bed' folder, 'more15' and 'less15', containing sets having more that 15 SNPs, or less.
+
+snps3d.org
+---
+**Candidate_genes.xlsx** - a set of pre-compiled candidate genes for 76 selected diseases. [Link](http://www.snps3d.org/download/) for more details
+
+

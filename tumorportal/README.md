@@ -61,3 +61,10 @@ PRAD - Prostate cancer
 RHAB - Rhabdoid cancer
 
 PanCan - Combined cohort
+
+[Kandoth, C., McLellan, M. D., Vandin, F., Ye, K., Niu, B., Lu, C., … Ding, L. (2013). Mutational landscape and significance across 12 major cancer types. Nature, 502(7471), 333–9. doi:10.1038/nature12634](http://www.nature.com/nature/journal/v502/n7471/full/nature12634.html)
+---
+
+**Supplementary_Table_4.xlsx** Supplementary Table 4.  Significantly mutated genes in all cancer types and 12 separate cancer types
+
+To analyze cancer-specific genes
