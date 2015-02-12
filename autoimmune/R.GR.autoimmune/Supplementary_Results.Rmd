@@ -1,11 +1,28 @@
 ---
-title: Supplemental Results. Analysis of autoimmune disease- and trait-associated
-  SNP sets
-author: Mikhail Dozmorov, Lukas R. Cara, Cory B. Giles, Bridget T. McInnes, Jonathan
-  D. Wren
 output: html_document
 ---
-```{r setup, echo=FALSE, message=FALSE}
+
+GenomeRunner web: identifying potential regulatory impact of SNP sets
+===
+
+<b>Mikhail G. Dozmorov<sup>1*</sup>, Lukas R. Cara<sup>2</sup>, Cory B. Giles<sup>2</sup>, Bridget T. McInnes<sup>4</sup>, Jonathan D. Wren<sup>2,3</sup></b>
+
+<sup>1</sup> Virginia Commonwealth University, Department of Biostatistics, 1200 E. Clay St., Richmond, VA, 23298, USA
+
+<sup>2</sup> Oklahoma Medical Research Foundation, Oklahoma City, Arthritis and Clinical Immunology Research Program, 825 N.E. st, Oklahoma City, OK 73104-5005, USA
+
+<sup>3</sup> University of Oklahoma Health Sciences Center, Department of Biochemistry and Molecular Biology, 940 Stanton L. Young Blvd, OK 73104-5005, USA
+
+<sup>4</sup> Virginia Commonwealth University, Department of Computer Science. 401 West Main Street, Richmond, VA, 23284-3019, USA
+
+The authors wish it to be known that, in their opinion, the first two authors should be regarded as joint First Authors
+
+<sup>*</sup> To whom correspondence should be addressed. Tel: +1-804-628-0260; E-mail: mdozmorov@vcu.edu 
+
+
+
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 source("utils.R")
 suppressMessages(library(Hmisc)) # For rcorr function
 suppressMessages(library(gplots))
@@ -18,7 +35,7 @@ suppressMessages(library(ggplot2))
 #library(qvalue)
 # Set up the environment
 library(knitr) 
-opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', echo=F, dpi=300, out.width=700, comment=NA)
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', echo=F, dpi=300, out.width=700, comment=NA, warning=FALSE)
 options(replace.assign=TRUE, width=120)
 suppressMessages(library(pander))
 panderOptions('table.split.table', Inf)
@@ -53,7 +70,7 @@ cortype <- "pearson"
 
 We analyzed 39 autoimmune disease- and trait-associated SNP sets, obtained from the [Supplemental table 1](http://www.nature.com/nature/journal/vaop/ncurrent/extref/nature13835-s1.xls) of the Farh, K. K.-H., Marson, A., Zhu, J., Kleinewietfeld, M., Housley, W. J., Beik, S., … Bernstein, B. E. (2014). ["Genetic and epigenetic fine mapping of causal autoimmune disease variants""](http://www.nature.com/nature/journal/vaop/ncurrent/pdf/nature13835.pdf) Nature. [doi:10.1038/nature13835](doi:10.1038/nature13835).
 
-We used the original heatmap of shared genetic features among the autoimmune diseases and traits (Figure 1a in the original paper, re-created here as Figure 1) as a reference to compare our regulatory similarity measurements with. We thank the authors for providing us with the original numerical matrix of the heatmap.
+We used the original heatmap of shared genetic features among the autoimmune diseases and traits (Figure 1a in the original paper, re-created here as Figure S1) as a reference to compare our regulatory similarity measurements with. We thank the authors for providing us with the original numerical matrix of the heatmap.
 
 ```{r loadOverlapMtx_own, warning=FALSE, message=FALSE, fig.height=6, eval=FALSE}
 # Self-prepared overlap analysis
@@ -91,7 +108,7 @@ colnames(mtx.fig1a.melt) <- c("term1", "term2", "overlap")
 colnames(a) <- labels.fig1a; rownames(a) <- labels.fig1a
 par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
 par(cex.main=0.6)
-heatmap.2(a, trace="none", density.info="none", col=color, scale="none", cexRow=0.7, cexCol=0.7, main="Figure 1. Disease/trait clustering by shared genetic features")
+heatmap.2(a, trace="none", density.info="none", col=color, scale="none", cexRow=0.7, cexCol=0.7, main="Figure S1. Disease/trait clustering by shared genetic features")
 ```
 
 Analysis of all regulatory datasets
@@ -139,7 +156,7 @@ mtx.cor<-rcorr(as.matrix(mtx), type=cortype)
 # mtx.cor[[1]]<-cor(as.matrix(mtx), method="kendall")
 ```
 
-We visualized the matrix of pair-wise `r (cortype)` correlation coefficients among the term-specific regulatory enrichment profiles.
+We visualized the matrix of pair-wise `r (cortype)` correlation coefficients among the term-specific regulatory enrichment profiles (Figure S2).
 
 ```{r epigenomicVisualization1, echo=FALSE, fig.height=6}
 par(oma=c(12,0,0,12), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
@@ -158,7 +175,7 @@ my.breaks <- seq(min(mtx.cor[[1]][mtx.cor[[1]]!=min(mtx.cor[[1]])]),
                  max(mtx.cor[[1]][mtx.cor[[1]]!=max(mtx.cor[[1]])]),
                  length.out=(2*granularity + 1))
 clustercolors <- readRDS("data/clustercolord.rds") # Cluster color labeling, made later
-h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks, main="Figure 2. Disease/trait clustering by regulatory similarity", ColSideColors=clustercolors)
+h<-heatmap.2(as.matrix(mtx.cor[[1]]), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, breaks=my.breaks, main="Figure S2. Disease/trait clustering by regulatory similarity", ColSideColors=clustercolors)
 ```
 
 We then compared how regulatory similarity correlates with shared genomic features similarity. The `r (cortype)` correlation coefficient between the two is:
@@ -177,9 +194,9 @@ c <- left_join(mtx.fig1a.melt, mtx.cor.melt, by=c("term1" = "Var1", "term2" = "V
 (rcorr(c[, 3], c[, 4], type=cortype)[[1]][1, 2]) # Finally, correlation between the two
 ```
 
-We observed the top 10 pairs of disease- and trait-aassociated SNPs that are most similar with each other (Table 1). 
+We observed the top 10 pairs of disease- and trait-aassociated SNPs that are most similar with each other (Table S1). 
 
-**Table 1. Disease/trait pairs best correlated with each other based on regulatory similarity.** The correlation coefficient shows the `r (cortype)` correlation coefficient among the regulatory enrichment profiles for each term-specific SNP set.
+**Table S1. Disease/trait pairs best correlated with each other based on regulatory similarity.** The correlation coefficient shows the `r (cortype)` correlation coefficient among the regulatory enrichment profiles for each term-specific SNP set.
 
 ```{r maxMin1, echo=FALSE}
 # Checking max/min correlations
@@ -241,9 +258,9 @@ for (i in 1:length(c$lower)) { # Go through each cluster
 }
 ```
 
-We then estimated the differences in regulatory associations of among the groups of term-secific SNP sets (Table 2).
+We then estimated the differences in regulatory associations of among the groups of term-secific SNP sets (Table S2).
 
-**Table 2. Top ten regulatory datasets differentially enriched in group-specific SNP sets.** The first column shows the names of regulatory datasets. The following two columns show the average p-values of the group-specific SNP sets-regulatory enrichments. A "-" sign indicates that an association is underrepresented (depleted). The "adj.P.Val" column shows whether a difference in the enrichments between the groups is statistically significantly different. The last column shows the descriptions of the regulatory datasets.
+**Table S2. Top ten regulatory datasets differentially enriched in group-specific SNP sets.** The first column shows the names of regulatory datasets. The following two columns show the average p-values of the group-specific SNP sets-regulatory enrichments. A "-" sign indicates that an association is underrepresented (depleted). The "adj.P.Val" column shows whether a difference in the enrichments between the groups is statistically significantly different. The last column shows the descriptions of the regulatory datasets.
 
 ```{r limmaOnClusters1, warning=FALSE}
 eset<-new("ExpressionSet", exprs=as.matrix(mtx[, eset.labels]))

@@ -15,3 +15,14 @@ Number of DMRs:
     - 351 sz_hyper.bed
     - 602 sz_hypo.bed
 
+
+[Derrek P. Hibar, et. al. Common genetic variants influence human subcortical brain structures. Nature (2015) doi:10.1038/nature14101](http://www.nature.com/nature/journal/vaop/ncurrent/full/nature14101.html)
+---
+
+`data/brain_structures` folder 
+
+Supplementary Table 5: Independent loci from the Discovery samples after clumping (50 Mb and r2 > 0.3). SNPs with p < 1.00E-6 for each phenotype are shown. `suppl5.bed` - 34 loci
+
+Supplementary Table 8: SNPs with previously published candidate associations to neuroimaging phenotypes. SNPs with P-values < 0.05 in the Discovery sample are highlighted, none were genome-wide significant (P < 5x10-8). `suppl5.bed` - 39 loci.
+
+Supplementary Table 9: Previously Published Genome Wide Significant Look-up Table. SNPs with P-values < 0.05 within the discovery sample are highlighted. Several disorders had no genome-wide significant and replicated common SNP variants reported as of August 8, 2014: Autism (PMID: 22843504), OCD (PMID: 22889921), ADHD (PMID: 20732625), and MDD (PMID: 22472876). `suppl9.bed` - 156 loci

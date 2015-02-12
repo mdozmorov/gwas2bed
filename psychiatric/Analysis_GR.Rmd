@@ -1,14 +1,14 @@
 ---
-title: "Analysis of schizophrenia and bipolar disorder differentially methylated regions"
+title: Analysis of schizophrenia and bipolar disorder differentially methylated regions,
+  compared with MWAS study
 author: "Mikhail Dozmorov"
-date: "November 29, 2014"
 output: html_document
 ---
 
 ```{r setup, echo=FALSE, include=FALSE, cache=FALSE}
 # Set up the environment
 library(knitr) 
-opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=300, out.width=700, echo=F, autodep=T, width=200, comment=NA)
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=300, out.width=700, echo=F, autodep=T, width=200, comment=NA, warning=F, results='hide')
 options(replace.assign=TRUE, width=500)
 tidy.opts=list(width.cutoff=200)
 suppressMessages(library(pander))
@@ -17,10 +17,7 @@ set.seed(1)
 ```
 
 ```{r loadLibraries, warning=FALSE, message=FALSE}
-library(gridExtra)
-source("utils.R")
-library(pander)
-library(Hmisc)
+source("../../R.GenomeRunner/utils1.R")
 ```
 
 [Jerez, A., Rubin, L., Li, X., & Xu, C. (n.d.). Genome-wide methylome analyses reveal novel epigenetic regulation patterns in schizophrenia and bipolar disorder.](http://www.hindawi.com/journals/bmri/aa/201587/)
@@ -44,44 +41,40 @@ These MWAS do not overlap with the aforementioned DMRs.
 
 These sets were tested for enrichment in 3 categories of regulatory datasets:
 
-1) Experimental TFBSs - cell type-specific ChIP-seq-obtained TFBSs from the ENCODE project;
-2) Experimental Histones - cell type-specific ChIP-seq-obtained histone modification marks from the ENCODE;
-3) Selected TFBSs - non-cell type-specific TFBSs, manually pre-assemble from most reliably detected peaks
+* **Histone** - 722 cell type-specific histone modification marks (41 marks, 69 cell lines). Information about individual marks can be looked up on [Histome: the Histone Infobase](http://www.actrec.gov.in/histome/searchgoog.php). For more detailed overview, check an excellent paper [Barski, A., Cuddapah, S., Cui, K., Roh, T.-Y., Schones, D. E., Wang, Z., … Zhao, K. (2007). High-resolution profiling of histone methylations in the human genome. Cell, 129(4), 823–37. doi:10.1016/j.cell.2007.05.009](http://www.sciencedirect.com/science/article/pii/S0092867407006009)
 
-P-values are corrected for multiple testing using FDR. For each analysis, only the significant enrichment results (p.adj < 0.1) are shown. Negative p-value indicates depletion. Tables show top 10 or less enriched/depleted associations, barplots visualize the same results. If an analysis does not have any significant results, it is not displayed at all.
+* **TFBSs** - 1952 cell type-specific transcription factor binding sites (277 transcription factors, 91 cell lines). Information about individual transcription factors can be looked up on [Factorbook](http://factorbook.org/mediawiki/index.php/Welcome_to_factorbook).
 
-As a 'background' for estimating random chance we are using whole genome - thus, p-values  are a bit over-optimistic. We are specifically answering the question "What is so special about the sets of methylated regions?"
+* **Roadmap Epigenomics** - histone modifications, brain specific subset
 
-Information about histone modification marks can be looked up on [Histome: the Histone Infobase](http://www.actrec.gov.in/histome/searchgoog.php).
+Information about cell lines used in the ENCODE project can be found at [the ENCODE cell types](http://genome.ucsc.edu/ENCODE/cellTypes.html) portal.
+
+Information about Roadmap Epigenomics abbreviations can be found in the [jul2013.roadmapData.qc](https://docs.google.com/spreadsheet/ccc?key=0Am6FxqAtrFDwdHU1UC13ZUxKYy1XVEJPUzV6MEtQOXc&usp=sharing) document.
+
+Instead of all available cell lines, subsets of tissue-specific cell lines can be used. 
+
+* Brain cell lines, normal karyotype: c("Nha", "Hah", "Bcbrainh11058n")
+
+The ENCODE datasets are cell-type incomplete, that is, for one cell type the data about the distribution of all histone marks are available, but the other cell type may have only a few histone mark datasets. So, the matrixes of *cells x marks* will have many missing values. They have to be filtered to remove rows/columns containing too much missing values, otherwise, clustering and visualization algorithms break. The heatmaps of such filtered matrixes are shown.
+
+The [Roadmap Epigenomics](https://sites.google.com/site/anshulkundaje/projects/epigenomeroadmap) datasets are also incomplete, i.e., brain has only 7 histone modification marks profiled (h3k9me3, h3k4me3, h3k4me1, h3k36me3, h3k27me3, h3k9ac, h3k27ac).
+
+P-values are corrected for multiple testing using FDR. For each analysis, only the significant enrichment results (p.adj < 0.1) are shown. Negative p-value indicates depletion.
 
 Summary
 ===
-Bipolar disorder
----
-- Non-cell type-specific enrichment in Pol2
-- Non-cell type-specific enrichment in H3K4me3, depletion in H3K9me3
-- Hypomethylated peaks show stronger enrichments
 
-Schizophrenia
----
-- Non-cell type-specific enrichment in mostly Pol2, SIN3A, MAZ, HMGN3. Selected TFBSs include TAF1, EGR1, TBP, REST, MYV, MAX. Depletion in FOSL2, GATA3, P300
-- Non-cell type-specific enrichment in H3K4me3, depletion in H3K9me3
-- Hypomethylated peaks show stronger enrichments
+BP and SCZ show enrichment in similar set of activating histone marks, some, like H2AZ, are bivalent, i.e., activating and repressing. These enrichments are observed in Normal human astrocytes.
 
-MWAS only
----
-- CEBPB appears to bind in these regions more often than can happen by chance. This confirmation comes from the analysis of the combined high-quality dataset, and from the individual ENCODE tracks.
-- There is a strong monocyte-specific signature of activating histone marks (H3K4me1, H3K4me2) enriched with the 139 schisophrenia-associated DMRs. An artefact of blood-derived methylation profiling?
-- The DMRs are highly conserved, and devoid of low complexity regions and gaps.
+MWAS was underpowered, but still able to show enrichment in activating H3K4me2 and H3K9ac marks.
 
-Differences between BP and SZ
----
-- Differences in Pol2 and H3K4me3 are not interesting, they both significant, only to a different extent.
-- BP is significantly enriched in SP1 and ARID1A, while SZ is not. Same with H3K27me3 and NCOR
+H3K9ac (prefrontal cortex) and another activating mark H3K4me3 (germinal matrix) are enriched in BP. They are also enciched in SCZ across whole brain structures.
 
-Bottom line
----
-Hypothesis did not confirm - both studies show different regulatory associations
+MWAS shows H3K4me1 (activating) in inferior temporal lobe, prefrontal cortex, hippocampus, and substantia nigra. Another activating H3K9ac (substantia nigra). Depletion in repressive marks H3K27me3 and H3K9me3.
+
+```{r}
+cells<-c("Nha", "Hah", "Bcbrainh11058n")
+```
 
 Results
 ===
@@ -89,61 +82,102 @@ Results
 Bipolar disorder
 ---
 
-```{r}
-dirs <- list.dirs("data.gr/", full.names=T, recursive=F) # Paths the SNP sets analyses
-for (i in (1:length(dirs))){
-  mtx <- read.table(paste(dirs[i], "matrix.txt", sep="/"), sep="\t", row.names=1, header=T)
-  mtx <- mtx[, grep("all", colnames(mtx), invert=T)] # Remove 'all' sets that wereincorrectly created and run
-  mtx <- mtx[, sort(colnames(mtx))]
-  showTable(mtx[, sort(grep("bp", colnames(mtx)))], adjust="fdr", pval=0.1)
-}
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/Histone/matrix.txt", colnum=c(7), factor="Histone", cell=cells, isLog10=TRUE, adjust="fdr", pval=0.1, numtofilt=2, toPlot="bar")
+```
+
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/TFBSs/matrix.txt", colnum=c(1), factor="Tfbs", cell=cells, isLog10=TRUE, adjust="fdr", pval=0.1, numtofilt=1, toPlot="bar")
 ```
 
 Schizophrenia
 ---
 
-```{r}
-dirs <- list.dirs("data.gr/", full.names=T, recursive=F) # Paths the SNP sets analyses
-for (i in (1:length(dirs))){
-  mtx <- read.table(paste(dirs[i], "matrix.txt", sep="/"), sep="\t", row.names=1, header=T)
-  mtx <- mtx[, grep("all", colnames(mtx), invert=T)] # Remove 'all' sets that wereincorrectly created and run
-  mtx <- mtx[, sort(colnames(mtx))]
-  showTable(mtx[, sort(grep("sz|MWAS", colnames(mtx)))], adjust="fdr", pval=0.1)
-}
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/Histone/matrix.txt", colnum=c(4), factor="Histone", cell=cells, isLog10=TRUE, adjust="fdr", pval=0.1, numtofilt=2, toPlot="bar")
+```
+
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/TFBSs/matrix.txt", colnum=c(5), factor="Tfbs", cell=cells, isLog10=TRUE, adjust="fdr", pval=0.1, numtofilt=0, toPlot="bar")
 ```
 
 MWAS
 ---
 
-```{r}
-dirs <- list.dirs("data.gr/", full.names=T, recursive=F) # Paths the SNP sets analyses
-for (i in (1:length(dirs))){
-  mtx <- read.table(paste(dirs[i], "matrix.txt", sep="/"), sep="\t", row.names=1, header=T)
-  mtx <- mtx[, grep("all", colnames(mtx), invert=T)] # Remove 'all' sets that wereincorrectly created and run
-  mtx <- mtx[, sort(colnames(mtx))]
-  showTable(mtx[, sort(grep("MWAS", colnames(mtx))), drop=F], adjust="fdr", pval=0.1)
-}
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/Histone/matrix.txt", colnum=c(3), factor="Histone", cell=cells, isLog10=TRUE, adjust="fdr", pval=0.1, numtofilt=2, toPlot="bar")
 ```
 
-Differences between BP and SZ
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/TFBSs/matrix.txt", colnum=c(4), factor="Tfbs", cell=cells, isLog10=TRUE, adjust="fdr", pval=0.1, numtofilt=1, toPlot="bar")
+```
+
+Roadmap Epigenomics data
+===
+
+Bipolar disorder
 ---
-We are looking here at the regulatory datasets showing differential enrichment with HYPOmethylated disease-associated regions.
-```{r}
-dirs <- list.dirs("data.gr/", full.names=T, recursive=F) # Paths the SNP sets analyses
-for (i in (1:length(dirs))){
-  mtx <- read.table(paste(dirs[i], "matrix.txt", sep="/"), sep="\t", row.names=1, header=T)
-  mtx <- mtx[, grep("all", colnames(mtx), invert=T)] # Remove 'all' sets that wereincorrectly created and run
-  mtx <- mtx[, sort(colnames(mtx))]
-  mtx.subset <- mtx[, grep("hypo", colnames(mtx))]
-  mtx.subset <- mtx.subset[order(mtx.subset[, grep("bp", colnames(mtx.subset))] - 
-                                   mtx.subset[, grep("sz", colnames(mtx.subset))]), ]
-  print(dirs[[i]])
-  print("Top differentially enriched")
-  print(kable(head(mtx.subset)))
-  cat("\n")
-  print("Bottom differentially enriched")
-  print(kable(tail(mtx.subset)))
-  cat("\n")
-}
+Overview of Histone/Tissue enrichments
+
+```{r fig.height=5 , eval=T}
+showHeatmap("data.gr/all_vs-reHistoneBrain/matrix.txt", colnum=c(1), factor="none", cell="none", isLog10=FALSE, adjust="none", pval=0.1, numtofilt=0, toPlot="heat")
+```
+
+Most significant enrichments/depletions
+
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/all_vs-reHistoneBrain/matrix.txt", colnum=c(1), factor="none", cell="none", isLog10=FALSE, adjust="none", pval=0.1, numtofilt=1, toPlot="bar")
+```
+
+Schizophrenia
+---
+Overview of Histone/Tissue enrichments
+
+```{r fig.height=5 , eval=T}
+showHeatmap("data.gr/all_vs-reHistoneBrain/matrix.txt", colnum=c(8), factor="none", cell="none", isLog10=FALSE, adjust="none", pval=0.1, numtofilt=0, toPlot="heat")
+```
+
+Most significant enrichments/depletions
+
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/all_vs-reHistoneBrain/matrix.txt", colnum=c(8), factor="none", cell="none", isLog10=FALSE, adjust="none", pval=0.1, numtofilt=1, toPlot="bar")
+```
+
+MWAS
+---
+
+Overview of Histone/Tissue enrichments
+
+```{r fig.height=5 , eval=T}
+showHeatmap("data.gr/all_vs-reHistoneBrain/matrix.txt", colnum=c(4), factor="none", cell="none", isLog10=FALSE, adjust="none", pval=0.1, numtofilt=0, toPlot="heat")
+```
+
+Most significant enrichments/depletions
+
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/all_vs-reHistoneBrain/matrix.txt", colnum=c(4), factor="none", cell="none", isLog10=FALSE, adjust="none", pval=0.1, numtofilt=1, toPlot="bar")
+```
+
+
+
+Differences between BP, SZ, and MWAS
+===
+
+Histone
+---
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/Histone/matrix.txt", colnum=c(7,4,3), factor="Histone", cell=cells, isLog10=TRUE, adjust="fdr", pval=0.1, numtofilt=2, toPlot="bar")
+```
+
+TFBS
+---
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/TFBSs/matrix.txt", colnum=c(1,5,4), factor="Tfbs", cell=cells, isLog10=TRUE, adjust="fdr", pval=0.1, numtofilt=1, toPlot="bar")
+```
+
+Roadmap Epigenomics
+---
+```{r fig.height=3 , eval=T}
+showHeatmap("data.gr/all_vs-reHistoneBrain/matrix.txt", colnum=c(1,8,4), factor="none", cell="none", isLog10=FALSE, adjust="none", pval=0.1, numtofilt=1, toPlot="bar")
 ```
 

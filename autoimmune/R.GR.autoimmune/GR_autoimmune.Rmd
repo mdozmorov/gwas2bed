@@ -1,19 +1,25 @@
 ---
-title: "Supplemental Results. Analysis of autoimmune disease- and trait-associated SNP sets"
-author: "Mikhail Dozmorov, Lukas R. Cara, Cory B. Giles, Bridget T. McInnes, Jonathan D. Wren"
 output: html_document
 ---
+GenomeRunner web: identifying potential regulatory impact of SNP sets
+===
+
+Mikhail G. Dozmorov<sup>1*</sup>, Lukas R. Cara<sup>2</sup>, Cory B. Giles<sup>2</sup>, Bridget T. McInnes<sup>4</sup>, Jonathan D. Wren<sup>2,3</sup>
+
+<sup>1</sup> Virginia Commonwealth University, Department of Biostatistics, 1200 E. Clay St., Richmond, VA, 23298, USA
+
+<sup>2</sup> Oklahoma Medical Research Foundation, Oklahoma City, Arthritis and Clinical Immunology Research Program, 825 N.E. st, Oklahoma City, OK 73104-5005, USA
+
+<sup>3</sup> University of Oklahoma Health Sciences Center, Department of Biochemistry and Molecular Biology, 940 Stanton L. Young Blvd, OK 73104-5005, USA
+
+<sup>4</sup> Virginia Commonwealth University, Department of Computer Science. 401 West Main Street, Richmond, VA, 23284-3019, USA
+
+The authors wish it to be known that, in their opinion, the first two authors should be regarded as joint First Authors
+
+<sup>*</sup> To whom correspondence should be addressed. Tel: +1-804-628-0260; E-mail: mdozmorov@vcu.edu 
+
+
 ```{r setup, echo=FALSE, message=FALSE}
-source("utils.R")
-suppressMessages(library(Hmisc)) # For rcorr function
-suppressMessages(library(gplots))
-suppressMessages(library(Biobase))
-suppressMessages(library(limma))
-suppressMessages(library(reshape2))
-suppressMessages(library(dplyr))
-suppressMessages(library(plyr))
-suppressMessages(library(ggplot2))
-#library(qvalue)
 # Set up the environment
 library(knitr) 
 opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', echo=F, dpi=300, out.width=700)
@@ -24,6 +30,7 @@ set.seed(1)
 ```
 
 ```{r loadSharedData}
+source("../../../../GenomeRunner/R.GenomeRunner/utils.R")
 # All disease-disease relationships
 mtx.disease <- read.table("../../AllNet3.net", sep="\t", header=F)
 # Mapping of term IDs to ICD9 codes
@@ -42,7 +49,7 @@ rm(tmp1, tmp2)
 mtx.lit1 <- read.table("data/terms.msh.path.txt", sep="\t", stringsAsFactors=F)
 mtx.lit2 <- read.table("data/terms.snomed.path.txt", sep="\t", stringsAsFactors=F)
 #mtx.lit3 <- read.table("data/terms.snomed.vector.txt", sep="\t", stringsAsFactors=F)
-mtx.lit <- join(mtx.lit1, mtx.lit2, by=c("V1" = "V1", "V2" = "V2"))
+mtx.lit <- plyr::join(mtx.lit1, mtx.lit2, by=c("V1" = "V1", "V2" = "V2"))
 #mtx.lit <- join(mtx.lit, mtx.lit3, by=c("V1" = "V1", "V2" = "V2"))
 colnames(mtx.lit) <- c("term1", "term2", "msh.path", "snomedct.path")
 # Type of correlation coefficient to use
