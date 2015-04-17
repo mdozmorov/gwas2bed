@@ -79,6 +79,18 @@ To analyze cancer-specific genes
 
 To analyze breast cancer genes
 
+Collection of cancer-associated genes
+---
+
+We collected a large number of cancer-associated genes from several publicly available resources. First, a total of 487 genes were downloaded from the Cancer Gene Census [PMID: 20952405] (accessed on 10 July 2013, denoted as ‘CGC genes’). CGC genes are well-curated and have been widely used as a reference gene set in many cancer-related projects [PMID: 20952405]. Second, we collected 125 cancer driver genes from Vogelstein et al. [PMID: 23539594]. Finally, we used the 4,050 cancer-associated genes from a previous study [PMID: 24881052]
+
+**Vogelstein.xlsx** - cancer genes from Vogelstein study
+
+**Cheng_S1.xlsx** - 4,050 cancer genes from Cheng study
+
+**Vuong.xlsx** - 2,262 unique somatic mutations in the pocket regions of 369 unique human proteins. To analyze for epigenomic enrichments
+
+
 [Xie, M., Lu, C., Wang, J., McLellan, M. D., Johnson, K. J., Wendl, M. C., … Ding, L. (2014). Age-related mutations associated with clonal hematopoietic expansion and malignancies. Nature Medicine, 20(12), 1472–1478. doi:10.1038/nm.3733]
 (http://www.nature.com/nm/journal/v20/n12/full/nm.3733.html#supplementary-information)
 ---
@@ -159,5 +171,20 @@ Number of SNPs per cancer type:
 	6863 Thyroic Carcinoma
 	164946 Uterin Carcinoma
 
+[Stefansson, O. a., Moran, S., Gomez, A., Sayols, S., Arribas-Jorba, C., Sandoval, J., … Esteller, M. (2014). A DNA methylation-based definition of biologically distinct breast cancer subtypes. Molecular Oncology, 1–14. doi:10.1016/j.molonc.2014.10.012](http://www.moloncol.org/article/S1574-7891(14)00261-0/addons)
 
+**Stefansson_S2.docx** - LumiB and Basal CpG signatures from Illumina Infinium 450K
+
+[Zhao, X.-M., Liu, K.-Q., Zhu, G., He, F., Duval, B., Richer, J.-M., … Chen, L. (2014). Identifying cancer-related microRNAs based on gene expression data. Bioinformatics, 1–9. doi:10.1093/bioinformatics/btu811](http://bioinformatics.oxfordjournals.org/content/suppl/2014/12/11/btu811.DC1)
+
+**Zhao_S1.docx** - miRNAs predicted by computational approaches
+
+**Zhao_S3.xlsx** - The HRmiRs (high-rank) identified in four type of cancer datasets. 
+
+
+[Beroukhim, R., Mermel, C. H., Porter, D., Wei, G., Raychaudhuri, S., Donovan, J., … Meyerson, M. (2010). The landscape of somatic copy-number alteration across human cancers. Nature, 463(7283), 899–905. doi:10.1038/nature08822]()
+
+**Beroukhim_S2.xlsx** - 158 independent regions of significant focal SCNAs, including 76 amplifications and 82 deletions, in the pooled analysis of all our data
+
+**Beroukhim_S5.xlsx** - Peak regions in individual cancer types but not in the pooled analysis
 

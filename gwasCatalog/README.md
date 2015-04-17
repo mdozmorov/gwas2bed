@@ -28,6 +28,10 @@ Output: A 'gwasCatalog-[date].bed' file with the coordinates of all GWAS SNPs. T
 
 `./make.sh` will make SNP files from GWAS.txt
 
+[db_Johnson](http://www.biomedcentral.com/1471-2350/10/6)
+---
+	- `JohnsonOdonnell_Table.txt.gz` - 56,411 GWAS genotype-phenotype associations and annotation.
+
 [db_Phenuma](http://cath.gisum.uma.es:8080/Phenuma/resources/networks/phenuma_networks.zip)
 ---
 
@@ -40,4 +44,9 @@ orpha2orpha.txt - score column 5, "inferred_gene" some NULL but most are OK. But
 [db_GWASdb2](http://jjwanglab.org/gwasdb)
 ---
 
-`./make.sh` will create trait-specific files
+`./make.sh` will create trait-specific BED files
+
+[db_DisGeNet](http://www.disgenet.org/web/DisGeNET/menu/downloads)
+---
+
+`./make.sh` will create trait-specific EntrezIDs list files
