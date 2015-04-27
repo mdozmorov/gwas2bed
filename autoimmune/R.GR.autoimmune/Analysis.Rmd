@@ -19,7 +19,7 @@ set.seed(1)
 library(xlsx)
 # Load term mapping
 term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
-
+term.mapping <- term.mapping[ term.mapping$Category == "immunological", ]
 invisible(source("../../../../GenomeRunner/R.GenomeRunner/utils1.R")) # See the required packages there
 source("../../../../GenomeRunner/R.GenomeRunner/episimilarity.R")
 # Correlation to use
@@ -30,33 +30,14 @@ Gene Epigenomic similarity
 ===
 
 ```{r}
-# # Gene Jaccard similarity
-# # ===
-# mtx.cor <- read.table("data_GWASdb2_manual/genes_selected_jaccard_wide.txt", sep="\t", header=TRUE, row.names=1, stringsAsFactors=FALSE)
-
-# # GWAS Jaccard similarity
-# # ===
-# mtx.cor <- as.matrix(read.table("data_GWASdb2_manual/bed-matrix-wide.txt", sep="\t", header=TRUE, row.names=1, stringsAsFactors=FALSE))
-# # Downgrade self-self correlations, so they do not dominate clustering. Set to max + 1%
-# diag(mtx.cor) <- max(mtx.cor[ mtx.cor != max(mtx.cor) ]) + 0.01*max(mtx.cor[ mtx.cor != max(mtx.cor) ])
-
-# Gene Epigenomic similarity
-# ===
-mtx.cor <- rcorr(load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt")))[[1]]
-
-# # GWAS Epigenomic similarity
-# # ===
-# mtx.cor <- rcorr(load_gr_data(c("data_GWASdb2_manual/bed_selected/renamed/chromStates18/matrix_PVAL.txt", "data_GWASdb2_manual/bed_selected/renamed/gappedPeak/matrix_PVAL.txt", "data_GWASdb2_manual/bed_selected/renamed/DNase_hotspotbroadall/matrix_PVAL.txt")) )[[1]]
+# mtx.fig1a <- as.matrix(read.table("data/fig1a_matrix", sep="\t", header=F, stringsAsFactors=F))
+# labels.fig1a <- readLines("data/fig1a_labels")
+# colnames(mtx.fig1a) <- labels.fig1a; rownames(mtx.fig1a) <- labels.fig1a
+# mtx.cor <- rcorr(mtx.fig1a, type="pearson")[[1]]
+mtx.cor <- rcorr(load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt")), type="pearson")[[1]]
 
 # Subset by the names in term.mapping object
 mtx.cor <- mtx.cor[rownames(mtx.cor) %in% term.mapping$Name, colnames(mtx.cor) %in% term.mapping$Name]
-
-# # Investigating distribution of correlation coefficients
-# tmp <- as.matrix(mtx.cor); tmp[ lower.tri(tmp, diag=TRUE) ] <- NA # Set lower portion, with diagonal, to NA
-# tmp <- melt(tmp) # Convert to long format
-# tmp <- tmp[ !is.na(tmp$value), ] # Remove rows with NAs
-# summary(tmp$value)
-# hist(tmp$value, n=100)
 
 # A vector of category names, same order as the correlation matrix
 categoryNames <- term.mapping$Category[ match(rownames(mtx.cor), term.mapping$Name) ]
@@ -68,6 +49,7 @@ ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
 ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
 ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
 ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
+mtx.heat <- mtx.plot(mtx.cor, SideColors=ColSideColors) # Clustering parameters
 
 ```
 

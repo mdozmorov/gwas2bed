@@ -168,7 +168,7 @@ Combining with episimilarity
 
 ```{r}
 # Merge previously prepared matrixes
-mtx.list.epi <- c(list(mtx.fig1a), list(mtx.jaccard), list(term.ICD9.occur), list(term.ICD9.phi), list(term.ICD9.risk), list(term.msh.path), list(term.snomed.path), list(term.snomed.vector), list(term.iridescent.minMim), list(term.iridescent.misn), list(term.iridescent.obsExp), list(term.iridescent.relOverlap), list(term.iridescent.sharedRels), list(dose.jiang), list(dose.lin), list(dose.rel), list(dose.resnik), list(dose.wang))
+mtx.list.epi <- c(list(mtx.fig1a), list(mtx.jaccard), list(term.msh.path), list(term.snomed.path), list(term.snomed.vector), list(term.iridescent.minMim), list(term.iridescent.misn), list(term.iridescent.obsExp), list(term.iridescent.relOverlap), list(term.iridescent.sharedRels), list(dose.jiang), list(dose.lin), list(dose.rel), list(dose.resnik), list(dose.wang))
 #, list(mtx.clusterSim.MF.Resnik), list(mtx.clusterSim.MF.Wang))
 mtx.cor.epi.joined <- do.call(cbind, lapply(mtx.list.epi, function(x) x[match(rownames(mtx.list.epi[[1]]), rownames(x)), ]))
 rownames(mtx.cor.epi.joined) <- rownames(mtx.list.epi[[1]])
@@ -198,23 +198,22 @@ rownames(mtx.cor.epi.joined) <- rownames(mtx.list.epi[[1]])
 
 
 # Add (combinations of) GenomeRunner's results
-dname <- list("data.gr/ENCODE_Dgf/matrix_PVAL.txt",
-           "data.gr/ENCODE_Dnase/matrix_PVAL.txt",
-           "data.gr/ENCODE_Histone/matrix_PVAL.txt",
-           "data.gr/ENCODE_Tfbs/matrix_PVAL.txt",
+dname <- list("data.gr/ENCODE_Tfbs/matrix_PVAL.txt",
            "data.gr/Roadmap_broadPeak/matrix_PVAL.txt",
-           "data.gr/Roadmap_DNase_hotspot01/matrix_PVAL.txt",
-           "data.gr/Roadmap_DNase_hotspotall/matrix_PVAL.txt",
-           "data.gr/Roadmap_DNase_hotspotbroad01/matrix_PVAL.txt",
            "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt",
            "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt",
            "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt",
            "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt",
            "data.gr/Roadmap_chromStates18/matrix_PVAL.txt",
-           c("data.gr/ENCODE_Dgf/matrix_PVAL.txt", "data.gr/ENCODE_Dnase/matrix_PVAL.txt", "data.gr/ENCODE_Histone/matrix_PVAL.txt", "data.gr/ENCODE_Tfbs/matrix_PVAL.txt"), 
-           "data.gr/ENCODE_FDR/matrix.txt",
-           c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspot01/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotall/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotbroad01/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_chromStates18/matrix_PVAL.txt")
+           c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_chromStates18/matrix_PVAL.txt")
            )
+# # Not used
+# "data.gr/ENCODE_Dgf/matrix_PVAL.txt",
+# "data.gr/ENCODE_Dnase/matrix_PVAL.txt",
+# "data.gr/ENCODE_Histone/matrix_PVAL.txt",
+# "data.gr/Roadmap_DNase_hotspot01/matrix_PVAL.txt",
+# "data.gr/Roadmap_DNase_hotspotall/matrix_PVAL.txt",
+# "data.gr/Roadmap_DNase_hotspotbroad01/matrix_PVAL.txt",
 
 # library(minerva) # Playing with MIC correlation coefficient
 # Read in data in a loop
@@ -228,7 +227,7 @@ for (x in dname) {
 }
 
 # Set the column names after merging lists
-colnames(mtx.cor.epi.joined) <- c("Farh", "jaccard", "occur", "phi", "risk", "msh.path", "snomed.path", "snomed.vector", "iridescent.minMim", "iridescent.misn", "iridescent.obsExp", "iridescent.relOverlap", "iridescent.sharedRels", "dose.jiang", "dose.lin", "dose.rel", "dose.resnik", "dose.wang", "Encode.Dgf", "Encode.Dnase", "Encode.Histone", "Encode.Tfbs", "Roadmap.broadPeak", "Roadmap.Dnase.hotspot01", "Roadmap.Dnase.hotspotall", "Roadmap.Dnase.hotspotbroad01", "Roadmap.Dnase.hotspotbroadall", "Roadmap.Dnase.narrowPeak", "Roadmap.gappedPeak", "Roadmap.narrowPeak", "Roadmap.chromStates18", "Encode.combined", "Encode.FDR", "Roadmap.combined")
+colnames(mtx.cor.epi.joined) <- c("Farh", "jaccard", "msh.path", "snomed.path", "snomed.vector", "iridescent.minMim", "iridescent.misn", "iridescent.obsExp", "iridescent.relOverlap", "iridescent.sharedRels", "dose.jiang", "dose.lin", "dose.rel", "dose.resnik", "dose.wang", "Encode.Tfbs", "Roadmap.broadPeak", "Roadmap.Dnase.hotspotbroadall", "Roadmap.Dnase.narrowPeak", "Roadmap.gappedPeak", "Roadmap.narrowPeak", "Roadmap.chromStates18", "Roadmap.combined")
 #  "dose.jiang", "dose.lin", "dose.rel", "dose.resnik", "dose.wang", "sim.MF.Resnik", "sim.MF.Wang",
 ```
 
