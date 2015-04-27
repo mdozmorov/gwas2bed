@@ -1,0 +1,211 @@
+---
+# title: ""
+# author: "Mikhail Dozmorov"
+# date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+```{r setup, echo=FALSE, include=FALSE, cache=FALSE, warning=FALSE, message=FALSE}
+# Set up the environment
+library(knitr) 
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=100,  echo=F, autodep=T, width=200, warning=FALSE, comment=NA)
+options(replace.assign=TRUE, width=500)
+tidy.opts=list(width.cutoff=200)
+suppressMessages(library(pander))
+panderOptions('table.split.table', Inf)
+set.seed(1)
+```
+
+```{r message=FALSE}
+library(xlsx)
+# Load term mapping
+term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
+
+invisible(source("../../../../GenomeRunner/R.GenomeRunner/utils1.R")) # See the required packages there
+source("../../../../GenomeRunner/R.GenomeRunner/episimilarity.R")
+# Correlation to use
+cortype <- "spearman"
+```
+
+Gene Epigenomic similarity
+===
+
+```{r}
+# # Gene Jaccard similarity
+# # ===
+# mtx.cor <- read.table("data_GWASdb2_manual/genes_selected_jaccard_wide.txt", sep="\t", header=TRUE, row.names=1, stringsAsFactors=FALSE)
+
+# # GWAS Jaccard similarity
+# # ===
+# mtx.cor <- as.matrix(read.table("data_GWASdb2_manual/bed-matrix-wide.txt", sep="\t", header=TRUE, row.names=1, stringsAsFactors=FALSE))
+# # Downgrade self-self correlations, so they do not dominate clustering. Set to max + 1%
+# diag(mtx.cor) <- max(mtx.cor[ mtx.cor != max(mtx.cor) ]) + 0.01*max(mtx.cor[ mtx.cor != max(mtx.cor) ])
+
+# Gene Epigenomic similarity
+# ===
+mtx.cor <- rcorr(load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt")))[[1]]
+
+# # GWAS Epigenomic similarity
+# # ===
+# mtx.cor <- rcorr(load_gr_data(c("data_GWASdb2_manual/bed_selected/renamed/chromStates18/matrix_PVAL.txt", "data_GWASdb2_manual/bed_selected/renamed/gappedPeak/matrix_PVAL.txt", "data_GWASdb2_manual/bed_selected/renamed/DNase_hotspotbroadall/matrix_PVAL.txt")) )[[1]]
+
+# Subset by the names in term.mapping object
+mtx.cor <- mtx.cor[rownames(mtx.cor) %in% term.mapping$Name, colnames(mtx.cor) %in% term.mapping$Name]
+
+# # Investigating distribution of correlation coefficients
+# tmp <- as.matrix(mtx.cor); tmp[ lower.tri(tmp, diag=TRUE) ] <- NA # Set lower portion, with diagonal, to NA
+# tmp <- melt(tmp) # Convert to long format
+# tmp <- tmp[ !is.na(tmp$value), ] # Remove rows with NAs
+# summary(tmp$value)
+# hist(tmp$value, n=100)
+
+# A vector of category names, same order as the correlation matrix
+categoryNames <- term.mapping$Category[ match(rownames(mtx.cor), term.mapping$Name) ]
+names(categoryNames) <- term.mapping$Name[ match(rownames(mtx.cor), term.mapping$Name)]
+# Set side colors
+ColSideColors <- as.numeric(factor(categoryNames[ colnames(mtx.cor) ]))
+cbind((categoryNames), ColSideColors) # Sanity check
+ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
+ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
+ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
+ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
+
+```
+
+```{r eval=FALSE}
+library(pvclust)
+library(parallel)
+cl <- makeCluster(4, type="PSOCK")
+result <- parPvclust(cl=cl, as.matrix(mtx.cor), method.dist=dist.method, method.hclust=hclust.method, nboot=1000)
+#result <- parPvclust(cl=cl, lung, method.dist="cor", method.hclust="average", nboot=10000)
+stopCluster(cl)
+plot(result)
+pvrect(result, alpha=0.95)
+```
+
+```{r epigenomicVisualization1, fig.height=5}
+mtx.heat <- mtx.plot(mtx.cor, SideColors=ColSideColors) # Clustering parameters
+# , dist.method="maximum", hclust.method="average"
+```
+
+Example of testing combinations of clustering methods
+```{r eval=FALSE}
+dist.methods <- c("euclidean", "maximum","manhattan", "minkowski")
+hclust.methods <- c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid")
+pdf("results/clustering_combinations.pdf")
+for (d in dist.methods) {
+  for (h in hclust.methods) {
+    par(oma=c(10,0,0,10), mar=c(10, 4.1, 4.1, 10), cex.main=0.65) # Adjust margins
+    h<-heatmap.2(as.matrix(mtx.cor), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=d)}, hclustfun=function(x){hclust(x, method=h)}, cexRow=1, cexCol=1,  main=paste(d, h),  RowSideColors=ColSideColors) # cellnote=formatC(as.matrix(mtx.cor), format="f", digits=2), notecol="black", notecex=1,
+  }
+}
+dev.off()
+```
+
+```{r fig.height=3}
+# Empirically define clusters
+par(mfrow=c(1, 2))
+h <- 1.3 # Empirically set height to cut the tree
+mtx.heat$colDendrogram %>% plot(horiz=T); abline(v=h); as.hclust(mtx.heat$colDendrogram)$height %>% density %>% plot; abline(v=h)
+mtx.clust <- mtx.heat$colDendrogram %>% mtx.clusters(height=h, minmembers=2)
+par(mfrow=c(1, 1))
+```
+
+What are the DEGFs counts in each clustering?
+===
+
+Using GENES OR chromStates18
+---
+
+```{r}
+# A matrix to use for differential epigenomic analysis
+mtx.degs <- load_gr_data("data_GWASdb2_manual/genes_selected/bed/chromStates18/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust))
+```
+
+Using GENES OR chromStates18+encHistone+encBroadHmm
+---
+
+```{r}
+# A matrix to use for differential epigenomic analysis
+mtx.degs <- load_gr_data(c("data_GWASdb2_manual/genes_selected/bed/chromStates18/matrix_OR.txt", "data_GWASdb2_manual/genes_selected/bed/encHistone/matrix_OR.txt", "data_GWASdb2_manual/genes_selected/bed/encBroadHmm/matrix_OR.txt", "data_GWASdb2_manual/genes_selected/bed/DNase_hotspot01/matrix_OR.txt"))
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter# %>% mtx.rand(randomize = "mix")
+
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust))
+```
+
+Genes, Cell type-specific analysis
+---
+
+
+
+
+```{r}
+mtx <- load_gr_data(c("data_GWASdb2_manual/genes_selected/bed/chromStates18/matrix_PVAL.txt", "data_GWASdb2_manual/genes_selected/bed/encBroadHmm/matrix_PVAL.txt", "data_GWASdb2_manual/genes_selected/bed/encHistone/matrix_PVAL.txt", "data_GWASdb2_manual/genes_selected/bed/DNase_hotspot01/matrix_PVAL.txt", "data_GWASdb2_manual/genes_selected/bed/DNase_hotspotall/matrix_PVAL.txt"))
+
+n.diseases <- ncol(mtx) # Total number of diseases to calculate the cell type-specific p-values
+# Prepare the matrix for merging with GF annotations
+mtx <- as.data.frame(cbind(GF=rownames(mtx), mtx))
+mtx <- left_join(mtx, gfAnnot[, c(1, 3, 5, 2)], by=c("GF" = "V1")) 
+
+pval <- 0.01 # P-value cutoff above which count the enrichments significant
+cells <- unique(mtx$V3) # All cell types
+# Global counts
+tot.tests <- nrow(mtx) # Total number of enrichment analyses
+cells.tests <- vector(mode="numeric", length=length(cells)) # Number of analyses per cell type
+for(c in 1:length(cells)) {
+  cells.tests[c] <- length(mtx$V3[ mtx$V3 == cells[c]]) # Number of analyses per cell type
+}
+
+# Disease-specific counts
+pval.disease <- list() # for p-values
+c2x2.disease <- list() # for 2x2 tables
+for(i in 2:(n.diseases + 1)){ # Disease positions are now shifted by 1
+  tot.sig <- length(mtx[ 1/10^abs(as.numeric(mtx[, i])) < pval, i]) # Disease-specific total number of significant results
+  cells.sig <- vector(mode="numeric", length=length(cells)) # Disease-specific & cell type-specific number of significant results
+  for(c in 1:length(cells)) {
+    mtx.sel <- as.numeric(mtx[ mtx$V3 == cells[c], i ]) # Disease- and cell type-specific vector
+    cells.sig[c] <- length( mtx.sel[ 1/10^abs(mtx.sel) < pval ]  ) # How many are significant
+  }
+  pval.disease.cell <- vector(mode="numeric", length=length(cells)) # A vector to store disease- and cell type-specific p-values
+  c2x2.disease.cell <- list() # A list to store disease- and cell type-specific 2x2 tables
+  for(c in 1:length(cells)) {
+    cells.c2x2 <- matrix(c(cells.sig[c], cells.tests[c] - cells.sig[c], 
+                          tot.sig - cells.sig[c], tot.tests - tot.sig - (cells.tests[c] - cells.sig[c])),
+                        dimnames=list(c("cell", "not cell"), c("sig", "not sig")),
+                        ncol=2) # 2x2 contingency table
+    pval.disease.cell[c] <- fisher.test(cells.c2x2)$p.value # Store the p-values
+    c2x2.disease.cell <- c(c2x2.disease.cell, list(c(cells.sig[c], cells.tests[c], tot.sig, tot.tests))) # Store the numbers to construct 2x2 tables
+  }
+  names(pval.disease.cell) <- cells # Name the collected vectors
+  names(c2x2.disease.cell) <- cells # as cell names
+  pval.disease <- c(pval.disease, list(pval.disease.cell)) # Store them
+  c2x2.disease <- c(c2x2.disease, list(c2x2.disease.cell)) # in disease-specific lists
+}
+names(pval.disease) <- colnames(mtx)[2:(n.diseases + 1)] # Name the disease-specific lists
+names(c2x2.disease) <- colnames(mtx)[2:(n.diseases + 1)] # by the names of the diseases
+
+cells.annot <- aggregate(gfAnnot$V4, list(gfAnnot$V3), unique)
+
+# View most significant cell lines
+for(d in 1:length(pval.disease)){ # Go through each disease
+  print(names(pval.disease)[d])
+  print(d)
+  cells.disease <- pval.disease[[d]][ pval.disease[[d]] < pval]
+  stats.disease <- c2x2.disease[[d]][ pval.disease[[d]] < pval]
+  if(length(cells.disease) > 0) {
+    # cells.stats.disease <- cbind(cells.disease, ldply(stats.disease, rbind))
+    cells.stats.disease <- cbind(cells.disease, t(as.data.frame(stats.disease)))
+    colnames(cells.stats.disease) <- c(names(pval.disease)[d], "cell.sig", "cell.tot", "all.sig", "all.tot")
+    cells.stats.disease <- merge(cells.stats.disease, cells.annot, by.x="row.names", by.y="Group.1")
+    class(cells.stats.disease$x) <- "character"
+    write.table(cells.stats.disease, "results/cell_specificity.txt", sep="\t", quote=F, row.names=FALSE, append=TRUE)
+  } else {
+    write.table(names(pval.disease)[d], "results/cell_specificity.txt", sep="\t", quote=F, row.names=FALSE, append=TRUE)
+    write.table("No cell type-specific enrichments", "results/cell_specificity.txt", sep="\t", quote=F, row.names=FALSE, append=TRUE)
+  }
+}
+```
+
+

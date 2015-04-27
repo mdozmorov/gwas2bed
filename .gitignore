@@ -15,3 +15,10 @@ more*
 *.zip
 *.tar.gz
 node_modules
+AllNet3.net
+autoimmune/R.GR.autoimmune/data/*
+autoimmune/bed500/*
+autoimmune/jaccard/*
+gwasCatalog/data/*
+tumorportal/R.GR.tumorportal/data.gr/*
+

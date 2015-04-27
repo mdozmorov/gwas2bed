@@ -1,0 +1,64 @@
+---
+title: "GenometriCorr correlations"
+author: "Mikhail G. Dozmorov"
+#date: "February 12, 2015"
+output: html_document
+---
+
+
+```{r}
+# library(devtools)
+# install_github('favorov/GenometriCorr')
+library("GenometriCorr")
+library("rtracklayer")
+library("TxDb.Hsapiens.UCSC.hg19.knownGene")
+refseq <- transcripts(TxDb.Hsapiens.UCSC.hg19.knownGene)
+```
+
+```{r}
+files <- list.files(path="../bed", pattern="*.bed", full.names=TRUE)
+
+file1 <-import(files[1])
+file2 <- import(files[2])
+file.bkg <- import("../bed/background//All_autoimmune.bed")
+```
+
+```{r}
+VisualiseTwoIRanges(ranges(file1[seqnames(file1) == "chr2"]),
+                    ranges(refseq[seqnames(refseq) == "chr2"]),
+                    nameA = "file1", nameB = "RefSeq Genes", 
+                    chrom_length = seqlengths(TxDb.Hsapiens.UCSC.hg19.knownGene)["chr1"],
+                    title = "CpGIslands and RefGenes on chr1 of Hg19")
+```
+
+```{r}
+pn.area <- 100
+pn.dist <- 100
+pn.jacc <- 100
+cpgi_to_genes <- GenometriCorrelation(file1, file2,  ecdf.area.permut.number = pn.area, mean.distance.permut.number = pn.dist, jaccard.measure.permut.number = pn.jacc, keep.distributions = TRUE, showProgressBar = TRUE)
+print(cpgi_to_genes)
+graphical.report(cpgi_to_genes, pdffile = "genometriCorr_test.pdf", show.chromosomes = c("chr2"), show.all = FALSE)
+visualize(cpgi_to_genes, pdffile = "genometriCorr_test2.pdf", show.chromosomes = c("chr2"), show.all = FALSE)
+```
+
+```{r}
+rquery <- file1
+rref <- file2
+unmapped_results <- GenometriCorrelation(rquery, rref, chromosomes.length=seqlengths(TxDb.Hsapiens.UCSC.hg19.knownGene)[1:24], ecdf.area.permut.number = pn.area, mean.distance.permut.number = pn.dist, jaccard.measure.permut.number = pn.jacc, keep.distributions = FALSE, showProgressBar = TRUE)
+map_space <- file.bkg
+
+# Does not work
+rquery <- import("../tmp11.bed")
+rref <- import("../tmp22.bed")
+map_space <- import("../tmp00.bed")
+# Works
+rquery <- import("../tmp1.bed")
+rref <- import("../tmp2.bed")
+map_space <- import("../tmp0.bed")
+mapped_rquery <- MapRangesToGenomicIntervals(what.to.map=rquery, where.to.map=map_space)
+mapped_rref <- MapRangesToGenomicIntervals(what.to.map=rref, where.to.map=map_space)
+mapped_results <- GenometriCorrelation(mapped_rquery, mapped_rref, ecdf.area.permut.number = pn.area, mean.distance.permut.number = pn.dist, jaccard.measure.permut.number = pn.jacc, keep.distributions = FALSE, showProgressBar = TRUE)
+print(mapped_results)
+
+```
+

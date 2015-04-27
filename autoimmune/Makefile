@@ -42,6 +42,7 @@ gfs:
 	find /home/genomerunner/db_3.00_12-01-2014/grsnp_db/hg19/Roadmap/DNase_hotspotbroadall/ -type f -name *.bed.gz > gfs_DNase_hotspotbroadall.txt ; \
 	find /home/genomerunner/db_3.00_12-01-2014/grsnp_db/hg19/Roadmap/DNase_hotspotbroad01/ -type f -name *.bed.gz > gfs_DNase_hotspotbroad01.txt ; \
 	find /home/genomerunner/db_3.00_12-01-2014/grsnp_db/hg19/Roadmap/DNase_narrowPeak/ -type f -name *.bed.gz > gfs_DNase_narrowPeak.txt
+	find ~/db_3.00_12-01-2014/grsnp_db/hg19/Roadmap/chromStates18.bed/ -type f -name "*.bed.gz" > gfs_chromStates18.txt
 
 
 
@@ -50,18 +51,18 @@ fois:
 	find bed/ -type f -name "*.bed" > fois.txt
 
 hypergeom4:
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_Tfbs.txt bed/background/All_autoimmune.bed -r ENCODE_Tfbs ; \
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_Histone.txt bed/background/All_autoimmune.bed.gz -r ENCODE_Histone ; \
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_broadPeaks.txt bed/background/All_autoimmune.bed.gz -r ENCODE_broadPeak ; \
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_Dnase.txt bed/background/All_autoimmune.bed.gz -r ENCODE_Dnase
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_Dgf.txt bed/background/All_autoimmune.bed.gz -r ENCODE_Dgf
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_narrowPeaks.txt bed/background/All_autoimmune.bed.gz -r ENCODE_narrowPeak ; \
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_gappedPeaks.txt bed/background/All_autoimmune.bed.gz -r ENCODE_gappedPeak ; \
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_DNase_hotspotall.txt bed/background/All_autoimmune.bed.gz -r ENCODE_DNase_hotspotall ; \
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_DNase_hotspot01.txt bed/background/All_autoimmune.bed.gz -r ENCODE_DNase_hotspot01 ; \
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_DNase_hotspotbroadall.txt bed/background/All_autoimmune.bed.gz -r ENCODE_DNase_hotspotbroadall ; \
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_DNase_hotspotbroad01.txt bed/background/All_autoimmune.bed.gz -r ENCODE_DNase_hotspotbroad01 ; \
-	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ -g hg19 fois.txt gfs_DNase_narrowPeak.txt bed/background/All_autoimmune.bed.gz -r ENCODE_DNase_narrowPeak ; \
-
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_Tfbs.txt bed/background/All_autoimmune.bed.gz -r ENCODE_Tfbs ; \
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_Histone.txt bed/background/All_autoimmune.bed.gz -r ENCODE_Histone ; \
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_broadPeaks.txt bed/background/All_autoimmune.bed.gz -r Roadmap_broadPeak ; \
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_Dnase.txt bed/background/All_autoimmune.bed.gz -r ENCODE_Dnase
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_Dgf.txt bed/background/All_autoimmune.bed.gz -r ENCODE_Dgf
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_narrowPeaks.txt bed/background/All_autoimmune.bed.gz -r Roadmap_narrowPeak ; \
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_gappedPeaks.txt bed/background/All_autoimmune.bed.gz -r Roadmap_gappedPeak ; \
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_DNase_hotspotall.txt bed/background/All_autoimmune.bed.gz -r Roadmap_DNase_hotspotall ; \
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_DNase_hotspot01.txt bed/background/All_autoimmune.bed.gz -r Roadmap_DNase_hotspot01 ; \
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_DNase_hotspotbroadall.txt bed/background/All_autoimmune.bed.gz -r Roadmap_DNase_hotspotbroadall ; \
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_DNase_hotspotbroad01.txt bed/background/All_autoimmune.bed.gz -r Roadmap_DNase_hotspotbroad01 ; \
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_DNase_narrowPeak.txt bed/background/All_autoimmune.bed.gz -r Roadmap_DNase_narrowPeak ; \
+	python -m grsnp.hypergeom4 -d /home/genomerunner/db_3.00_12-01-2014/ --pv_adjust None -g hg19 fois.txt gfs_chromStates18.txt bed/background/All_autoimmune.bed.gz -r Roadmap_chromStates18
 
 

@@ -30,7 +30,7 @@ set.seed(1)
 ```
 
 ```{r loadSharedData}
-source("../../../../GenomeRunner/R.GenomeRunner/utils.R")
+source("../../../../GenomeRunner/R.GenomeRunner/utils1.R")
 # All disease-disease relationships
 mtx.disease <- read.table("../../AllNet3.net", sep="\t", header=F)
 # Mapping of term IDs to ICD9 codes
@@ -61,16 +61,13 @@ We analyzed 39 autoimmune disease- and trait-associated SNP sets, obtained from 
 We used the original heatmap of shared genetic features among the autoimmune diseases and traits (Figure 1a in the original paper, re-created here as Figure 1) as a reference to compare our regulatory similarity measurements with. We thank the authors for providing us with the original numerical matrix of the heatmap.
 
 ```{r loadOverlapMtx_own, warning=FALSE, message=FALSE, fig.height=6, eval=FALSE}
-# Self-prepared overlap analysis
-mtx.overlap <- read.table("data/overlapMatrix.txt", sep="\t", head=F)
-mtx.overlap.carpet <- dcast(mtx.overlap, V1~V2, mean)
-rownames(mtx.overlap.carpet) <- mtx.overlap.carpet$V1
-mtx.overlap.carpet <- as.matrix(mtx.overlap.carpet[, -1])
-mtx.overlap$V1 <- sub(".bed", "", mtx.overlap$V1)
-mtx.overlap$V2 <- sub(".bed", "", mtx.overlap$V2)
+
 ```
 
 ```{r visualizeOverlapMtx_own, eval=FALSE}
+mtx.jaccard <- as.matrix(read.table("data/jaccard.autoimmune.wide.txt", sep="\t", head=TRUE, row.names=1, stringsAsFactors = FALSE))
+# Downgrade self-self correlations, so they do not dominate clustering. Set to max + 1%
+diag(mtx.jaccard) <- max(mtx.jaccard[ mtx.jaccard != max(mtx.jaccard) ]) + 0.01*max(mtx.jaccard[ mtx.jaccard != max(mtx.jaccard) ])
 # We visualize clustering of disease-specific SNP sets based on the number of overlapping SNPs.
 par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5)) # Adjust margins
 color<-colorRampPalette(c("blue","yellow")) # Define color gradient
@@ -82,7 +79,7 @@ dist.method<-"euclidean"
 hclust.method<-"ward.D2"
 # Setting breaks to go from minimum to maximum correlation coefficients,
 # excluding min/max outliers. This way we get rid of diagonale of 1's
-h<-heatmap.2(mtx.overlap.carpet, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, scale="row")
+h<-heatmap.2(mtx.jaccard, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.7, cexCol=0.7, scale="row")
 ```
 
 ```{r visualizeOverlapMtx_original, warning=FALSE, message=FALSE, fig.height=6}
