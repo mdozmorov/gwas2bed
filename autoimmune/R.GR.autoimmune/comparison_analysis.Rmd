@@ -156,7 +156,7 @@ term.iridescent.sharedRels <- read.Bridget("data/iridescent.sharedRels.txt")
 
 Loading Farh clustering
 
-```{r eval=FALSE}
+```{r}
 mtx.fig1a <- as.matrix(read.table("data/fig1a_matrix", sep="\t", header=F, stringsAsFactors=F))
 labels.fig1a <- readLines("data/fig1a_labels")
 colnames(mtx.fig1a) <- labels.fig1a
@@ -175,47 +175,26 @@ rownames(mtx.cor.epi.joined) <- rownames(mtx.list.epi[[1]])
 
 # # Another merging method
 # # https://stackoverflow.com/questions/16666643/merging-more-than-2-dataframes-in-r-by-rownames
-# MyMerge       <- function(x, y){
-#   df            <- merge(x, y, by= "row.names", all.x= F, all.y= F)
-#   rownames(df)  <- df$Row.names
-#   df$Row.names  <- NULL
-#   return(df)
-# }
-# colnames(mtx.jaccard) <- "jaccard"
-# colnames(term.ICD9.occur) <- "occur"
-# colnames(term.ICD9.phi) <- "phi"
-# colnames(term.ICD9.risk) <- "risk"
-# mtx.cor.epi.joined <- Reduce(MyMerge, list(mtx.jaccard, term.ICD9.occur, term.ICD9.phi, term.ICD9.risk))
-# mtx.cor.epi.joined <- MyMerge(mtx.jaccard, term.ICD9.occur)
-# mtx.cor.epi.joined <- MyMerge(mtx.cor.epi.joined, term.ICD9.phi)
-# mtx.cor.epi.joined <- MyMerge(mtx.cor.epi.joined, term.ICD9.risk)
-# 
-# mtx.cor.epi.joined <- plyr::join_all(list(cbind(rn=rownames(mtx.jaccard), mtx.jaccard),
-#                                           cbind(rn=rownames(term.ICD9.occur), term.ICD9.occur),
-#                                           cbind(rn=rownames(term.ICD9.phi), term.ICD9.phi),
-#                                           cbind(rn=rownames(term.ICD9.risk), term.ICD9.risk)),
-#                                      by = 'rn', type = "full")
-
 
 # Add (combinations of) GenomeRunner's results
 dname <- list("data.gr/ENCODE_Tfbs/matrix_PVAL.txt",
-           "data.gr/Roadmap_broadPeak/matrix_PVAL.txt",
-           "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt",
-           "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt",
-           "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt",
-           "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt",
-           "data.gr/Roadmap_chromStates18/matrix_PVAL.txt",
-           c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_chromStates18/matrix_PVAL.txt")
+              "data.gr/ENCODE_Dnase/matrix_PVAL.txt",
+              "data.gr/ENCODE_Histone/matrix_PVAL.txt",
+              c("data.gr/ENCODE_Tfbs/matrix_PVAL.txt", "data.gr/ENCODE_Tfbs/matrix_PVAL.txt", "data.gr/ENCODE_Histone/matrix_PVAL.txt"),
+             "data.gr/Roadmap_broadPeak/matrix_PVAL.txt",
+             "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt",
+             "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt",
+             "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt",
+             "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt",
+             "data.gr/Roadmap_chromStates18/matrix_PVAL.txt",
+             c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_chromStates18/matrix_PVAL.txt")
            )
 # # Not used
 # "data.gr/ENCODE_Dgf/matrix_PVAL.txt",
-# "data.gr/ENCODE_Dnase/matrix_PVAL.txt",
-# "data.gr/ENCODE_Histone/matrix_PVAL.txt",
 # "data.gr/Roadmap_DNase_hotspot01/matrix_PVAL.txt",
 # "data.gr/Roadmap_DNase_hotspotall/matrix_PVAL.txt",
 # "data.gr/Roadmap_DNase_hotspotbroad01/matrix_PVAL.txt",
 
-# library(minerva) # Playing with MIC correlation coefficient
 # Read in data in a loop
 for (x in dname) {
   mtx <- load_gr_data(x)
@@ -227,7 +206,7 @@ for (x in dname) {
 }
 
 # Set the column names after merging lists
-colnames(mtx.cor.epi.joined) <- c("Farh", "jaccard", "msh.path", "snomed.path", "snomed.vector", "iridescent.minMim", "iridescent.misn", "iridescent.obsExp", "iridescent.relOverlap", "iridescent.sharedRels", "dose.jiang", "dose.lin", "dose.rel", "dose.resnik", "dose.wang", "Encode.Tfbs", "Roadmap.broadPeak", "Roadmap.Dnase.hotspotbroadall", "Roadmap.Dnase.narrowPeak", "Roadmap.gappedPeak", "Roadmap.narrowPeak", "Roadmap.chromStates18", "Roadmap.combined")
+colnames(mtx.cor.epi.joined) <- c("Shared.loci", "Jaccard", "MSH.path", "SnoMed.path", "SnoMed.vector", "Iridescent.minMim", "Iridescent.misn", "Iridescent.obsExp", "Iridescent.relOverlap", "Iridescent.sharedRels", "DOSE.jiang", "DOSE.lin", "DOSE.rel", "DOSE.resnik", "DOSE.wang", "Encode.Tfbs", "Encode.Dnase", "Encode.Histone", "Encode.combined", "Roadmap.broadPeak", "Roadmap.Dnase.hotspotbroadall", "Roadmap.Dnase.narrowPeak", "Roadmap.gappedPeak", "Roadmap.narrowPeak", "Roadmap.chromStates18", "Roadmap.combined")
 #  "dose.jiang", "dose.lin", "dose.rel", "dose.resnik", "dose.wang", "sim.MF.Resnik", "sim.MF.Wang",
 ```
 
@@ -243,13 +222,19 @@ ggplot(melt(mtx.cor.epi.joined), aes(x=Var2, y=value, fill=Var2)) +
 Summarize all, and most correlated with episimilarity metrics. Visualize it as a heatmap
 
 ```{r similarityHeatmap_gwasCatalog, fig.height=9, fig.width=13, dev="png"}
-mtx.summary <- rcorr(as.matrix(mtx.cor.epi.joined), type=cortype)[[1]]
-pander(mtx.summary)
+mtx.summary <- rcorr(as.matrix(mtx.cor.epi.joined), type=cortype)
+# library(minerva) # Playing with MIC correlation coefficient
+# mtx.summary <- mine(mtx.cor.epi.joined[, !(colnames(mtx.cor.epi.joined) %in% c("dose.jiang", "dose.lin", "dose.rel", "dose.resnik", "dose.wang")) ], n.cores=4)$MIC
+pander(mtx.summary[[1]])
+write.xlsx2(formatC(mtx.summary[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName="correlation")
+write.xlsx2(formatC(mtx.summary[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName="pval", append=TRUE)
 
-par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5), cex.main=0.65) # Adjust margins
-my_col <- colorRampPalette(c("blue", "white", "red"))
-#my_col <- greenred
-heatmap.2(mtx.summary, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cellnote=formatC(mtx.summary, format="f", digits=2), notecol="black", notecex=1)
+# To have p-values overlayed on the cells: cellnote=formatC(mtx.summary[[1]], format="f", digits=2)
+# To have corr coeffs overlayed on the cells: cellnote=formatC(mtx.summary[[3]], format="e", digits=2)
+pdf("results/comparison_analysis_pval.pdf", width=7.5, height=6)
+par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
+heatmap.2(mtx.summary[[1]], trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.25, cellnote=formatC(mtx.summary[[3]], format="e", digits=2))
+dev.off()
 ```
 
 

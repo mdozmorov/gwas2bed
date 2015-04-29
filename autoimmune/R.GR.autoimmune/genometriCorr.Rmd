@@ -32,16 +32,60 @@ VisualiseTwoIRanges(ranges(file1[seqnames(file1) == "chr2"]),
 ```
 
 ```{r}
-pn.area <- 100
-pn.dist <- 100
-pn.jacc <- 100
-cpgi_to_genes <- GenometriCorrelation(file1, file2,  ecdf.area.permut.number = pn.area, mean.distance.permut.number = pn.dist, jaccard.measure.permut.number = pn.jacc, keep.distributions = TRUE, showProgressBar = TRUE)
-print(cpgi_to_genes)
-graphical.report(cpgi_to_genes, pdffile = "genometriCorr_test.pdf", show.chromosomes = c("chr2"), show.all = FALSE)
-visualize(cpgi_to_genes, pdffile = "genometriCorr_test2.pdf", show.chromosomes = c("chr2"), show.all = FALSE)
+fsave1 <- "data/gtc.ks.pval.long.txt"
+fsave2 <- "data/gtc.reldist.ecdfdeviation.long.txt"
+fsave3 <- "data/gtc.reldist.ecdfcorrelation.long.txt"
+unlink(fsave1); unlink(fsave2); unlink(fsave3)
+for (i in 1:length(files)){
+  for (j in 1:length(files)){
+    if (i <= j) {
+      file1 <- import(files[i]) # Get the files to process
+      file2 <- import(files[j])
+      gtc.stats1 <- GenometriCorrelation(file1, file2,  ecdf.area.permut.number = 0, mean.distance.permut.number = 0, jaccard.measure.permut.number = 0, keep.distributions = FALSE, showProgressBar = FALSE) # Forward way testing
+      gtc.stats2 <- GenometriCorrelation(file2, file1,  ecdf.area.permut.number = 0, mean.distance.permut.number = 0, jaccard.measure.permut.number = 0, keep.distributions = FALSE, showProgressBar = FALSE) # Reverse way testing
+      fname1 <- sub("../bed/", "", files[i]); fname1 <- sub(".bed", "", fname1) # Disease names
+      fname2 <- sub("../bed/", "", files[j]); fname2 <- sub(".bed", "", fname2)
+      write.table(paste(fname1, fname2, min(gtc.stats1$awhole$relative.distances.ks.p.value, gtc.stats2$awhole$relative.distances.ks.p.value), sep="\t"), fsave1, quote=F, col.names=F, row.names=F, append=T) # Minimum p-value
+      write.table(paste(fname1, fname2, max(gtc.stats1$awhole$relative.distances.ecdf.deviation.area, gtc.stats2$awhole$relative.distances.ecdf.deviation.area), sep="\t"), fsave2, quote=F, col.names=F, row.names=F, append=T) # Maximum 
+      write.table(paste(fname1, fname2, max(gtc.stats1$awhole$relative.distances.ecdf.area.correlation, gtc.stats1$awhole$relative.distances.ecdf.area.correlation), sep="\t"), fsave3, quote=F, col.names=F, row.names=F, append=T)
+      print(paste(fname1, "vs", fname2, i, "vs", j))
+    }
+
+  }
+}
+
+# Process the created file
+mtx.sim1 <- read.table(fsave1, sep="\t", stringsAsFactors = FALSE)
+mtx.sim2 <- read.table(fsave2, sep="\t", stringsAsFactors = FALSE)
+mtx.sim3 <- read.table(fsave3, sep="\t", stringsAsFactors = FALSE)
+# Convert characters to numbers
+class(mtx.sim2$V3) <- "numeric" # Make correlation coeffs numeric
+class(mtx.sim3$V3) <- "numeric" # Make correlation coeffs numeric
+# Correct directionality
+mtx.sim2$V3 <- mtx.sim2$V3 * mtx.sim3$V3
+# Check the distribution of similarities
+hist(mtx.sim2[, 3], n=100)
+# Append reverse portion of tests
+mtx.sim2 <- rbind(mtx.sim2, cbind(mtx.sim2$V2, mtx.sim2$V1, mtx.sim2$V3))
+class(mtx.sim2$V3) <- "numeric" # Make correlation coeffs numeric
+# Convert to wide format
+mtx.sim <- dcast(mtx.sim2, V1 ~ V2, value.var="V3", mean)
+rownames(mtx.sim) <- mtx.sim[ , 1]
+mtx.sim <- mtx.sim[, -1]
+diag(mtx.sim) <- NaN
+mtx.sim <- melt(cbind(V1=rownames(mtx.sim), mtx.sim), id.vars="V1")
+mtx.sim <- mtx.sim[ !is.nan(mtx.sim$value), ]
+rownames(mtx.sim) <- paste(mtx.sim$V1, mtx.sim$variable, sep="_")
+mtx.sim <- mtx.sim[, c(-1, -2), drop=F]
+write.table(mtx.sim, "data_GWASdb2_manual/clusterSim_MF_Resnik_reread_long.txt", sep="\t", col.names=FALSE, quote=F)
+
 ```
 
 ```{r}
+print(cpgi_to_genes)
+graphical.report(cpgi_to_genes, pdffile = "genometriCorr_test.pdf", show.chromosomes = c("chr2"), show.all = FALSE)
+visualize(cpgi_to_genes, pdffile = "genometriCorr_test2.pdf", show.chromosomes = c("chr2"), show.all = FALSE)
+
 rquery <- file1
 rref <- file2
 unmapped_results <- GenometriCorrelation(rquery, rref, chromosomes.length=seqlengths(TxDb.Hsapiens.UCSC.hg19.knownGene)[1:24], ecdf.area.permut.number = pn.area, mean.distance.permut.number = pn.dist, jaccard.measure.permut.number = pn.jacc, keep.distributions = FALSE, showProgressBar = TRUE)
