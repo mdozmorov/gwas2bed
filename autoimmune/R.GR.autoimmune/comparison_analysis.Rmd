@@ -133,6 +133,24 @@ mtx <- mtx[rownames(mtx) %in% term.mapping$Name, colnames(mtx) %in% term.mapping
 mtx.jaccard <- reshape_wide_data(mtx)
 ```
 
+Loading Farh clustering
+
+```{r}
+mtx.fig1a <- as.matrix(read.table("data/fig1a_matrix", sep="\t", header=F, stringsAsFactors=F))
+labels.fig1a <- readLines("data/fig1a_labels")
+colnames(mtx.fig1a) <- labels.fig1a
+rownames(mtx.fig1a) <- labels.fig1a
+mtx.fig1a <- reshape_wide_data(mtx.fig1a)
+```
+
+Loading GenometriCorr similarity
+
+```{r}
+mtx.gtc <- as.matrix(read.table("data/gtc.reldist.ecdfdeviation.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
+mtx.gtc <- mtx.gtc[rownames(mtx.gtc) %in% term.mapping$Name, colnames(mtx.gtc) %in% term.mapping$Name] 
+mtx.gtc <- reshape_wide_data(mtx.gtc)
+```
+
 Preparing Bridget similarity
 
 ```{r}
@@ -151,17 +169,6 @@ term.iridescent.misn <- read.Bridget("data/iridescent.misn.txt")
 term.iridescent.obsExp <- read.Bridget("data/iridescent.obsExp.txt")
 term.iridescent.relOverlap <- read.Bridget("data/iridescent.relOverlap.txt")
 term.iridescent.sharedRels <- read.Bridget("data/iridescent.sharedRels.txt")
-```
-
-
-Loading Farh clustering
-
-```{r}
-mtx.fig1a <- as.matrix(read.table("data/fig1a_matrix", sep="\t", header=F, stringsAsFactors=F))
-labels.fig1a <- readLines("data/fig1a_labels")
-colnames(mtx.fig1a) <- labels.fig1a
-rownames(mtx.fig1a) <- labels.fig1a
-mtx.fig1a <- reshape_wide_data(mtx.fig1a)
 ```
 
 Combining with episimilarity
@@ -231,11 +238,36 @@ write.xlsx2(formatC(mtx.summary[[3]], format="e", digits=2), "results/comparison
 
 # To have p-values overlayed on the cells: cellnote=formatC(mtx.summary[[1]], format="f", digits=2)
 # To have corr coeffs overlayed on the cells: cellnote=formatC(mtx.summary[[3]], format="e", digits=2)
-pdf("results/comparison_analysis_pval.pdf", width=7.5, height=6)
+# Visualization only
+par(oma=c(5.3,0,0,2.8), mar=c(5, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
+heatmap.2(mtx.summary[[1]], trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=1, cexCol=1, notecol="black", notecex=0.5, cellnote=formatC(mtx.summary[[1]], format="f", digits=2))
+
+# PRF only
+#pdf("results/comparison_analysis_pval.pdf", width=7.5, height=6)
+par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
+heatmap.2(mtx.summary[[1]], trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.25, cellnote=formatC(mtx.summary[[3]], format="e", digits=2))
+#dev.off()
+```
+
+Comparison with random chance
+====
+
+```{r similarityHeatmap_Random, fig.height=9, fig.width=13, dev="png"}
+# Random correlation matrix
+set.seed(1)
+mtx.summary <- rcorr(as.matrix(mtx.rand(as.matrix(mtx.cor.epi.joined), randomize="mix")) , type=cortype)
+write.xlsx2(formatC(mtx.summary[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName="correlation.random", append=TRUE)
+write.xlsx2(formatC(mtx.summary[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName="pval.random", append=TRUE)
+
+# To have p-values overlayed on the cells: cellnote=formatC(mtx.summary[[1]], format="f", digits=2)
+# To have corr coeffs overlayed on the cells: cellnote=formatC(mtx.summary[[3]], format="e", digits=2)
+pdf("results/comparison_analysis_cor_random.pdf", width=7.5, height=6)
+par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
+heatmap.2(mtx.summary[[1]], trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.4, cellnote=formatC(mtx.summary[[1]], format="f", digits=2))
+dev.off()
+pdf("results/comparison_analysis_pval_random.pdf", width=7.5, height=6)
 par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
 heatmap.2(mtx.summary[[1]], trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.25, cellnote=formatC(mtx.summary[[3]], format="e", digits=2))
 dev.off()
 ```
-
-
 

@@ -36,23 +36,29 @@ fsave1 <- "data/gtc.ks.pval.long.txt"
 fsave2 <- "data/gtc.reldist.ecdfdeviation.long.txt"
 fsave3 <- "data/gtc.reldist.ecdfcorrelation.long.txt"
 unlink(fsave1); unlink(fsave2); unlink(fsave3)
-for (i in 1:length(files)){
+for (i in 19:length(files)){
   for (j in 1:length(files)){
     if (i <= j) {
-      file1 <- import(files[i]) # Get the files to process
-      file2 <- import(files[j])
-      gtc.stats1 <- GenometriCorrelation(file1, file2,  ecdf.area.permut.number = 0, mean.distance.permut.number = 0, jaccard.measure.permut.number = 0, keep.distributions = FALSE, showProgressBar = FALSE) # Forward way testing
-      gtc.stats2 <- GenometriCorrelation(file2, file1,  ecdf.area.permut.number = 0, mean.distance.permut.number = 0, jaccard.measure.permut.number = 0, keep.distributions = FALSE, showProgressBar = FALSE) # Reverse way testing
-      fname1 <- sub("../bed/", "", files[i]); fname1 <- sub(".bed", "", fname1) # Disease names
-      fname2 <- sub("../bed/", "", files[j]); fname2 <- sub(".bed", "", fname2)
-      write.table(paste(fname1, fname2, min(gtc.stats1$awhole$relative.distances.ks.p.value, gtc.stats2$awhole$relative.distances.ks.p.value), sep="\t"), fsave1, quote=F, col.names=F, row.names=F, append=T) # Minimum p-value
-      write.table(paste(fname1, fname2, max(gtc.stats1$awhole$relative.distances.ecdf.deviation.area, gtc.stats2$awhole$relative.distances.ecdf.deviation.area), sep="\t"), fsave2, quote=F, col.names=F, row.names=F, append=T) # Maximum 
-      write.table(paste(fname1, fname2, max(gtc.stats1$awhole$relative.distances.ecdf.area.correlation, gtc.stats1$awhole$relative.distances.ecdf.area.correlation), sep="\t"), fsave3, quote=F, col.names=F, row.names=F, append=T)
-      print(paste(fname1, "vs", fname2, i, "vs", j))
+      if( i > 18) {
+        file1 <- import(files[i]) # Get the files to process
+        file2 <- import(files[j])
+        fname1 <- sub("../bed/", "", files[i]); fname1 <- sub(".bed", "", fname1) # Disease names
+        fname2 <- sub("../bed/", "", files[j]); fname2 <- sub(".bed", "", fname2)
+        print(paste(fname1, "vs", fname2, i, "vs", j))
+        gtc.stats1 <- GenometriCorrelation(file1, file2,  ecdf.area.permut.number = 0, mean.distance.permut.number = 0, jaccard.measure.permut.number = 0, keep.distributions = FALSE, showProgressBar = FALSE, awhole.only=TRUE) # Forward way testing
+        gtc.stats2 <- GenometriCorrelation(file2, file1,  ecdf.area.permut.number = 0, mean.distance.permut.number = 0, jaccard.measure.permut.number = 0, keep.distributions = FALSE, showProgressBar = FALSE) # Reverse way testing
+
+        write.table(paste(fname1, fname2, min(gtc.stats1$awhole$relative.distances.ks.p.value, gtc.stats2$awhole$relative.distances.ks.p.value), sep="\t"), fsave1, quote=F, col.names=F, row.names=F, append=T) # Minimum p-value
+        write.table(paste(fname1, fname2, max(gtc.stats1$awhole$relative.distances.ecdf.deviation.area, gtc.stats2$awhole$relative.distances.ecdf.deviation.area), sep="\t"), fsave2, quote=F, col.names=F, row.names=F, append=T) # Maximum 
+        write.table(paste(fname1, fname2, max(gtc.stats1$awhole$relative.distances.ecdf.area.correlation, gtc.stats1$awhole$relative.distances.ecdf.area.correlation), sep="\t"), fsave3, quote=F, col.names=F, row.names=F, append=T)
+      }
+
     }
 
   }
 }
+# "Kawasaki_disease vs Restless_legs_syndrome 18 vs 30"
+$ "Kawasaki_disease vs Systemic_sclerosis 18 vs 33"
 
 # Process the created file
 mtx.sim1 <- read.table(fsave1, sep="\t", stringsAsFactors = FALSE)
@@ -61,8 +67,16 @@ mtx.sim3 <- read.table(fsave3, sep="\t", stringsAsFactors = FALSE)
 # Convert characters to numbers
 class(mtx.sim2$V3) <- "numeric" # Make correlation coeffs numeric
 class(mtx.sim3$V3) <- "numeric" # Make correlation coeffs numeric
+# Replace -Inf by zeros
+mtx.sim2$V3[ is.infinite(mtx.sim2$V3) ] <- 0
 # Correct directionality
 mtx.sim2$V3 <- mtx.sim2$V3 * mtx.sim3$V3
+# Add failed runs
+mtx.sim2 <- rbind(mtx.sim2,
+                 c("Kawasaki_disease", "Restless_legs_syndrome", 0),
+                 c("Kawasaki_disease", "Systemic_sclerosis", 0))
+# Convert characters to numbers
+class(mtx.sim2$V3) <- "numeric" # Make correlation coeffs numeric
 # Check the distribution of similarities
 hist(mtx.sim2[, 3], n=100)
 # Append reverse portion of tests
@@ -72,12 +86,11 @@ class(mtx.sim2$V3) <- "numeric" # Make correlation coeffs numeric
 mtx.sim <- dcast(mtx.sim2, V1 ~ V2, value.var="V3", mean)
 rownames(mtx.sim) <- mtx.sim[ , 1]
 mtx.sim <- mtx.sim[, -1]
-diag(mtx.sim) <- NaN
-mtx.sim <- melt(cbind(V1=rownames(mtx.sim), mtx.sim), id.vars="V1")
-mtx.sim <- mtx.sim[ !is.nan(mtx.sim$value), ]
-rownames(mtx.sim) <- paste(mtx.sim$V1, mtx.sim$variable, sep="_")
-mtx.sim <- mtx.sim[, c(-1, -2), drop=F]
-write.table(mtx.sim, "data_GWASdb2_manual/clusterSim_MF_Resnik_reread_long.txt", sep="\t", col.names=FALSE, quote=F)
+# Replace NaNs by 0
+is.nan.data.frame <- function(x) do.call(cbind, lapply(x, is.nan))
+mtx.sim[ is.nan.data.frame(mtx.sim) ] <- 0
+# Save the results
+write.table(mtx.sim, "data/gtc.reldist.ecdfdeviation.wide.txt", sep="\t", quote=F)
 
 ```
 

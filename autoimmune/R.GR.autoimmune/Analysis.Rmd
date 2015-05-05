@@ -29,39 +29,49 @@ cortype <- "spearman"
 Gene Epigenomic similarity
 ===
 
+Load the data
 ```{r}
-# mtx.fig1a <- as.matrix(read.table("data/fig1a_matrix", sep="\t", header=F, stringsAsFactors=F))
-# labels.fig1a <- readLines("data/fig1a_labels")
-# colnames(mtx.fig1a) <- labels.fig1a; rownames(mtx.fig1a) <- labels.fig1a
-# mtx.cor <- rcorr(mtx.fig1a, type="pearson")[[1]]
-mtx.cor <- rcorr(load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/ENCODE_Tfbs/matrix_PVAL.txt")), type=cortype)[[1]]
-#mtx.cor <- rcorr(load_gr_data(c("data.gr/ENCODE_Tfbs/matrix_PVAL.txt")), type=cortype)[[1]]
+mtx <- load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_OR.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt"))
 # Subset by the names in term.mapping object
-mtx.cor <- mtx.cor[rownames(mtx.cor) %in% term.mapping$Name, colnames(mtx.cor) %in% term.mapping$Name]
-
-# A vector of category names, same order as the correlation matrix
-categoryNames <- term.mapping$Category[ match(rownames(mtx.cor), term.mapping$Name) ]
-names(categoryNames) <- term.mapping$Name[ match(rownames(mtx.cor), term.mapping$Name)]
-# Set side colors
-ColSideColors <- as.numeric(factor(categoryNames[ colnames(mtx.cor) ]))
-cbind((categoryNames), ColSideColors) # Sanity check
-ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
-ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
-ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
-ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
-#ColSideColors[ ColSideColors == 5 ] <- "black" # Trait
-mtx.heat <- mtx.plot(mtx.cor, SideColors=ColSideColors, dist.method="euclidean") # Clustering parameters
+mtx <- mtx[, colnames(mtx) %in% term.mapping$Name]
 ```
+
+Test which clusters are reproducible
 
 ```{r eval=FALSE}
 library(pvclust)
 library(parallel)
-cl <- makeCluster(4, type="PSOCK")
-result <- parPvclust(cl=cl, as.matrix(mtx.cor), method.dist=dist.method, method.hclust=hclust.method, nboot=10000, weight=TRUE)
-#result <- parPvclust(cl=cl, lung, method.dist="cor", method.hclust="average", nboot=10000)
-stopCluster(cl)
-plot(result)
+# cl <- makeCluster(4, type="PSOCK")
+# result10K <- parPvclust(cl=cl, as.matrix(mtx), method.dist=dist.method, method.hclust=hclust.method, nboot=10000, weight=TRUE)
+# saveRDS(result10K, "data/pvclust.Rds")
+# stopCluster(cl)
+result <- readRDS("data/pvclust.Rds")
+plot(result, hang = -1)
 pvrect(result, alpha=0.95)
+seplot(result, identify=TRUE)
+print(result, which=c(26))
+```
+
+Plotting heatmap of the original correlation matrix
+
+```{r}
+mtx.cor <- rcorr(mtx, type=cortype)[[1]]
+# Reorder correlation matrix the same order as pvclust did
+mtx.cor <- mtx.cor[ result$hclust$order, result$hclust$order]
+# A vector of category names, same order as the correlation matrix
+categoryNames <- term.mapping$Category[ match(rownames(mtx.cor), term.mapping$Name) ] # Reorder category names to match disease names orded
+names(categoryNames) <- term.mapping$Name[ match(rownames(mtx.cor), term.mapping$Name)]
+# Set side colors
+ColSideColors <- as.numeric(factor(categoryNames[ colnames(mtx.cor) ]))
+cbind((categoryNames), ColSideColors) # Sanity check
+ColSideColors[ ColSideColors == 1 ] <- "red" # Hematological parameter
+ColSideColors[ ColSideColors == 2 ] <- "blue" # Immunological
+ColSideColors[ ColSideColors == 3 ] <- "green" # Metabolic
+ColSideColors[ ColSideColors == 4 ] <- "yellow" # Neurological
+# Plotting
+  par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5), cex.main=0.65) # Adjust margins
+  my.breaks <- seq(min(mtx.cor[mtx.cor != min(mtx.cor)]), max(mtx.cor[mtx.cor != max(mtx.cor)]), length.out=(2*granularity + 1))
+  h <- heatmap.2(as.matrix(mtx.cor), trace="none", density.info="none", col=color, cexRow=1, cexCol=1, breaks=my.breaks, main="Regulatory similarity clustering", RowSideColors=ColSideColors, ColSideColors=ColSideColors, Rowv=FALSE, Colv=FALSE)  
 ```
 
 ```{r eval=FALSE}
@@ -88,15 +98,9 @@ heatmap.2(tmp1, trace="none", density.info="none", col=color, Rowv= FALSE, Colv=
 
 ```
 
-
-```{r epigenomicVisualization1, fig.height=5}
-mtx.heat <- mtx.plot(mtx.cor, SideColors=ColSideColors) # Clustering parameters
-# , dist.method="maximum", hclust.method="average"
-```
-
 Example of testing combinations of clustering methods
 ```{r eval=FALSE}
-dist.methods <- c("euclidean", "maximum","manhattan", "minkowski")
+dist.methods <- c("euclidean", "maximum")#,"manhattan", "minkowski")
 hclust.methods <- c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid")
 pdf("results/clustering_combinations.pdf")
 for (d in dist.methods) {
@@ -108,7 +112,19 @@ for (d in dist.methods) {
 dev.off()
 ```
 
-```{r fig.height=3}
+Define clusters
+
+```{r}
+plot(result$hclust, hang = -1)
+k <- 2 # Number of clusters. Use 5 for defining 4 clusters
+rect.hclust(result$hclust, k=k)
+clusters <- cutree(result$hclust, k=k)
+# Remove clusters having less than or equal to 1 member
+# clusters <- clusters[ clusters != as.data.frame(table(clusters), drop=F)$clusters[ as.data.frame(table(clusters), drop=F)$Freq <= 1 ] ]
+mtx.clust <- list(eset.labels = names(clusters), eset.groups=as.vector(clusters))
+```
+
+```{r fig.height=3, eval=FALSE}
 # Empirically define clusters
 #par(mfrow=c(1, 2))
 h <- 2 # Empirically set height to cut the tree
@@ -135,52 +151,101 @@ mtx <- load_gr_data(c("data.gr/ENCODE_Tfbs/matrix_PVAL.txt", "data.gr/ENCODE_Tfb
 mtx.cellspecific(mtx, "results/cellspecific_Encode.xlsx")
 ```
 
-What are the DEGFs counts in each clustering?
+2 clusters, what are the DEGFs counts in each clustering?
 ===
-
-chromStates18
----
-
-```{r}
-# A matrix to use for differential epigenomic analysis
-mtx.degs <- load_gr_data("data.gr/Roadmap_chromStates18/matrix_OR.txt")
-mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="chromStates18"))
-```
-
-DNase-hotspotbroadall
----
-
-```{r}
-# A matrix to use for differential epigenomic analysis
-mtx.degs <- load_gr_data("data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")
-mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="DNasehotspotbroadall"))
-```
 
 broadPeak
 ---
 
 ```{r}
-# A matrix to use for differential epigenomic analysis
 mtx.degs <- load_gr_data("data.gr/Roadmap_broadPeak/matrix_OR.txt")
 mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="broadPeak"))
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="broadPeak_2_clust"))
 ```
 
 ENCODE TFBS
 ---
 
 ```{r}
-# A matrix to use for differential epigenomic analysis
+mtx.degs <- load_gr_data("data.gr/ENCODE_Tfbs/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="encTfbs_2_clust"))
+```
+
+chromStates18
+---
+
+```{r}
+mtx.degs <- load_gr_data("data.gr/Roadmap_chromStates18/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="chromStates18_2_clust"))
+```
+
+DNase-hotspotbroadall
+---
+
+```{r}
+mtx.degs <- load_gr_data("data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="DNasehotspotbroadall_2_clust"))
+```
+
+
+Testing differences between autoimmune diseases
+===
+Define clusters
+
+```{r}
+plot(result$hclust, hang=-1)
+k <- 5 # Number of clusters. Use 5 for defining 4 clusters
+rect.hclust(result$hclust, k=k)
+clusters <- cutree(result$hclust, k=k)
+# Remove clusters having less than or equal to 1 member
+clusters <- clusters[ clusters != as.data.frame(table(clusters))$clusters[ as.data.frame(table(clusters))$Freq <= 1 ] ]
+mtx.clust <- list(eset.labels = names(clusters), eset.groups=as.vector(clusters))
+```
+
+broadPeak
+---
+
+```{r}
+mtx.degs <- load_gr_data("data.gr/Roadmap_broadPeak/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="broadPeak_4_clust"))
+```
+
+ENCODE TFBS
+---
+
+```{r}
 mtx.degs <- load_gr_data("data.gr/ENCODE_Tfbs/matrix_OR.txt")
 mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
 
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="encTfbs"))
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="encTfbs_4_clust"))
 ```
+
+chromStates18
+---
+
+```{r}
+mtx.degs <- load_gr_data("data.gr/Roadmap_chromStates18/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="chromStates18_4_clust"))
+```
+
+DNase-hotspotbroadall
+---
+
+```{r}
+mtx.degs <- load_gr_data("data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="DNasehotspotbroadall_4_clust"))
+```
+
+
 
 Exploring individual diseases
 ===
