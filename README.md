@@ -16,3 +16,8 @@ Use data from [Hidalgo CA, Blumm N, Barabasi A-L, Christakis NA. PLoS Computatio
 2. ICD-9 name. Example: `Macular degeneration (senile), unspecified`. N.B.: Some traits/phenotypes are not actual diseases, hence they lack ICD-9 representation. Use `NM` (no match) to label them.
 3. 3-digit ICD-9 code. Example: `362`
 4. Exact match (synonyms OK), Y/N. Example: `N`
+
+### [Rzhetsky_A_Appendix3.pdf](http://www.pnas.org/content/suppl/2007/06/21/0704820104.DC1/04820Appendix3.pdf)
+
+From [Rzhetsky, A., Wajngurt, D., Park, N., & Zheng, T. (2007). Probing genetic overlap among complex human phenotypes. Proceedings of the National Academy of Sciences of the United States of America, 104, 11694–11699. doi:10.1073/pnas.0704820104](http://www.pnas.org/content/104/28/11694.full.pdf). A list of diseases, their ICD9 codes, and brief descriptions.
+
