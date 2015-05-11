@@ -1,0 +1,91 @@
+---
+title: "Untitled"
+author: "Mikhail G. Dozmorov"
+date: "May 11, 2015"
+output: html_document
+---
+```{r setup, echo=FALSE, include=FALSE, cache=FALSE, warning=FALSE, message=FALSE}
+# Set up the environment
+library(knitr) 
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=100,  echo=F, autodep=T, width=200, warning=FALSE, comment=NA)
+options(replace.assign=TRUE, width=500)
+tidy.opts=list(width.cutoff=200)
+suppressMessages(library(pander))
+panderOptions('table.split.table', Inf)
+set.seed(1)
+```
+
+```{r message=FALSE}
+library(xlsx)
+# Load term mapping
+term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
+#term.mapping <- term.mapping[ term.mapping$Category == "immunological", ]
+source("../../../../GenomeRunner/R.GenomeRunner/utils1.R") # See the required packages there
+source("../../../../GenomeRunner/R.GenomeRunner/episimilarity.R")
+# Correlation to use
+cortype <- "spearman"
+```
+
+Using WGCNA to cluster diseases
+===
+
+```{r}
+mtx <- load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt"))
+datExpr <- (mtx)
+
+categoryNames <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name) ]
+```
+
+```{r}
+library(WGCNA)
+#SOFT THRESHOLDING
+# Now we investigate soft thesholding with the power adjacency function
+powers1=c(seq(1,10,by=1),seq(12,20,by=2))
+RpowerTable=pickSoftThreshold(datExpr, powerVector=powers1)[[2]]
+cex1=0.7
+par(mfrow=c(1,2))
+plot(RpowerTable[,1], -sign(RpowerTable[,3])*RpowerTable[,2],xlab="
+     Soft Threshold (power)",ylab="Scale Free Topology Model Fit,signed R^2",type="n")
+text(RpowerTable[,1], -sign(RpowerTable[,3])*RpowerTable[,2], labels=powers1,cex=cex1,col="red")
+# this line corresponds to using an R^2 cut-off of h
+abline(h=0.95,col="red")
+plot(RpowerTable[,1], RpowerTable[,5],xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n")
+text(RpowerTable[,1], RpowerTable[,5], labels=powers1, cex=cex1,col="red")
+
+beta1 <- 6
+ADJ <- adjacency(datExpr, power = beta1)
+dissTOM <- TOMdist(ADJ)
+
+hierTOM = hclust(as.dist(dissTOM),method="average");
+par(mfrow=c(1,1))
+plot(hierTOM,labels=F)
+
+colorh1 = cutreeStaticColor(hierTOM,cutHeight = 0.95, minSize = 3)
+table(colorh1)
+
+par(mfrow=c(2,1),mar=c(2,4,1,1))
+plot(hierTOM, main="Cluster Dendrogram", labels=F, xlab="", sub="");
+plotColorUnderTree(hierTOM,colors=data.frame(module=colorh1))
+title("Module (branch) color")
+
+labelDynamicTree= cutreeDynamic(hierTOM,method="tree", minClusterSize = 3)
+table(labelDynamicTree)
+colorDynamicTree=labels2colors(labelDynamicTree)
+
+labelDynamicHybrid= cutreeDynamic(hierTOM, distM= dissTOM , minClusterSize = 50)
+colorDynamicHybrid=labels2colors(labelDynamicHybrid)
+
+GScolor=numbers2colors(as.numeric(factor(categoryNames)))
+
+par(mfrow=c(2,1),mar=c(2,4,1,1))
+plot(hierTOM, main="Cluster Dendrogram", labels=F, xlab="", sub="");
+plotColorUnderTree(hierTOM,colors=data.frame(colorStatic=colorh1, colorDynamicTree, colorDynamicHybrid, GScolor))
+title("Module (branch) color")
+```
+
+```{r}
+
+```
+
+
+
