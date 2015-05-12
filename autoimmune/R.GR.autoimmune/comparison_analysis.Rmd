@@ -146,7 +146,9 @@ mtx.fig1a <- reshape_wide_data(mtx.fig1a)
 Loading GenometriCorr similarity
 
 ```{r}
-mtx.gtc <- as.matrix(read.table("data/gtc.reldist.ecdfdeviation.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
+# mtx.gtc <- as.matrix(read.table("data/gtc.reldist.ecdfdeviation.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
+# mtx.gtc <- as.matrix(read.table("data/gtc.scaled.absolute.min.distance.sum.1.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
+mtx.gtc <- as.matrix(read.table("data/gtc.scaled.absolute.min.distance.sum.1.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
 mtx.gtc <- mtx.gtc[rownames(mtx.gtc) %in% term.mapping$Name, colnames(mtx.gtc) %in% term.mapping$Name] 
 mtx.gtc <- reshape_wide_data(mtx.gtc)
 ```
@@ -175,14 +177,19 @@ Combining with episimilarity
 
 ```{r}
 # Merge previously prepared matrixes
-mtx.list.epi <- c(list(mtx.fig1a), list(mtx.jaccard), list(term.msh.path), list(term.snomed.path), list(term.snomed.vector), list(term.iridescent.minMim), list(term.iridescent.misn), list(term.iridescent.obsExp), list(term.iridescent.relOverlap), list(term.iridescent.sharedRels), list(dose.jiang), list(dose.lin), list(dose.rel), list(dose.resnik), list(dose.wang), list(term.ICD9.occur), list(term.ICD9.risk), list(term.ICD9.phi))
+mtx.list.epi <- c(list(mtx.fig1a), list(mtx.jaccard), list(term.msh.path), list(term.snomed.path), list(term.snomed.vector), list(term.iridescent.minMim), list(term.iridescent.misn), list(term.iridescent.obsExp), list(term.iridescent.relOverlap), list(term.iridescent.sharedRels), list(dose.jiang), list(dose.lin), list(dose.rel), list(dose.resnik), list(dose.wang), list(term.ICD9.occur), list(term.ICD9.risk), list(term.ICD9.phi), list(mtx.gtc))
 #, list(mtx.clusterSim.MF.Resnik), list(mtx.clusterSim.MF.Wang))
+
 mtx.cor.epi.joined <- do.call(cbind, lapply(mtx.list.epi, function(x) x[match(rownames(mtx.list.epi[[1]]), rownames(x)), ]))
 rownames(mtx.cor.epi.joined) <- rownames(mtx.list.epi[[1]])
 
-# # Another merging method
-# # https://stackoverflow.com/questions/16666643/merging-more-than-2-dataframes-in-r-by-rownames
+# Set the column names after merging lists
+colnames(mtx.cor.epi.joined) <- c("Shared.loci", "Jaccard", "MSH.path", "SnoMed.path", "SnoMed.vector", "Iridescent.minMim", "Iridescent.misn", "Iridescent.obsExp", "Iridescent.relOverlap", "Iridescent.sharedRels", "DOSE.jiang", "DOSE.lin", "DOSE.rel", "DOSE.resnik", "DOSE.wang", "ICD9.occur", "ICD9.risk", "ICD9.phi", "genometricorr")
+```
 
+Adding GenomeRunner data
+
+```{r}
 # Add (combinations of) GenomeRunner's results
 dname <- list("data.gr/ENCODE_Tfbs/matrix_PVAL.txt",
               "data.gr/ENCODE_Dnase/matrix_PVAL.txt",
@@ -213,8 +220,7 @@ for (x in dname) {
 }
 
 # Set the column names after merging lists
-colnames(mtx.cor.epi.joined) <- c("Shared.loci", "Jaccard", "MSH.path", "SnoMed.path", "SnoMed.vector", "Iridescent.minMim", "Iridescent.misn", "Iridescent.obsExp", "Iridescent.relOverlap", "Iridescent.sharedRels", "DOSE.jiang", "DOSE.lin", "DOSE.rel", "DOSE.resnik", "DOSE.wang", "ICD9.occur", "ICD9.risk", "ICD9.phi", "Encode.Tfbs", "Encode.Dnase", "Encode.Histone", "Encode.combined", "Roadmap.broadPeak", "Roadmap.Dnase.hotspotbroadall", "Roadmap.Dnase.narrowPeak", "Roadmap.gappedPeak", "Roadmap.narrowPeak", "Roadmap.chromStates18", "Roadmap.combined")
-#  "dose.jiang", "dose.lin", "dose.rel", "dose.resnik", "dose.wang", "sim.MF.Resnik", "sim.MF.Wang",
+colnames(mtx.cor.epi.joined)[ (length(mtx.list.epi) + 1):length(colnames(mtx.cor.epi.joined))] <- c("Encode.Tfbs", "Encode.Dnase", "Encode.Histone", "Encode.combined", "Roadmap.broadPeak", "Roadmap.Dnase.hotspotbroadall", "Roadmap.Dnase.narrowPeak", "Roadmap.gappedPeak", "Roadmap.narrowPeak", "Roadmap.chromStates18", "Roadmap.combined")
 ```
 
 ```{r eval=FALSE}
@@ -229,24 +235,39 @@ ggplot(melt(mtx.cor.epi.joined), aes(x=Var2, y=value, fill=Var2)) +
 Summarize all, and most correlated with episimilarity metrics. Visualize it as a heatmap
 
 ```{r similarityHeatmap_gwasCatalog, fig.height=9, fig.width=13, dev="png"}
-mtx.summary <- rcorr(as.matrix(mtx.cor.epi.joined), type="spearman")
-# library(minerva) # Playing with MIC correlation coefficient
-# mtx.summary <- mine(mtx.cor.epi.joined[, !(colnames(mtx.cor.epi.joined) %in% c("dose.jiang", "dose.lin", "dose.rel", "dose.resnik", "dose.wang")) ], n.cores=4)$MIC
-# pander(mtx.summary[[1]])
-# write.xlsx2(formatC(mtx.summary[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName="correlation")
-# write.xlsx2(formatC(mtx.summary[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName="pval", append=TRUE)
+if(cortype != "MIC"){
+  mtx.summary <- rcorr(as.matrix(mtx.cor.epi.joined), type=cortype)
+  # Save the results
+  # write.xlsx2(formatC(mtx.summary[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName="correlation")
+  # write.xlsx2(formatC(mtx.summary[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName="pval", append=TRUE)
+  
+  # To have p-values overlayed on the cells: cellnote=formatC(mtx.summary[[1]], format="f", digits=2)
+  # To have corr coeffs overlayed on the cells: cellnote=formatC(mtx.summary[[3]], format="e", digits=2)
+  # Visualization only
+  par(oma=c(5.3,0,0,2.8), mar=c(5, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
+  heatmap.2(mtx.summary[[1]], symbreaks = TRUE, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=1, cexCol=1, notecol="black", notecex=0.9, cellnote=formatC(mtx.summary[[1]], format="f", digits=2))
+  
+  # PDF only, overlay corr coeffs
+  pdf(paste("results/comparison_analysis_corr_", cortype, ".pdf", sep=""), width=7.5, height=6)
+  par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
+  heatmap.2(mtx.summary[[1]], trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.4, cellnote=formatC(mtx.summary[[1]], format="f", digits=2))
+  dev.off()
+  # # PDF only, overlay pval coeffs
+  # pdf(paste("results/comparison_analysis_pval_", cortype, ".pdf", sep=""), width=7.5, height=6)
+  # par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
+  # heatmap.2(mtx.summary[[1]], trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.25, cellnote=formatC(mtx.summary[[3]], format="e", digits=2))
+  # dev.off()
+} else {
+  library(minerva) # Playing with MIC correlation coefficient
+  dim(mtx.cor.epi.joined[ complete.cases(mtx.cor.epi.joined), ])
+mtx.summary <- mine(mtx.cor.epi.joined[ complete.cases(mtx.cor.epi.joined), ], n.cores=4)$MIC
+  # PDF only, overlay corr coeffs
+  pdf(paste("results/comparison_analysis_corr_", cortype, ".pdf", sep=""), width=7.5, height=6)
+  par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
+  heatmap.2(mtx.summary, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.4, cellnote=formatC(mtx.summary, format="f", digits=2), breaks=seq(-1, 1, , 20))
+  dev.off()
+ 
 
-# To have p-values overlayed on the cells: cellnote=formatC(mtx.summary[[1]], format="f", digits=2)
-# To have corr coeffs overlayed on the cells: cellnote=formatC(mtx.summary[[3]], format="e", digits=2)
-# Visualization only
-par(oma=c(5.3,0,0,2.8), mar=c(5, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
-heatmap.2(mtx.summary[[1]], symbreaks = TRUE, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=1, cexCol=1, notecol="black", notecex=0.9, cellnote=formatC(mtx.summary[[1]], format="f", digits=2))
-
-# PDF only
-# pdf("results/comparison_analysis_pval.pdf", width=7.5, height=6)
-# par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
-# heatmap.2(mtx.summary[[1]], trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.25, cellnote=formatC(mtx.summary[[3]], format="e", digits=2))
-# dev.off()
 ```
 
 Comparison with random chance
