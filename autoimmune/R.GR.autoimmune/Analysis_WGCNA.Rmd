@@ -36,6 +36,21 @@ datExpr <- (mtx)
 categoryNames <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name) ]
 ```
 
+QC 
+
+```{r}
+sampleTree = hclust(dist(datExpr), method = "average");
+# Plot the sample tree: Open a graphic output window of size 12 by 9 inches
+# The user should change the dimensions if the window is too large or too small.
+sizeGrWindow(12,9)
+#pdf(file = "Plots/sampleClustering.pdf", width = 12, height = 9);
+par(cex = 0.6);
+par(mar = c(0,4,2,0))
+plot(sampleTree, main = "Sample clustering to detect outliers", sub="", xlab="", cex.lab = 1.5, cex.axis = 1.5, cex.main = 2)
+```
+
+Network analysis
+
 ```{r}
 library(WGCNA)
 #SOFT THRESHOLDING
@@ -58,9 +73,9 @@ dissTOM <- TOMdist(ADJ)
 
 hierTOM = hclust(as.dist(dissTOM),method="average");
 par(mfrow=c(1,1))
-plot(hierTOM,labels=F)
+plot(hierTOM,labels=F, hang=0.04)
 
-colorh1 = cutreeStaticColor(hierTOM,cutHeight = 0.95, minSize = 3)
+colorh1 = cutreeStaticColor(hierTOM,cutHeight = 0.99, minSize = 3)
 table(colorh1)
 
 par(mfrow=c(2,1),mar=c(2,4,1,1))
@@ -72,10 +87,10 @@ labelDynamicTree= cutreeDynamic(hierTOM,method="tree", minClusterSize = 3)
 table(labelDynamicTree)
 colorDynamicTree=labels2colors(labelDynamicTree)
 
-labelDynamicHybrid= cutreeDynamic(hierTOM, distM= dissTOM , minClusterSize = 50)
+labelDynamicHybrid= cutreeDynamic(hierTOM, distM= dissTOM , minClusterSize = 3)
 colorDynamicHybrid=labels2colors(labelDynamicHybrid)
 
-GScolor=numbers2colors(as.numeric(factor(categoryNames)))
+GScolor=numbers2colors(as.numeric(factor(categoryNames)), colors=rainbow(length(unique(categoryNames))))
 
 par(mfrow=c(2,1),mar=c(2,4,1,1))
 plot(hierTOM, main="Cluster Dendrogram", labels=F, xlab="", sub="");
@@ -83,9 +98,63 @@ plotColorUnderTree(hierTOM,colors=data.frame(colorStatic=colorh1, colorDynamicTr
 title("Module (branch) color")
 ```
 
-```{r}
+Module eigengenes
 
+```{r}
+# Calculate eigengenes
+MEList = moduleEigengenes(datExpr, colors = colorDynamicTree)
+MEs = MEList$eigengenes
+# Calculate dissimilarity of module eigengenes
+MEDiss = 1-cor(MEs);
+# Cluster module eigengenes
+METree = hclust(as.dist(MEDiss), method = "average");
+# Plot the result
+sizeGrWindow(7, 6)
+plot(METree, main = "Clustering of module eigengenes",
+     xlab = "", sub = "")
 ```
 
+Visualization
 
+```{r}
+## ----------------------------------------------------------------------------
+## http://labs.genetics.ucla.edu/horvath/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-05-Visualization.pdf
+## 5. Network visualization using WGCNA functions
+## ----------------------------------------------------------------------------
+# Calculate topological overlap anew: this could be done more efficiently by saving the TOM
+# calculated during module detection, but let us do it again here.
+dissTOM = 1-TOMsimilarityFromExpr(datExpr, power = 6);
+geneTree = hclust(as.dist(dissTOM), method = "average");
+# Transform dissTOM with a power to make moderately strong connections more visible in the heatmap
+plotTOM = dissTOM^7;
+# Set diagonal to NA for a nicer plot
+diag(plotTOM) = NA;
+# Call the plot function
+sizeGrWindow(9,9)
+TOMplot(plotTOM, geneTree, moduleColors, main = "Network heatmap plot, all genes")
+
+selectTOM = dissTOM;
+# There’s no simple way of restricting a clustering tree to a subset of genes, so we must re-cluster.
+selectTree = hclust(as.dist(selectTOM), method = "average")
+selectColors = moduleColors;
+# Open a graphical window
+sizeGrWindow(9,9)
+# Taking the dissimilarity to a power, say 10, makes the plot more informative by effectively changing
+# the color palette; setting the diagonal to NA also improves the clarity of the plot
+plotDiss = selectTOM^7;
+diag(plotDiss) = NA;
+TOMplot(plotDiss, selectTree, selectColors, main = "Network heatmap plot, selected genes")
+
+# Recalculate module eigengenes
+MEs = moduleEigengenes(datExpr, moduleColors)$eigengenes
+# Isolate weight from the clinical traits
+weight = as.data.frame(datTraits$weight_g);
+names(weight) = "weight"
+# Add the weight to existing module eigengenes
+MET = orderMEs(MEs)
+# Plot the relationships among the eigengenes and the trait
+sizeGrWindow(5,7.5);
+par(cex = 0.9)
+plotEigengeneNetworks(MET, "", marDendro = c(0,4,1,2), marHeatmap = c(3,4,1,2), cex.lab = 0.8, xLabelsAngle = 90)
+```
 

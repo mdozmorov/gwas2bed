@@ -23,84 +23,73 @@ term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
 invisible(source("../../../../GenomeRunner/R.GenomeRunner/utils1.R")) # See the required packages there
 source("../../../../GenomeRunner/R.GenomeRunner/episimilarity.R")
 # Correlation to use
-cortype <- "spearman"
+cortype <- "pearson"
 ```
 
 Gene Epigenomic similarity
 ===
 
-Load the data
 ```{r}
-mtx <- load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_OR.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt"))
+# mtx.fig1a <- as.matrix(read.table("data/fig1a_matrix", sep="\t", header=F, stringsAsFactors=F))
+# labels.fig1a <- readLines("data/fig1a_labels")
+# colnames(mtx.fig1a) <- labels.fig1a; rownames(mtx.fig1a) <- labels.fig1a
+# mtx.cor <- rcorr(mtx.fig1a, type="pearson")[[1]]
+
+mtx.cor <- rcorr(load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt")), type="pearson")[[1]]
+# library(minerva) # Playing with MIC correlation coefficient
+# mtx.cor <- mine(load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt")), n.cores=4)$MIC
+                
 # Subset by the names in term.mapping object
-mtx <- mtx[, colnames(mtx) %in% term.mapping$Name]
-```
+mtx.cor <- mtx.cor[rownames(mtx.cor) %in% term.mapping$Name, colnames(mtx.cor) %in% term.mapping$Name]
 
-Test which clusters are reproducible
-
-```{r eval=FALSE}
-library(pvclust)
-library(parallel)
-# cl <- makeCluster(4, type="PSOCK")
-# result10K <- parPvclust(cl=cl, as.matrix(mtx), method.dist=dist.method, method.hclust=hclust.method, nboot=10000, weight=TRUE)
-# saveRDS(result10K, "data/pvclust.Rds")
-# stopCluster(cl)
-result <- readRDS("data/pvclust.Rds")
-plot(result, hang = -1)
-pvrect(result, alpha=0.95)
-seplot(result, identify=TRUE)
-print(result, which=c(26))
-```
-
-Plotting heatmap of the original correlation matrix
-
-```{r}
-mtx.cor <- rcorr(mtx, type=cortype)[[1]]
-# Reorder correlation matrix the same order as pvclust did
-mtx.cor <- mtx.cor[ result$hclust$order, result$hclust$order]
 # A vector of category names, same order as the correlation matrix
-categoryNames <- term.mapping$Category[ match(rownames(mtx.cor), term.mapping$Name) ] # Reorder category names to match disease names orded
+categoryNames <- term.mapping$Category[ match(rownames(mtx.cor), term.mapping$Name) ]
 names(categoryNames) <- term.mapping$Name[ match(rownames(mtx.cor), term.mapping$Name)]
 # Set side colors
 ColSideColors <- as.numeric(factor(categoryNames[ colnames(mtx.cor) ]))
-cbind((categoryNames), ColSideColors) # Sanity check
-ColSideColors[ ColSideColors == 1 ] <- "red" # Hematological parameter
-ColSideColors[ ColSideColors == 2 ] <- "blue" # Immunological
-ColSideColors[ ColSideColors == 3 ] <- "green" # Metabolic
-ColSideColors[ ColSideColors == 4 ] <- "yellow" # Neurological
-# Plotting
-  par(oma=c(5,0,0,5), mar=c(10, 4.1, 4.1, 5), cex.main=0.65) # Adjust margins
-  my.breaks <- seq(min(mtx.cor[mtx.cor != min(mtx.cor)]), max(mtx.cor[mtx.cor != max(mtx.cor)]), length.out=(2*granularity + 1))
-  h <- heatmap.2(as.matrix(mtx.cor), trace="none", density.info="none", col=color, cexRow=1, cexCol=1, breaks=my.breaks, main="Regulatory similarity clustering", RowSideColors=ColSideColors, ColSideColors=ColSideColors, Rowv=FALSE, Colv=FALSE)  
-```
-
-```{r eval=FALSE}
-library("dynamicTreeCut")
-tmp <- cutreeDynamic(dendro=as.hclust(mtx.heat$rowDendrogram), method="tree", minClusterSize=3, deepSplit=TRUE)
-#tmp <- cutreeDynamic(dendro=as.hclust(mtx.heat$rowDendrogram), method="hybrid", distM=as.dist(mtx.heat$rowDendrogram), minClusterSize=10, deepSplit=0)
-tmp
-names(tmp) <- colnames(mtx.cor)[ mtx.heat$rowInd ]
-#image(mtx.cor[ match(names(sort(tmp)), colnames(mtx.cor)), match(names(sort(tmp)), colnames(mtx.cor)) ])
-
-tmp1 <- mtx.cor[ match(names(sort(tmp)), rownames(mtx.cor)), match(names(sort(tmp)), colnames(mtx.cor)) ]
-categoryNames <- term.mapping$Category[ match(rownames(tmp1), term.mapping$Name) ]
-names(categoryNames) <- term.mapping$Name[ match(rownames(tmp1), term.mapping$Name)]
-# Set side colors
-ColSideColors <- as.numeric(factor(categoryNames[ colnames(tmp1) ]))
 cbind((categoryNames), ColSideColors) # Sanity check
 ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
 ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
 ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
 ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
-ColSideColors[ ColSideColors == 5 ] <- "black" # Trait
+mtx.heat <- mtx.plot(mtx.cor, SideColors=ColSideColors) # Clustering parameters
+```
 
-heatmap.2(tmp1, trace="none", density.info="none", col=color, Rowv= FALSE, Colv=FALSE, cexRow=1, cexCol=1, RowSideColors = ColSideColors)  
+Testing clustering stability
 
+```{r eval=FALSE}
+mtx <- as.matrix(load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_OR.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")))
+mtx.cor <- rcorr(mtx, type=cortype)[[1]]
+dev.off()
+library(pvclust)
+library(parallel)
+cl <- makeCluster(4, type="PSOCK")
+result <- parPvclust(cl=cl, mtx, method.dist=dist.method, method.hclust=hclust.method, nboot=1000)
+#result <- parPvclust(cl=cl, lung, method.dist="cor", method.hclust="average", nboot=10000)
+stopCluster(cl)
+plot(result)
+pvrect(result, alpha=0.95)
+```
+
+Visualizing what pvClust clustered
+
+```{r epigenomicVisualization1, fig.height=5}
+# A vector of category names, same order as the correlation matrix
+categoryNames <- term.mapping$Category[ match(colnames(mtx.cor), term.mapping$Name) ]
+names(categoryNames) <- term.mapping$Name[ match(colnames(mtx.cor), term.mapping$Name)]
+# Set side colors
+ColSideColors <- as.numeric(factor(categoryNames[ colnames(mtx.cor) ]))
+(cbind(categoryNames, ColSideColors)) # Sanity check
+ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
+ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
+ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
+ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
+h <- heatmap.2(mtx.cor, symkey = TRUE, Rowv=as.dendrogram(result$hclust), Colv=as.dendrogram(result$hclust), dendrogram="both", trace="none", density.info="none", col=color, RowSideColors=ColSideColors, ColSideColors=ColSideColors)  
 ```
 
 Example of testing combinations of clustering methods
 ```{r eval=FALSE}
-dist.methods <- c("euclidean", "maximum")#,"manhattan", "minkowski")
+dist.methods <- c("euclidean", "maximum","manhattan", "minkowski")
 hclust.methods <- c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid")
 pdf("results/clustering_combinations.pdf")
 for (d in dist.methods) {
@@ -112,189 +101,86 @@ for (d in dist.methods) {
 dev.off()
 ```
 
-Define clusters
+```{r fig.height=3}
+# Empirically define clusters
+par(mfrow=c(1, 2))
+hcut <- 30 # Empirically set height to cut the tree
+h$colDendrogram %>% plot(horiz=T)
+abline(v=hcut)
+as.hclust(h$colDendrogram)$height %>% density %>% plot
+abline(v=hcut)
+mtx.clust <- h$colDendrogram %>% mtx.clusters(height=hcut, minmembers=2)
+par(mfrow=c(1, 1))
+```
+
+What are the DEGFs counts in each clustering?
+===
+
+chromStates18
+---
 
 ```{r}
-plot(result$hclust, hang = -1)
-k <- 2 # Number of clusters. Use 5 for defining 4 clusters
-rect.hclust(result$hclust, k=k)
-clusters <- cutree(result$hclust, k=k)
-# Remove clusters having less than or equal to 1 member
-# clusters <- clusters[ clusters != as.data.frame(table(clusters), drop=F)$clusters[ as.data.frame(table(clusters), drop=F)$Freq <= 1 ] ]
-mtx.clust <- list(eset.labels = names(clusters), eset.groups=as.vector(clusters))
+# A matrix to use for differential epigenomic analysis
+mtx.degs <- load_gr_data("data.gr/Roadmap_chromStates18/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="chromStates18"))
 ```
 
-```{r fig.height=3, eval=FALSE}
-# Empirically define clusters
-#par(mfrow=c(1, 2))
-h <- 2 # Empirically set height to cut the tree
-mtx.heat$colDendrogram %>% plot(horiz=F) #; abline(h=h)
-rect.hclust(as.hclust(mtx.heat$rowDendrogram), h=h, border="red")
-#as.hclust(mtx.heat$colDendrogram)$height %>% density %>% plot; abline(v=h)
-mtx.clust <- mtx.heat$colDendrogram %>% mtx.clusters(height=h, minmembers=2)
-#par(mfrow=c(1, 1))
+DNase-hotspotbroadall
+---
+
+```{r}
+# A matrix to use for differential epigenomic analysis
+mtx.degs <- load_gr_data("data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="DNasehotspotbroadall"))
 ```
 
-Roadmap, Cell type-specific analysis
+broadPeak
+---
+
+```{r}
+# A matrix to use for differential epigenomic analysis
+mtx.degs <- load_gr_data("data.gr/Roadmap_broadPeak/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="broadPeak"))
+```
+
+ENCODE TFBS
+---
+
+```{r}
+# A matrix to use for differential epigenomic analysis
+mtx.degs <- load_gr_data("data.gr/ENCODE_Tfbs/matrix_OR.txt")
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="encTfbs"))
+```
+
+
+Testing random chance, Using GENES OR chromStates18+encHistone+encBroadHmm
+---
+
+```{r}
+# A matrix to use for differential epigenomic analysis
+mtx.degs <- load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_OR.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt", "data.gr/ENCODE_Tfbs/matrix_OR.txt"))
+mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust))
+# Random simulations
+mtx.rnd <- mtx.degs %>% mtx.rand(randomize = "row")
+mtx.rnd <- mtx.degs %>% mtx.rand(randomize = "col")
+mtx.rnd <- mtx.degs %>% mtx.rand(randomize = "mix")
+mtx.rnd <- mtx.degs %>% mtx.rand(randomize = "rnd")
+sum(mtx.degfs(mtx.rnd[, mtx.clust$eset.labels], mtx.clust))
+```
+
+Cell type-specific analysis
 ---
 
 ```{r}
 mtx <- load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_chromStates18/matrix_PVAL.txt"))
+
 mtx.cellspecific(mtx, "results/cellspecific_Roadmap.xlsx")
-```
-
-Encode, Cell type-specific analysis
----
-
-```{r}
-mtx <- load_gr_data(c("data.gr/ENCODE_Tfbs/matrix_PVAL.txt", "data.gr/ENCODE_Tfbs/matrix_PVAL.txt", "data.gr/ENCODE_Histone/matrix_PVAL.txt"))
-mtx.cellspecific(mtx, "results/cellspecific_Encode.xlsx")
-```
-
-2 clusters, what are the DEGFs counts in each clustering?
-===
-
-broadPeak
----
-
-```{r}
-mtx.degs <- load_gr_data("data.gr/Roadmap_broadPeak/matrix_OR.txt")
-mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="broadPeak_2_clust"))
-```
-
-ENCODE TFBS
----
-
-```{r}
-mtx.degs <- load_gr_data("data.gr/ENCODE_Tfbs/matrix_OR.txt")
-mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="encTfbs_2_clust"))
-```
-
-chromStates18
----
-
-```{r}
-mtx.degs <- load_gr_data("data.gr/Roadmap_chromStates18/matrix_OR.txt")
-mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="chromStates18_2_clust"))
-```
-
-DNase-hotspotbroadall
----
-
-```{r}
-mtx.degs <- load_gr_data("data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")
-mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="DNasehotspotbroadall_2_clust"))
-```
-
-
-Testing differences between autoimmune diseases
-===
-Define clusters
-
-```{r}
-plot(result$hclust, hang=-1)
-k <- 5 # Number of clusters. Use 5 for defining 4 clusters
-rect.hclust(result$hclust, k=k)
-clusters <- cutree(result$hclust, k=k)
-# Remove clusters having less than or equal to 1 member
-clusters <- clusters[ clusters != as.data.frame(table(clusters))$clusters[ as.data.frame(table(clusters))$Freq <= 1 ] ]
-mtx.clust <- list(eset.labels = names(clusters), eset.groups=as.vector(clusters))
-```
-
-broadPeak
----
-
-```{r}
-mtx.degs <- load_gr_data("data.gr/Roadmap_broadPeak/matrix_OR.txt")
-mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="broadPeak_4_clust"))
-```
-
-ENCODE TFBS
----
-
-```{r}
-mtx.degs <- load_gr_data("data.gr/ENCODE_Tfbs/matrix_OR.txt")
-mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="encTfbs_4_clust"))
-```
-
-chromStates18
----
-
-```{r}
-mtx.degs <- load_gr_data("data.gr/Roadmap_chromStates18/matrix_OR.txt")
-mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="chromStates18_4_clust"))
-```
-
-DNase-hotspotbroadall
----
-
-```{r}
-mtx.degs <- load_gr_data("data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")
-mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
-
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="DNasehotspotbroadall_4_clust"))
-```
-
-
-
-Exploring individual diseases
-===
-
-```{r}
-# 1  Bone_mineral_density
-# 2	Red_blood_cell_traits
-# 3	Vitiligo
-# 4	HDL_cholesterol
-# 5	Platelet_counts
-# 6	Primary_biliary_cirrhosis
-# 7	Type_1_diabetes
-# 8	Renal_function_related_traits_BUN
-# 9	Alopecia_areata
-# 10	Ankylosing_spondylitis
-# 11	Multiple_sclerosis
-# 12	Rheumatoid_arthritis
-# 13	Kawasaki_disease
-# 14	Liver_enzyme_levels_gamma_glutamyl_transferase
-# 15	C_reactive_protein
-# 16	LDL_cholesterol
-# 17	Ulcerative_colitis
-# 18	Restless_legs_syndrome
-# 19	Urate_levels
-# 20	Celiac_disease
-# 21	Crohns_disease
-# 22	Behcets_disease
-# 23	Systemic_lupus_erythematosus
-# 24	Atopic_dermatitis
-# 25	Triglycerides
-# 26	Psoriasis
-# 27	Primary_sclerosing_cholangitis
-# 28	Migraine
-# 29	Allergy
-# 30	Chronic_kidney_disease
-# 31	Fasting_glucose_related_traits
-# 32	Autoimmune_thyroiditis
-# 33	Alzheimers_combined
-# 34	Type_2_diabetes
-# 35	Systemic_sclerosis
-# 36	Asthma
-# 37	Creatinine_levels
-# 38	Progressive_supranuclear_palsy
-# 39	Juvenile_idiopathic_arthritis
-showHeatmap("data.gr/ENCODE_Tfbs/matrix_PVAL.txt", colnum=11, factor="none", cell="none", isLog10=FALSE, adjust="fdr", pval=0.1, numtofilt=1, toPlot="barup", fileName=NULL)
-showHeatmap("data.gr/ENCODE_Dnase/matrix_OR.txt", colnum=21, factor="none", cell="none", isLog10=TRUE, adjust="none", pval=1, numtofilt=1, toPlot="barup", fileName=NULL)
-
-showHeatmap("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", colnum=12, factor="none", cell=c("E033", "E034", "E037", "E038", "E039", "E040", "E041", "E042", "E043", "E044", "E045", "E047", "E048", "E062", "E115", "E116", "E123", "E124", "E029", "E030", "E031", "E032", "E035", "E036", "E046", "E050", "E051"), isLog10=FALSE, adjust="fdr", pval=0.1, numtofilt=1, toPlot="barup", fileName=NULL)
-showHeatmap("data.gr/Roadmap_chromStates18/matrix_PVAL.txt", colnum=12, factor="none", cell=c("E033", "E034", "E037", "E038", "E039", "E040", "E041", "E042", "E043", "E044", "E045", "E047", "E048", "E062", "E115", "E116", "E123", "E124", "E029", "E030", "E031", "E032", "E035", "E036", "E046", "E050", "E051"), isLog10=FALSE, adjust="fdr", pval=0.1, numtofilt=1, toPlot="barup", fileName=NULL)
 
 ```
+
 

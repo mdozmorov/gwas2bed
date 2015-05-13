@@ -9,11 +9,24 @@ output: html_document
 ```{r}
 # library(devtools)
 # install_github('favorov/GenometriCorr')
+# install_github('favorov/GenometriCorr-devel/pkg@devel')
 library("GenometriCorr")
 library("rtracklayer")
 library("TxDb.Hsapiens.UCSC.hg19.knownGene")
 refseq <- transcripts(TxDb.Hsapiens.UCSC.hg19.knownGene)
 ```
+Example
+```{r}
+refseq <- transcripts(TxDb.Hsapiens.UCSC.hg19.knownGene)
+cpgis <- import(system.file("extdata", "UCSCcpgis_hg19.bed", package = "GenometriCorr"))
+seqinfo(cpgis) <- seqinfo(TxDb.Hsapiens.UCSC.hg19.knownGene)[seqnames(seqinfo(cpgis))]
+pn.area <- 10
+pn.dist <- 10
+pn.jacc <- 10
+cpgi_to_genes <- GenometriCorrelation(cpgis, refseq, chromosomes.to.proceed = c("chr1", "chr2", "chr3"), ecdf.area.permut.number = pn.area, mean.distance.permut.number = pn.dist, jaccard.measure.permut.number = pn.jacc, keep.distributions = TRUE, showProgressBar = FALSE)
+cpgi_to_genes
+```
+
 
 ```{r}
 files <- list.files(path="../bed", pattern="*.bed", full.names=TRUE)
@@ -58,40 +71,84 @@ for (i in 19:length(files)){
   }
 }
 # "Kawasaki_disease vs Restless_legs_syndrome 18 vs 30"
-$ "Kawasaki_disease vs Systemic_sclerosis 18 vs 33"
+# "Kawasaki_disease vs Systemic_sclerosis 18 vs 33"
+
+# Using scaled.absolute.min.distance.sum
+fsave1 <- "data/gtc.scaled.absolute.min.distance.sum.1.long.txt"
+fsave2 <- "data/gtc.scaled.absolute.min.distance.sum.2.long.txt"
+unlink(fsave1); unlink(fsave2)
+for (i in 19:length(files)){ # 1:length(files)
+  for (j in 1:length(files)){
+    if (i <= j) {
+      if( i > 0) {
+        file1 <- import(files[i]) # Get the files to process
+        file2 <- import(files[j])
+        fname1 <- sub("../bed/", "", files[i]); fname1 <- sub(".bed", "", fname1) # Disease names
+        fname2 <- sub("../bed/", "", files[j]); fname2 <- sub(".bed", "", fname2)
+        print(paste(fname1, "vs", fname2, i, "vs", j))
+        gtc.stats1 <- GenometriCorrelation(file1, file2,  ecdf.area.permut.number = 0, mean.distance.permut.number = 0, jaccard.measure.permut.number = 0, keep.distributions = FALSE, showProgressBar = FALSE, awhole.only=TRUE) # Forward way testing
+        gtc.stats2 <- GenometriCorrelation(file2, file1,  ecdf.area.permut.number = 0, mean.distance.permut.number = 0, jaccard.measure.permut.number = 0, keep.distributions = FALSE, showProgressBar = FALSE) # Reverse way testing
+        # Save the data, divided by query length
+        write.table(paste(fname1, fname2, gtc.stats1$awhole$scaled.absolute.min.distance.sum / length(file1), sep="\t"), fsave1, quote=F, col.names=F, row.names=F, append=T) # Minimum p-value
+        write.table(paste(fname1, fname2, gtc.stats2$awhole$scaled.absolute.min.distance.sum / length(file2), sep="\t"), fsave2, quote=F, col.names=F, row.names=F, append=T) # Maximum 
+      }
+    }
+  }
+}
+
+missing <-  rbind(c("Alopecia_areata", "Kawasaki_disease", 0), 
+                  c("Behcets_disease", "Creatinine_levels", 0), 
+                  c("Behcets_disease", "Kawasaki_disease", 0), 
+                  c("Behcets_disease", "Restless_legs_syndrome", 0), 
+                  c("Creatinine_levels", "Fasting_glucose_related_traits", 0), 
+                  c("Creatinine_levels", "Systemic_sclerosis", 0), 
+                  c("Kawasaki_disease", "Restless_legs_syndrome", 0), 
+                  c("Kawasaki_disease", "Systemic_sclerosis", 0))
+# # Not run
+# "Alopecia_areata vs Kawasaki_disease 2 vs 18"
+# "Behcets_disease vs Creatinine_levels 8 vs 13"
+# "Behcets_disease vs Kawasaki_disease 8 vs 18"
+# "Behcets_disease vs Restless_legs_syndrome 8 vs 30"
+# "Creatinine_levels vs Fasting_glucose_related_traits 13 vs 15"
+# "Creatinine_levels vs Systemic_sclerosis 13 vs 33"
+# "Kawasaki_disease vs Restless_legs_syndrome 18 vs 30"
+# "Kawasaki_disease vs Systemic_sclerosis 18 vs 33"
+
 
 # Process the created file
 mtx.sim1 <- read.table(fsave1, sep="\t", stringsAsFactors = FALSE)
 mtx.sim2 <- read.table(fsave2, sep="\t", stringsAsFactors = FALSE)
-mtx.sim3 <- read.table(fsave3, sep="\t", stringsAsFactors = FALSE)
 # Convert characters to numbers
+class(mtx.sim1$V3) <- "numeric" # Make correlation coeffs numeric
 class(mtx.sim2$V3) <- "numeric" # Make correlation coeffs numeric
-class(mtx.sim3$V3) <- "numeric" # Make correlation coeffs numeric
-# Replace -Inf by zeros
-mtx.sim2$V3[ is.infinite(mtx.sim2$V3) ] <- 0
-# Correct directionality
-mtx.sim2$V3 <- mtx.sim2$V3 * mtx.sim3$V3
-# Add failed runs
-mtx.sim2 <- rbind(mtx.sim2,
-                 c("Kawasaki_disease", "Restless_legs_syndrome", 0),
-                 c("Kawasaki_disease", "Systemic_sclerosis", 0))
-# Convert characters to numbers
-class(mtx.sim2$V3) <- "numeric" # Make correlation coeffs numeric
+# # Replace -Inf by zeros
+# mtx.sim2$V3[ is.infinite(mtx.sim2$V3) ] <- 0
+# # Correct directionality
+# mtx.sim2$V3 <- mtx.sim2$V3 * mtx.sim3$V3
 # Check the distribution of similarities
+hist(mtx.sim1[, 3], n=100)
 hist(mtx.sim2[, 3], n=100)
+# Add failed runs
+mtx.sim1 <- rbind(mtx.sim1, missing)
+mtx.sim2 <- rbind(mtx.sim2, missing)
 # Append reverse portion of tests
+mtx.sim1 <- rbind(mtx.sim1, cbind(mtx.sim1$V2, mtx.sim1$V1, mtx.sim1$V3))
 mtx.sim2 <- rbind(mtx.sim2, cbind(mtx.sim2$V2, mtx.sim2$V1, mtx.sim2$V3))
+class(mtx.sim1$V3) <- "numeric" # Make correlation coeffs numeric
 class(mtx.sim2$V3) <- "numeric" # Make correlation coeffs numeric
 # Convert to wide format
-mtx.sim <- dcast(mtx.sim2, V1 ~ V2, value.var="V3", mean)
-rownames(mtx.sim) <- mtx.sim[ , 1]
-mtx.sim <- mtx.sim[, -1]
-# Replace NaNs by 0
-is.nan.data.frame <- function(x) do.call(cbind, lapply(x, is.nan))
-mtx.sim[ is.nan.data.frame(mtx.sim) ] <- 0
+mtx.sim1 <- dcast(mtx.sim1, V1 ~ V2, value.var="V3", mean)
+rownames(mtx.sim1) <- mtx.sim1[ , 1]
+mtx.sim1 <- mtx.sim1[, -1]
+mtx.sim2 <- dcast(mtx.sim2, V1 ~ V2, value.var="V3", mean)
+rownames(mtx.sim2) <- mtx.sim2[ , 1]
+mtx.sim2 <- mtx.sim2[, -1]
+# # Replace NaNs by 0
+# is.nan.data.frame <- function(x) do.call(cbind, lapply(x, is.nan))
+# mtx.sim[ is.nan.data.frame(mtx.sim) ] <- 0
 # Save the results
-write.table(mtx.sim, "data/gtc.reldist.ecdfdeviation.wide.txt", sep="\t", quote=F)
-
+write.table(mtx.sim1, sub("long", "wide", fsave1), sep="\t", quote=F)
+write.table(mtx.sim2, sub("long", "wide", fsave2), sep="\t", quote=F)
 ```
 
 ```{r}
