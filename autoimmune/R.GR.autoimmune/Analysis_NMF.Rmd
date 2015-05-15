@@ -27,39 +27,53 @@ cortype <- "pearson"
 ```
 
 ```{r}
+library(NMF)
+
 mtx <- as.matrix(load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_OR.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")))
 mtx <- 2^mtx
 
-library(NMF)
+annCol.category <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name)]
+annCol.size <- as.numeric(term.mapping$BEDcount[ match(colnames(mtx), term.mapping$Name)])
 
-for( k in 2:5){
-  print(k)
-  res <- nmf(mtx, k)
-  h <- coef(res)
-  annCol <- term.mapping$Category[ match(colnames(h), term.mapping$Name)]
-  aheatmap(h, annCol = annCol, annColors = list(c("red", "blue", "green", "yellow")))
-  cat ("Press [enter] to continue")
-  line <- readline()
-}
+# perform 10 runs for each value of r in range 2:6
+estim.r <- nmf(mtx, 2:6, nrun = 10, seed = 123456)
+plot(estim.r)
 
-res <- nmf(mtx, 10)
-h <- coef(res)
-annCol <- term.mapping$Category[ match(colnames(h), term.mapping$Name)]
-mtx.heat <- aheatmap(h, annCol = annCol, annColors = list(c("red", "blue", "green", "yellow")))
-  
-coefmap(res, annCol = annCol, annColors = list(c("red", "blue", "green", "yellow")))
+dev.off()
+par(mfrow=c(2, 3))
+consensusmap(estim.r, annCol = list(annCol.category, annCol.size), labCol = NA)
 
+# How coefficients cluster at rank 3
+dev.off()
+res <- nmf(mtx, 3)
+mtx.heat <- coefmap(res, annCol = list(annCol.category, annCol.size), annColors = list(c("red", "blue", "green", "yellow"), "Reds"))
+
+# We see some diseases with relatively low number of SNPs are outliers. Let's exclude them
+diseases.to.exclude <- c("Systemic_sclerosis", "Autoimmune_thyroiditis", "Creatinine_levels")
+# After excluding those, we note another diseases with low number of SNPs, that also look outliers. Excluding them
+diseases.to.exclude <- c(diseases.to.exclude, "Restless_legs_syndrome", "Kawasaki_disease", "Migraine")
+mtx <- mtx[ , !(colnames(mtx) %in% diseases.to.exclude)]
+annCol.category <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name)]
+annCol.size <- as.numeric(term.mapping$BEDcount[ match(colnames(mtx), term.mapping$Name)])
+
+# perform 10 runs for each value of r in range 2:6
+estim.r <- nmf(mtx, 2:6, nrun = 10, seed = 123456)
+plot(estim.r)
+
+dev.off()
+par(mfrow=c(2, 3))
+consensusmap(estim.r, annCol = list(annCol.category, annCol.size), labCol = NA)
+
+# How coefficients cluster at rank 4
+dev.off()
 res <- nmf(mtx, 4)
-
+mtx.heat <- coefmap(res, annCol = list(annCol.category, annCol.size), annColors = list(c("red", "blue", "green", "yellow"), "Reds"))
 basismap(res)
 
+consensusmap(res, annCol = list(annCol.category, annCol.size), annColors = list(c("red", "blue", "green", "yellow"), "Reds"))
 
-diseases.to.exclude <- c("Systemic_sclerosis", "Autoimmune_thyroiditis", "Creatinine_levels", "Alopecia_areata", "Restless_legs_syndrome" )
-mtx <- mtx[ , !(colnames(mtx) %in% diseases.to.exclude)]
-res <- nmf(mtx, 4)
+# Construct heatmap manually
 h <- coef(res)
-annCol <- term.mapping$Category[ match(colnames(h), term.mapping$Name)]
-coefmap(res, annCol = annCol, annColors = list(c("red", "blue", "green", "yellow")))
-consensusmap(res, annCol = annCol, annColors = list(c("red", "blue", "green", "yellow")))
+mtx.heat <- aheatmap(h, annCol = list(annCol.category, annCol.size), annColors = list(c("red", "blue", "green", "yellow"), "Reds"))
 ```
 
