@@ -1,0 +1,65 @@
+---
+title: "Untitled"
+author: "Mikhail G. Dozmorov"
+date: "May 14, 2015"
+output: html_document
+---
+```{r setup, echo=FALSE, include=FALSE, cache=FALSE, warning=FALSE, message=FALSE}
+# Set up the environment
+library(knitr) 
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=100,  echo=F, autodep=T, width=200, warning=FALSE, comment=NA)
+options(replace.assign=TRUE, width=500)
+tidy.opts=list(width.cutoff=200)
+suppressMessages(library(pander))
+panderOptions('table.split.table', Inf)
+set.seed(1)
+```
+
+```{r message=FALSE}
+library(xlsx)
+# Load term mapping
+term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
+#term.mapping <- term.mapping[ term.mapping$Category == "immunological", ]
+invisible(source("../../../../GenomeRunner/R.GenomeRunner/utils1.R")) # See the required packages there
+source("../../../../GenomeRunner/R.GenomeRunner/episimilarity.R")
+# Correlation to use
+cortype <- "pearson"
+```
+
+```{r}
+mtx <- as.matrix(load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_OR.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")))
+mtx <- 2^mtx
+
+library(NMF)
+
+for( k in 2:5){
+  print(k)
+  res <- nmf(mtx, k)
+  h <- coef(res)
+  annCol <- term.mapping$Category[ match(colnames(h), term.mapping$Name)]
+  aheatmap(h, annCol = annCol, annColors = list(c("red", "blue", "green", "yellow")))
+  cat ("Press [enter] to continue")
+  line <- readline()
+}
+
+res <- nmf(mtx, 10)
+h <- coef(res)
+annCol <- term.mapping$Category[ match(colnames(h), term.mapping$Name)]
+mtx.heat <- aheatmap(h, annCol = annCol, annColors = list(c("red", "blue", "green", "yellow")))
+  
+coefmap(res, annCol = annCol, annColors = list(c("red", "blue", "green", "yellow")))
+
+res <- nmf(mtx, 4)
+
+basismap(res)
+
+
+diseases.to.exclude <- c("Systemic_sclerosis", "Autoimmune_thyroiditis", "Creatinine_levels", "Alopecia_areata", "Restless_legs_syndrome" )
+mtx <- mtx[ , !(colnames(mtx) %in% diseases.to.exclude)]
+res <- nmf(mtx, 4)
+h <- coef(res)
+annCol <- term.mapping$Category[ match(colnames(h), term.mapping$Name)]
+coefmap(res, annCol = annCol, annColors = list(c("red", "blue", "green", "yellow")))
+consensusmap(res, annCol = annCol, annColors = list(c("red", "blue", "green", "yellow")))
+```
+
