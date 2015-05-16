@@ -91,8 +91,7 @@ We collected a large number of cancer-associated genes from several publicly ava
 **Vuong.xlsx** - 2,262 unique somatic mutations in the pocket regions of 369 unique human proteins. To analyze for epigenomic enrichments
 
 
-[Xie, M., Lu, C., Wang, J., McLellan, M. D., Johnson, K. J., Wendl, M. C., … Ding, L. (2014). Age-related mutations associated with clonal hematopoietic expansion and malignancies. Nature Medicine, 20(12), 1472–1478. doi:10.1038/nm.3733]
-(http://www.nature.com/nm/journal/v20/n12/full/nm.3733.html#supplementary-information)
+[Xie, M., Lu, C., Wang, J., McLellan, M. D., Johnson, K. J., Wendl, M. C., … Ding, L. (2014). Age-related mutations associated with clonal hematopoietic expansion and malignancies. Nature Medicine, 20(12), 1472–1478. doi:10.1038/nm.3733](http://www.nature.com/nm/journal/v20/n12/full/nm.3733.html#supplementary-information)
 ---
 
 **Xie4.xlsx** - Supplementary Table 4. Somatic mutations in 2,241 TCGA tumor samples included in the study. Somatic mutation data are unavailable for a subset of samples. 402,271 SNPs
@@ -187,4 +186,10 @@ Number of SNPs per cancer type:
 **Beroukhim_S2.xlsx** - 158 independent regions of significant focal SCNAs, including 76 amplifications and 82 deletions, in the pooled analysis of all our data
 
 **Beroukhim_S5.xlsx** - Peak regions in individual cancer types but not in the pooled analysis
+
+[Leiserson, M. D. M., Vandin, F., Wu, H.-T., Dobson, J. R., Eldridge, J. V, Niu, B., … Raphael, B. J. (2015). PanCancer Network Analysis Identifies Combinations of Rare Somatic Mutations across Pathways and Protein Complexes. Manuscript, 47(2). doi:10.1038/ng.3168](http://www.nature.com/ng/journal/v47/n2/full/ng.3168.html)
+
+**Raphael_HotNet2.xlsx** - a collection of tables. Tables 6-18 - genes in factor-specific networks, small lists. Table 19 - genes specific for each cancer type. Table 20 - 147 cancer-specific genes.
+
+
 
