@@ -26,3 +26,10 @@ Supplementary Table 5: Independent loci from the Discovery samples after clumpin
 Supplementary Table 8: SNPs with previously published candidate associations to neuroimaging phenotypes. SNPs with P-values < 0.05 in the Discovery sample are highlighted, none were genome-wide significant (P < 5x10-8). `suppl5.bed` - 39 loci.
 
 Supplementary Table 9: Previously Published Genome Wide Significant Look-up Table. SNPs with P-values < 0.05 within the discovery sample are highlighted. Several disorders had no genome-wide significant and replicated common SNP variants reported as of August 8, 2014: Autism (PMID: 22843504), OCD (PMID: 22889921), ADHD (PMID: 20732625), and MDD (PMID: 22472876). `suppl9.bed` - 156 loci
+
+[Arnedo, J., Svrakic, D. M., Del Val, C., Romero-Zaliz, R., Hernández-Cuervo, H., Fanous, A. H., … Zwir, I. (2014). Uncovering the Hidden Risk Architecture of the Schizophrenias: Confirmation in Three Independent Genome-Wide Association Studies. The American Journal of Psychiatry, 1–15. doi:10.1176/appi.ajp.2014.14040435](http://ajp.psychiatryonline.org/doi/abs/10.1176/appi.ajp.2014.14040435)
+---
+
+`Zwir-Table_S2.pdf` - genes and their annotations with psychiatric diseases.
+
+`Zwir_Table_S3.xlsx` - SNPs and 44 groups they are in
