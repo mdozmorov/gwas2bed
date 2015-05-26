@@ -79,6 +79,17 @@ Gene Epigenomic similarity
 h <- mtx.plot(mtx.cor, SideColors=ColSideColors) # Clustering parameters
 ```
 
+Plotting with aheatmap
+---
+
+```{r fig.height=6}
+library(NMF)
+annot <- data.frame(Category=term.mapping$Category, Size=as.numeric(term.mapping$BEDcount))
+annotColor <- list(Category=c("red", "blue", "green", "yellow"), Size=c("red", "white", "blue"))
+h <- aheatmap(mtx.cor, color=matlab.like(50), distfun=dist.method, hclustfun=hclust.method, annCol=annot, annColors = annotColor)#, cexCol = 1, cexRow = 1)
+```
+
+
 Testing clustering stability
 
 ```{r eval=FALSE}
@@ -100,7 +111,7 @@ It appears scaled data is less stable for clustering, but more visually appealin
 
 Visualizing what pvClust clustered
 
-```{r epigenomicVisualization1, fig.height=5, eval=FALSE}
+```{r epigenomicVisualization1, fig.height=6, eval=FALSE}
 h <- heatmap.2(mtx.cor, symkey = TRUE, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), dendrogram="both", trace="none", density.info="none", col=color, RowSideColors=ColSideColors, ColSideColors=ColSideColors)  
 ```
 
@@ -118,7 +129,7 @@ for (d in dist.methods) {
 dev.off()
 ```
 
-```{r fig.height=3}
+```{r fig.height=3, eval=FALSE}
 # Empirically define clusters
 par(mfrow=c(1, 2))
 hcut <- 10 # Empirically set height to cut the tree
@@ -136,7 +147,7 @@ What are the DEGFs counts in each clustering?
 chromStates18
 ---
 
-```{r}
+```{r eval=FALSE}
 # A matrix to use for differential epigenomic analysis
 mtx.degs <- load_gr_data("data.gr/Roadmap_chromStates18/matrix_OR.txt")
 mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
@@ -146,7 +157,7 @@ sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="chromStates18
 DNase-hotspotbroadall
 ---
 
-```{r}
+```{r eval=FALSE}
 # A matrix to use for differential epigenomic analysis
 mtx.degs <- load_gr_data("data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")
 mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
@@ -156,7 +167,7 @@ sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="DNasehotspotb
 broadPeak
 ---
 
-```{r}
+```{r eval=FALSE}
 # A matrix to use for differential epigenomic analysis
 mtx.degs <- load_gr_data("data.gr/Roadmap_broadPeak/matrix_OR.txt")
 mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
@@ -166,7 +177,7 @@ sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="broadPeak_2_c
 ENCODE TFBS
 ---
 
-```{r}
+```{r eval=FALSE}
 # A matrix to use for differential epigenomic analysis
 mtx.degs <- load_gr_data("data.gr/ENCODE_Tfbs/matrix_OR.txt")
 mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)# %>% mtx.rand(randomize = "mix")
@@ -177,7 +188,7 @@ sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="encTfbs_2_clu
 Testing random chance, Using GENES OR chromStates18+encHistone+encBroadHmm
 ---
 
-```{r}
+```{r eval=FALSE}
 # A matrix to use for differential epigenomic analysis
 mtx.degs <- load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_OR.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt", "data.gr/ENCODE_Tfbs/matrix_OR.txt"))
 mtx.degs <- mtx.degs[, colnames(mtx.cor) %in% term.mapping$Name] %>% varFilter(var.cutoff=0.1)
@@ -193,11 +204,10 @@ sum(mtx.degfs(mtx.rnd[, mtx.clust$eset.labels], mtx.clust))
 Cell type-specific analysis
 ---
 
-```{r}
+```{r eval=FALSE}
 mtx <- load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_chromStates18/matrix_PVAL.txt"))
 
 mtx.cellspecific(mtx, "results/cellspecific_Roadmap.xlsx")
-
 ```
 
 
