@@ -191,5 +191,8 @@ Number of SNPs per cancer type:
 
 **Raphael_HotNet2.xlsx** - a collection of tables. Tables 6-18 - genes in factor-specific networks, small lists. Table 19 - genes specific for each cancer type. Table 20 - 147 cancer-specific genes.
 
+[Pleasance, E. D., Cheetham, R. K., Stephens, P. J., McBride, D. J., Humphray, S. J., Greenman, C. D., … Stratton, M. R. (2010). A comprehensive catalogue of somatic mutations from a human cancer genome. Nature, 463(January), 191–196. doi:10.1038/nature08658](http://www.nature.com/nature/journal/v463/n7278/full/nature08658.html)
+===
 
+Lots of data, in the *data/Pleasance* folder.
 
