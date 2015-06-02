@@ -1,4 +1,4 @@
----
+cd ---
 title: "Comarison of manually classified diseases"
 author: "Mikhail G. Dozmorov"
 date: "March 29, 2015"
@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, echo=FALSE, message=FALSE}
-source("../../../../GenomeRunner/R.GenomeRunner/utils1.R")
+source("../../../../GenomeRunner/R.GenomeRunner/utils2.R")
 # Set up the environment
 library(knitr) 
 opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', echo=F, dpi=100, warnings=F, message=F, comment=NA, warning=F) #out.width=700, 
@@ -43,7 +43,7 @@ library(xlsx)
 term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
 
 # Correlation to use
-cortype <- "pearson"
+cortype <- "spearman"
 ```
 
 ```{r diseaseNetwork1, echo=FALSE, cache=FALSE, eval=TRUE}
@@ -202,18 +202,18 @@ Adding GenomeRunner data
 
 ```{r}
 # Add (combinations of) GenomeRunner's results
-dname <- list("data.gr/ENCODE_Tfbs/matrix_PVAL.txt",
-              "data.gr/ENCODE_Dnase/matrix_PVAL.txt",
-              "data.gr/ENCODE_Histone/matrix_PVAL.txt",
-              c("data.gr/ENCODE_Tfbs/matrix_PVAL.txt", "data.gr/ENCODE_Tfbs/matrix_PVAL.txt", "data.gr/ENCODE_Histone/matrix_PVAL.txt"),
-             "data.gr/Roadmap_broadPeak/matrix_PVAL.txt",
-             "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt",
-             "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt",
-             "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt",
-             "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt",
-             "data.gr/Roadmap_chromStates18/matrix_PVAL.txt",
-             c("data.gr/Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/Roadmap_chromStates18/matrix_PVAL.txt"),
-             "data.gr/ENCODE_Tfbs/matrix_PVAL.txt"
+dname <- list("data.gr/2ENCODE_Tfbs/matrix_OR.txt",
+              "data.gr/2ENCODE_Dnase/matrix_OR.txt",
+              "data.gr/2ENCODE_Histone/matrix_OR.txt",
+              c("data.gr/2ENCODE_Tfbs/matrix_OR.txt", "data.gr/2ENCODE_Dnase/matrix_OR.txt", "data.gr/2ENCODE_Histone/matrix_OR.txt"),
+             "data.gr/2Roadmap_broadPeak/matrix_OR.txt",
+             "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt",
+             "data.gr/2Roadmap_DNase_narrowPeak/matrix_OR.txt",
+             "data.gr/2Roadmap_gappedPeak/matrix_OR.txt",
+             "data.gr/2Roadmap_narrowPeak/matrix_OR.txt",
+             "data.gr/2Roadmap_chromStates18/matrix_OR.txt",
+             c("data.gr/2Roadmap_broadPeak/matrix_OR.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt", "data.gr/2Roadmap_DNase_narrowPeak/matrix_OR.txt", "data.gr/2Roadmap_gappedPeak/matrix_OR.txt", "data.gr/2Roadmap_narrowPeak/matrix_OR.txt", "data.gr/2Roadmap_chromStates18/matrix_OR.txt"),
+             "data.gr/2ENCODE_Tfbs/matrix_PVAL.txt"
            )
 # # Not used
 # "data.gr/ENCODE_Dgf/matrix_PVAL.txt",
