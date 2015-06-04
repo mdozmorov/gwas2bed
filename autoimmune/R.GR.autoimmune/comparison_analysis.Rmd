@@ -44,6 +44,7 @@ term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
 
 # Correlation to use
 cortype <- "spearman"
+mat.type <- "PVAL" # "PVAL" or "OR", specify whether matrix_PVAL or matrix_OR should be used 
 ```
 
 ```{r diseaseNetwork1, echo=FALSE, cache=FALSE, eval=TRUE}
@@ -145,7 +146,7 @@ mtx.fig1a <- reshape_wide_data(mtx.fig1a)
 
 Loading GenometriCorr similarity
 
-```{r}
+```{r eval=FALSE}
 # mtx.gtc <- as.matrix(read.table("data/gtc.reldist.ecdfdeviation.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
 # mtx.gtc <- as.matrix(read.table("data/gtc.scaled.absolute.min.distance.sum.1.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
 mtx.gtc <- as.matrix(read.table("data/gtc.scaled.absolute.min.distance.sum.1.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
@@ -155,13 +156,11 @@ mtx.gtc <- reshape_wide_data(mtx.gtc)
 
 Shrunken matrix
 
-```{r}
+```{r eval=FALSE}
 mtx.shrunken <- as.matrix(read.table("data/Similarity_Shrunken.txt", sep="\t", header=T, row.names=1, stringsAsFactors = FALSE))
 mtx.shrunken <- mtx.shrunken[rownames(mtx.shrunken) %in% term.mapping$Name, colnames(mtx.shrunken) %in% term.mapping$Name] 
 mtx.shrunken <- reshape_wide_data(mtx.shrunken)
 ```
-
-
 
 Preparing Bridget similarity
 
@@ -188,21 +187,35 @@ Combining with episimilarity
 
 ```{r}
 # Merge previously prepared matrixes
-mtx.list.epi <- c(list(mtx.fig1a), list(mtx.jaccard), list(term.msh.path), list(term.snomed.path), list(term.snomed.vector), list(term.iridescent.minMim), list(term.iridescent.misn), list(term.iridescent.obsExp), list(term.iridescent.relOverlap), list(term.iridescent.sharedRels), list(dose.jiang), list(dose.lin), list(dose.rel), list(dose.resnik), list(dose.wang), list(term.ICD9.occur), list(term.ICD9.risk), list(term.ICD9.phi), list(mtx.gtc), list(mtx.shrunken))
+mtx.list.epi <- c(list(mtx.fig1a), list(mtx.jaccard), list(term.msh.path), list(term.snomed.path), list(term.snomed.vector), list(term.iridescent.minMim), list(term.iridescent.misn), list(term.iridescent.obsExp), list(term.iridescent.relOverlap), list(term.iridescent.sharedRels), list(dose.jiang), list(dose.lin), list(dose.rel), list(dose.resnik), list(dose.wang), list(term.ICD9.occur), list(term.ICD9.risk), list(term.ICD9.phi)) #, list(mtx.gtc), list(mtx.shrunken))
 #, list(mtx.clusterSim.MF.Resnik), list(mtx.clusterSim.MF.Wang))
 
 mtx.cor.epi.joined <- do.call(cbind, lapply(mtx.list.epi, function(x) x[match(rownames(mtx.list.epi[[1]]), rownames(x)), ]))
 rownames(mtx.cor.epi.joined) <- rownames(mtx.list.epi[[1]])
 
 # Set the column names after merging lists
-colnames(mtx.cor.epi.joined) <- c("Shared.loci", "Jaccard", "MSH.path", "SnoMed.path", "SnoMed.vector", "Iridescent.minMim", "Iridescent.misn", "Iridescent.obsExp", "Iridescent.relOverlap", "Iridescent.sharedRels", "DOSE.jiang", "DOSE.lin", "DOSE.rel", "DOSE.resnik", "DOSE.wang", "ICD9.occur", "ICD9.risk", "ICD9.phi", "genometricorr", "shrunken")
+colnames(mtx.cor.epi.joined) <- c("Shared.loci", "Jaccard", "MSH.path", "SnoMed.path", "SnoMed.vector", "Iridescent.minMim", "Iridescent.misn", "Iridescent.obsExp", "Iridescent.relOverlap", "Iridescent.sharedRels", "DOSE.jiang", "DOSE.lin", "DOSE.rel", "DOSE.resnik", "DOSE.wang", "ICD9.occur", "ICD9.risk", "ICD9.phi") # , "genometricorr", "shrunken")
 ```
 
 Adding GenomeRunner data
 
 ```{r}
 # Add (combinations of) GenomeRunner's results
-dname <- list("data.gr/2ENCODE_Tfbs/matrix_OR.txt",
+if (mat.type == "PVAL") {
+  dname <- list("data.gr/2ENCODE_Tfbs/matrix_PVAL.txt",
+              "data.gr/2ENCODE_Dnase/matrix_PVAL.txt",
+              "data.gr/2ENCODE_Histone/matrix_PVAL.txt",
+              c("data.gr/2ENCODE_Tfbs/matrix_PVAL.txt", "data.gr/2ENCODE_Dnase/matrix_PVAL.txt", "data.gr/2ENCODE_Histone/matrix_PVAL.txt"),
+             "data.gr/2Roadmap_broadPeak/matrix_PVAL.txt",
+             "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt",
+             "data.gr/2Roadmap_DNase_narrowPeak/matrix_PVAL.txt",
+             "data.gr/2Roadmap_gappedPeak/matrix_PVAL.txt",
+             "data.gr/2Roadmap_narrowPeak/matrix_PVAL.txt",
+             "data.gr/2Roadmap_chromStates18/matrix_PVAL.txt",
+             c("data.gr/2Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/2Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/2Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/2Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/2Roadmap_chromStates18/matrix_PVAL.txt")
+           )
+} else if (mat.type == OR) {
+  dname <- list("data.gr/2ENCODE_Tfbs/matrix_OR.txt",
               "data.gr/2ENCODE_Dnase/matrix_OR.txt",
               "data.gr/2ENCODE_Histone/matrix_OR.txt",
               c("data.gr/2ENCODE_Tfbs/matrix_OR.txt", "data.gr/2ENCODE_Dnase/matrix_OR.txt", "data.gr/2ENCODE_Histone/matrix_OR.txt"),
@@ -212,9 +225,10 @@ dname <- list("data.gr/2ENCODE_Tfbs/matrix_OR.txt",
              "data.gr/2Roadmap_gappedPeak/matrix_OR.txt",
              "data.gr/2Roadmap_narrowPeak/matrix_OR.txt",
              "data.gr/2Roadmap_chromStates18/matrix_OR.txt",
-             c("data.gr/2Roadmap_broadPeak/matrix_OR.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt", "data.gr/2Roadmap_DNase_narrowPeak/matrix_OR.txt", "data.gr/2Roadmap_gappedPeak/matrix_OR.txt", "data.gr/2Roadmap_narrowPeak/matrix_OR.txt", "data.gr/2Roadmap_chromStates18/matrix_OR.txt"),
-             "data.gr/2ENCODE_Tfbs/matrix_PVAL.txt"
+             c("data.gr/2Roadmap_broadPeak/matrix_OR.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt", "data.gr/2Roadmap_DNase_narrowPeak/matrix_OR.txt", "data.gr/2Roadmap_gappedPeak/matrix_OR.txt", "data.gr/2Roadmap_narrowPeak/matrix_OR.txt", "data.gr/2Roadmap_chromStates18/matrix_OR.txt")
            )
+}
+
 # # Not used
 # "data.gr/ENCODE_Dgf/matrix_PVAL.txt",
 # "data.gr/Roadmap_DNase_hotspot01/matrix_PVAL.txt",
@@ -232,7 +246,7 @@ for (x in dname) {
 }
 
 # Set the column names after merging lists
-colnames(mtx.cor.epi.joined)[ (length(mtx.list.epi) + 1):length(colnames(mtx.cor.epi.joined))] <- c("Encode.Tfbs", "Encode.Dnase", "Encode.Histone", "Encode.combined", "Roadmap.broadPeak", "Roadmap.Dnase.hotspotbroadall", "Roadmap.Dnase.narrowPeak", "Roadmap.gappedPeak", "Roadmap.narrowPeak", "Roadmap.chromStates18", "Roadmap.combined", "Encode.Tfbs.P")
+colnames(mtx.cor.epi.joined)[ (length(mtx.list.epi) + 1):length(colnames(mtx.cor.epi.joined))] <- c("Encode.Tfbs", "Encode.Dnase", "Encode.Histone", "Encode.combined", "Roadmap.broadPeak", "Roadmap.Dnase.hotspotbroadall", "Roadmap.Dnase.narrowPeak", "Roadmap.gappedPeak", "Roadmap.narrowPeak", "Roadmap.chromStates18", "Roadmap.combined")
 ```
 
 ```{r eval=FALSE}
@@ -250,8 +264,12 @@ Summarize all, and most correlated with episimilarity metrics. Visualize it as a
 #mtx.cor.epi.joined <- sweep(mtx.cor.epi.joined, 1, apply(mtx.cor.epi.joined, 1, median,na.rm=T))
 mtx.cor.epi.joined <- scale(mtx.cor.epi.joined)
 
-if(cortype != "MIC"){
-  mtx.summary <- rcorr(as.matrix(mtx.cor.epi.joined), type=cortype)
+if (cortype != "MIC") {
+  mtx.cor <- rcorr(as.matrix(mtx.cor.epi.joined), type=cortype)[[1]]
+  ## Clustering
+  hclust.method <- "ward.D2"
+  hclustergram <- hclust(as.dist(1-mtx.cor), method=hclust.method) # Cluster it
+
   # Save the results
   # write.xlsx2(formatC(mtx.summary[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName="correlation")
   # write.xlsx2(formatC(mtx.summary[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName="pval", append=TRUE)
@@ -260,12 +278,12 @@ if(cortype != "MIC"){
   # To have corr coeffs overlayed on the cells: cellnote=formatC(mtx.summary[[3]], format="e", digits=2)
   # Visualization only
   par(oma=c(5.3,0,0,2.8), mar=c(5, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
-  heatmap.2(mtx.summary[[1]], symbreaks = TRUE, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=1, cexCol=1, notecol="black", notecex=0.9, cellnote=formatC(mtx.summary[[1]], format="f", digits=2))
+  heatmap.2(mtx.cor, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), symbreaks = TRUE, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=1, cexCol=1, notecol="black", notecex=0.9, cellnote=formatC(mtx.cor, format="f", digits=2))
   
   # PDF only, overlay corr coeffs
-  pdf(paste("results/comparison_analysis_corr_", cortype, ".pdf", sep=""), width=7.5, height=6)
+  pdf(paste("results/comparison_analysis_corr_", cortype, "_", mat.type, ".pdf", sep=""), width=7.5, height=6)
   par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
-  heatmap.2(mtx.summary[[1]], trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.4, cellnote=formatC(mtx.summary[[1]], format="f", digits=2))
+  heatmap.2(mtx.cor, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.4, cellnote=formatC(mtx.cor, format="f", digits=2))
   dev.off()
   # # PDF only, overlay pval coeffs
   # pdf(paste("results/comparison_analysis_pval_", cortype, ".pdf", sep=""), width=7.5, height=6)

@@ -29,7 +29,7 @@ library(xlsx)
 term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
 # term.mapping <- term.mapping[ term.mapping$BED != "Kawasaki_disease", ] # Exclude Kawasaki outlier
 # Load the actual episimilarity data
-mtx <- as.matrix(load_gr_data(c("data.gr/Roadmap_broadPeak2/matrix_PVAL.txt")))# , "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt")))
+mtx <- as.matrix(load_gr_data(c("data.gr/2Roadmap_broadPeak/matrix_PVAL.txt")))# , "data.gr/Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt")))
 mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
 # Transform at will
 # mtx <- sweep(mtx,1, apply(mtx,1,median,na.rm=T))
@@ -130,7 +130,7 @@ dev.off()
 ```{r fig.height=3, eval=FALSE}
 # Empirically define clusters
 par(mfrow=c(1, 2))
-hcut <- 40 # Empirically set height to cut the tree
+hcut <- 7 # Empirically set height to cut the tree
 h$colDendrogram %>% plot(horiz=T)
 abline(v=hcut)
 as.hclust(h$colDendrogram)$height %>% density %>% plot
