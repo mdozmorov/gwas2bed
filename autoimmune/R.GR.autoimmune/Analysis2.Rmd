@@ -1,0 +1,249 @@
+---
+# title: ""
+# author: "Mikhail Dozmorov"
+# date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+```{r setup, echo=FALSE, include=FALSE, cache=FALSE, warning=FALSE, message=FALSE}
+# Set up the environment
+library(knitr) 
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=100,  echo=F, autodep=T, width=200, warning=FALSE, comment=NA)
+options(replace.assign=TRUE, width=500)
+tidy.opts=list(width.cutoff=200)
+suppressMessages(library(pander))
+panderOptions('table.split.table', Inf)
+set.seed(1)
+# Local functions and settings
+invisible(source("../../../../GenomeRunner/R.GenomeRunner/utils2.R")) # See the required packages there
+source("../../../../GenomeRunner/R.GenomeRunner/episimilarity.R")
+# Correlation to use
+cortype <- "spearman"
+```
+
+Load the data
+===
+
+```{r message=FALSE, results='hide'}
+library(xlsx)
+# Load term mapping
+term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
+# term.mapping <- term.mapping[ term.mapping$BED != "Kawasaki_disease", ] # Exclude Kawasaki outlier
+# Load the actual episimilarity data
+mtx <- as.matrix(load_gr_data(c("data.gr/2Roadmap_broadPeak/matrix_OR.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt")))
+mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
+# Transform at will
+# mtx <- sweep(mtx,1, apply(mtx,1,median,na.rm=T))
+mtx <- scale(mtx)
+mtx.cor <- rcorr(mtx, type=cortype)[[1]] # Correlation data
+# library(minerva) # Playing with MIC correlation coefficient
+# mtx.cor <- mine(mtx, n.cores=4)$MIC
+# A vector of category names, same order as the correlation matrix
+categoryNames <- term.mapping$Category[ match(rownames(mtx.cor), term.mapping$Name) ]
+names(categoryNames) <- term.mapping$Name[ match(rownames(mtx.cor), term.mapping$Name)]
+# Set side colors
+ColSideColors <- as.numeric(factor(categoryNames[ colnames(mtx.cor) ]))
+cbind((categoryNames), ColSideColors) # Sanity check
+ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
+ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
+ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
+ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
+```
+
+We first check how the distributions of the log2-transformed odds ratios for each sample look like side-by-side.
+
+```{r eval=TRUE, results='hold'}
+ggplot(melt(mtx), aes(x=Var2, y=value, fill=Var2)) + 
+  geom_boxplot() + 
+  theme(axis.text.x=element_text(angle=45,hjust=1,vjust=1)) +
+  theme(legend.position="none")
+#   coord_cartesian(ylim = c(-5, 5)) +
+```
+
+It's a good idea to scale and center the data. Let's check how the scaled data looks like.
+
+```{r results='hold'}
+mtx <- scale(mtx)
+ggplot(melt(mtx), aes(x=Var2, y=value, fill=Var2)) + 
+  geom_boxplot() + 
+  theme(axis.text.x=element_text(angle=45,hjust=1,vjust=1)) +
+  theme(legend.position="none")
+#   coord_cartesian(ylim = c(-5, 5)) +
+```
+
+Testing number of clusters with COMMUNAL
+===
+
+```{r eval=FALSE}
+# Testing cluster number with COMMUNAL
+library(COMMUNAL) 
+ks <- seq(2,6)
+result <- COMMUNAL(data=mtx, ks=ks, dist.metric = "correlation")
+result.list <- list(list(result), ncol(mtx))
+goodAlgs <- c("hierarchical", "kmeans")
+goodMeasures <- c('wb.ratio', 'avg.silwidth', 'dunn')
+values <- plotRange3D(result.list, ks, goodAlgs, goodMeasures)
+# Testing cluster number with ConsensysClusterPlus
+library(ConsensusClusterPlus)
+results = ConsensusClusterPlus(mtx, maxK=6, reps=50, pItem=0.8, pFeature=1, title="ConsensusClusterPlus", clusterAlg="hc", distance="spearman", seed=1262118388.71279, plot="png")
+# Store hclust object
+hclustergram <- results[[3]][["consensusTree"]]
+```
+
+Prepare the matrix of correlation coefficients, and cluster it.
+
+```{r}
+## Using spearman correlations
+# rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
+mtx.cor <- rcorr(as.matrix(mtx), type="spearman")[[1]]
+# Optionally, try Spearman or Kendall correlation
+# mtx.cor[[1]] <- cor(as.matrix(mtx), method="kendall")
+## Clustering
+# "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
+hclust.method <- "ward.D2"
+hclustergram <- hclust(as.dist(1-mtx.cor), method=hclust.method) # Cluster it
+
+# ## Using distance metric
+# # "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski"
+# # dist.method <- "euclidean"
+# mtx.cor <- dist(t(mtx), method = dist.method) # Get distance matrix
+# ## Clustering
+# # "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
+# hclust.method <- "ward.D2"
+# hclustergram <- hclust(mtx.cor, method=hclust.method) # Cluster it
+```
+
+Gene Epigenomic similarity
+===
+
+```{r fig.height=6}
+h <- mtx.plot(mtx.cor, SideColors=ColSideColors) # Clustering parameters
+```
+
+Plotting with aheatmap
+---
+
+```{r fig.height=6}
+library(NMF)
+annot <- data.frame(Category=term.mapping$Category, Size=as.numeric(term.mapping$BEDcount))
+annotColor <- list(Category=c("red", "blue", "green", "yellow"), Size=c("red", "white", "blue"))
+h <- aheatmap(mtx.cor, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), color=matlab.like(50), distfun=dist.method, hclustfun=hclust.method, annCol=annot, annColors = annotColor)#, cexCol = 1, cexRow = 1)
+```
+
+Testing clustering stability
+
+```{r eval=FALSE}
+library(pvclust)
+library(parallel)
+cl <- makeCluster(4, type="PSOCK")
+set.seed(1)
+result <- parPvclust(cl=cl, mtx, method.dist=dist.method, method.hclust=hclust.method, nboot=1000)
+stopCluster(cl)
+# saveRDS(result, "data/pvClust_10000.Rds")
+# result <- readRDS("data/pvClust_10000.Rds")
+dev.off()
+plot(result, hang = -1)
+pvrect(result, alpha=0.95)
+hclustergram <- result$hclust # Make the heatmap plot whatever hclust object
+```
+
+It appears scaled data produces less stable clustering, but more visually appealing. For now, skip pvclust. Visualizing what pvClust clustered.
+
+```{r epigenomicVisualization1, fig.height=6, eval=FALSE}
+h <- heatmap.2(mtx.cor, symkey = TRUE, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), dendrogram="both", trace="none", density.info="none", col=color, RowSideColors=ColSideColors, ColSideColors=ColSideColors)  
+```
+
+Example of testing combinations of clustering methods
+```{r eval=FALSE}
+dist.methods <- c("euclidean", "maximum","manhattan", "minkowski")
+hclust.methods <- c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid")
+pdf("results/clustering_combinations.pdf")
+for (d in dist.methods) {
+  for (h in hclust.methods) {
+    par(oma=c(10,0,0,10), mar=c(10, 4.1, 4.1, 10), cex.main=0.65) # Adjust margins
+    h<-heatmap.2(as.matrix(mtx.cor), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=d)}, hclustfun=function(x){hclust(x, method=h)}, cexRow=1, cexCol=1,  main=paste(d, h),  RowSideColors=ColSideColors) # cellnote=formatC(as.matrix(mtx.cor), format="f", digits=2), notecol="black", notecex=1,
+  }
+}
+dev.off()
+```
+
+```{r fig.height=3, eval=FALSE}
+# Empirically define clusters
+par(mfrow=c(1, 2), cex=0.5)
+plot(as.dendrogram(h$Colv, hang=-1)) # Plot dendrogram
+cl_num <- 3 # Empirically set desired numter of clusters
+cols <- rainbow(cl_num) # Make colors for clusters
+rect.hclust(as.hclust(h$Colv), k=cl_num, border=cols) # Define the clusters by rectangles
+hcut <- 2# Empirically set height to cut the tree
+abline(h=hcut)
+as.hclust(h$Colv)$height %>% density %>% plot
+abline(v=hcut)
+mtx.clust <- h$Colv %>% mtx.clusters(height=hcut, minmembers=3)
+par(mfrow=c(1, 1))
+# Save the results of clustering
+write.table(as.data.frame(mtx.clust), "results/clustering_all.txt", sep="\t", row.names=FALSE, quote=FALSE)
+```
+
+What are the DEGFs counts in each clustering?
+===
+
+chromStates18
+---
+
+```{r eval=FALSE}
+mtx.degs <- load_gr_data("data.gr/2Roadmap_chromStates18/matrix_OR.txt")
+mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx))]
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="chromStates18_2_clust"))
+```
+
+DNase-hotspotbroadall
+---
+
+```{r eval=FALSE}
+mtx.degs <- load_gr_data("data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt")
+mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx))]
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="DNasehotspotbroadall_2_clust"))
+```
+
+broadPeak
+---
+
+```{r eval=FALSE}
+mtx.degs <- load_gr_data("data.gr/2Roadmap_broadPeak/matrix_OR.txt")
+mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx))] 
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="broadPeak_2_clust"))
+```
+
+ENCODE TFBS
+---
+
+```{r eval=FALSE}
+mtx.degs <- load_gr_data("data.gr/2ENCODE_Tfbs/matrix_OR.txt")
+mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx))]
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="encTfbs_2_clust"))
+```
+
+
+Testing random chance, Using GENES OR chromStates18+encHistone+encBroadHmm
+---
+
+```{r eval=FALSE}
+mtx.degs <- load_gr_data(c("data.gr/2Roadmap_broadPeak/matrix_OR.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt", "data.gr/2ENCODE_Tfbs/matrix_OR.txt"))
+mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx))]
+sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust))
+# Random simulations
+mtx.rnd <- mtx.degs %>% mtx.rand(randomize = "row")
+mtx.rnd <- mtx.degs %>% mtx.rand(randomize = "col")
+mtx.rnd <- mtx.degs %>% mtx.rand(randomize = "mix")
+mtx.rnd <- mtx.degs %>% mtx.rand(randomize = "rnd")
+sum(mtx.degfs(mtx.rnd[, mtx.clust$eset.labels], mtx.clust))
+```
+
+Cell type-specific analysis
+---
+
+```{r eval=FALSE}
+mtx <- load_gr_data(c("data.gr/2Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/2Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/2Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/2Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/2Roadmap_chromStates18/matrix_PVAL.txt"))
+mtx.cellspecific(mtx, "results/cellspecific_Roadmap.xlsx")
+```
+
+
