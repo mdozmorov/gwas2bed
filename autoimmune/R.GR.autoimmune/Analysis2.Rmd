@@ -31,17 +31,11 @@ term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
 # Load the actual episimilarity data
 mtx <- as.matrix(load_gr_data(c("data.gr/2Roadmap_broadPeak/matrix_OR.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt")))
 mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
-# Transform at will
-# mtx <- sweep(mtx,1, apply(mtx,1,median,na.rm=T))
-mtx <- scale(mtx)
-mtx.cor <- rcorr(mtx, type=cortype)[[1]] # Correlation data
-# library(minerva) # Playing with MIC correlation coefficient
-# mtx.cor <- mine(mtx, n.cores=4)$MIC
 # A vector of category names, same order as the correlation matrix
-categoryNames <- term.mapping$Category[ match(rownames(mtx.cor), term.mapping$Name) ]
-names(categoryNames) <- term.mapping$Name[ match(rownames(mtx.cor), term.mapping$Name)]
+categoryNames <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name) ]
+names(categoryNames) <- term.mapping$Name[ match(colnames(mtx), term.mapping$Name)]
 # Set side colors
-ColSideColors <- as.numeric(factor(categoryNames[ colnames(mtx.cor) ]))
+ColSideColors <- as.numeric(factor(categoryNames[ colnames(mtx) ]))
 cbind((categoryNames), ColSideColors) # Sanity check
 ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
 ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
@@ -97,19 +91,18 @@ Prepare the matrix of correlation coefficients, and cluster it.
 mtx.cor <- rcorr(as.matrix(mtx), type="spearman")[[1]]
 # Optionally, try Spearman or Kendall correlation
 # mtx.cor[[1]] <- cor(as.matrix(mtx), method="kendall")
+# Or, MIC
+# library(minerva) # Playing with MIC correlation coefficient
+# mtx.cor <- mine(mtx, n.cores=4)$MIC
+# Or, using distance metric
+# "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski"
+# dist.method <- "euclidean"
+# mtx.cor <- dist(t(mtx), method = dist.method) # Get distance matrix
+
 ## Clustering
 # "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
 hclust.method <- "ward.D2"
 hclustergram <- hclust(as.dist(1-mtx.cor), method=hclust.method) # Cluster it
-
-# ## Using distance metric
-# # "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski"
-# # dist.method <- "euclidean"
-# mtx.cor <- dist(t(mtx), method = dist.method) # Get distance matrix
-# ## Clustering
-# # "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
-# hclust.method <- "ward.D2"
-# hclustergram <- hclust(mtx.cor, method=hclust.method) # Cluster it
 ```
 
 Gene Epigenomic similarity
