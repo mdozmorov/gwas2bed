@@ -203,4 +203,8 @@ Lots of data, in the *data/Pleasance* folder.
 
 **Wood-TableS4A/4B.xlsx** - Colorectal/Breast cancer genes
 
+[Min Zhao, Lei Ma, Yining Liu, Hong Qu (2015) Pedican: an online gene for pediatric cancers with literature evidence. scientific reports](http://pedican.bioinfo-minzhao.org/index.html)
+===
+
+**Pedican.txt** - All the 735 human Pediatric cancer genes with cancer types
 
