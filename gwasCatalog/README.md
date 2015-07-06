@@ -50,3 +50,16 @@ orpha2orpha.txt - score column 5, "inferred_gene" some NULL but most are OK. But
 ---
 
 `./make.sh` will create trait-specific EntrezIDs list files
+
+[db_DiseaseConnect](http://disease-connect.org/)
+---
+
+`Disease-Gene_v1.csv.gz` - Format: Concept ID, Disease Name, Type, Gene. There are three types of disease-gene relations as follows:
+
+GWAS: Genes that are reported to be relevant to the disease based on the catalog of published genome-wide association studies (GWAS).
+
+OMIM: Genes that are relevant to Arthritis based on the OMIM Gene Map.
+
+DEG: Genes that are differentially expressed (DEG) between an condition related to the disease and other condition.
+
+`Disease-Disease_v1.csv.gz` - Format: Disease 1, Disease 2, P value. The disease-disease relations are determined by the significance of the shared GWAS/OMIM/DEG genes between two diseases using hypergeometric test.
