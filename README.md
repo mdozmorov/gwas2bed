@@ -23,12 +23,12 @@ Disease-disease associations
 
 `Rzhetsky_A_Appendix3.pdf` - data from [Rzhetsky, A., Wajngurt, D., Park, N., & Zheng, T. (2007). Probing genetic overlap among complex human phenotypes. Proceedings of the National Academy of Sciences of the United States of America, 104, 11694–11699. doi:10.1073/pnas.0704820104](http://www.pnas.org/content/104/28/11694.full.pdf). A list of diseases, their ICD9 codes, and brief descriptions.
 
-Zhou X, Menche J, Barabási A-L, Sharma A: Human symptoms-disease network. Nat Commun 2014, 5(May):4212.
+[Zhou X, Menche J, Barabási A-L, Sharma A: Human symptoms-disease network. Nat Commun 2014, 5(May):4212.](http://www.nature.com/ncomms/2014/140626/ncomms5212/full/ncomms5212.html)
 ---
 
 `human-cooccur-disease-network.txt.gz` - data from [Supplementary Data 1](http://www.nature.com/ncomms/2014/140626/ncomms5212/extref/ncomms5212-s2.txt). List of all 4,442 diseases within PubMed and their occurrence.
 
-`human-tfidf-disease-network.txt.gz` - data from [Supplementary Data 3](http://www.nature.com/ncomms/2014/140626/ncomms5212/extref/ncomms5212-s4.txt). Term co-occurrences between symptoms and diseases measured by TF-IDF weighted values. This table includes 147,978 records of symptom and disease relationships.
+`human-tfidf-disease-network.txt.gz` - data from [Supplementary Data 3](http://www.nature.com/ncomms/2014/140626/ncomms5212/extref/ncomms5212-s4.txt). Term co-occurrences between symptoms and diseases measured by the term frequency-inverse document frequency (TF-IDF) weighted values. This table includes 147,978 records of symptom and disease relationships.
 
 `human-sig-disease-network.txt.gz` - data from [Supplementary Data 4](http://www.nature.com/ncomms/2014/140626/ncomms5212/extref/ncomms5212-s5.txt). List of disease links in the disease network with both significant shared symptoms and shared genes/PPIs. In total there are 133,106 such connections between 1,596 distinct diseases. 
 
