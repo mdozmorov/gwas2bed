@@ -35,3 +35,7 @@ Disease-disease associations
 `human-disease-to-UMLS.xlsx` - data from [Supplementary Table 6](http://www.nature.com/ncomms/2014/140626/ncomms5212/extref/ncomms5212-s7.xls). This data file includes 33,977 records of the map from HPO phenotypes to UMLS semantic types (from UMLS 2012AA).
 
 `human-disease-to-SNOMED.xlsx` - data from [Supplementary Table 7](http://www.nature.com/ncomms/2014/140626/ncomms5212/extref/ncomms5212-s8.xls). SNOMED-CT symptom-disease relationships. The data file has six components: disease-symptom relationships, disease list, disease terms, symptom list, symptom terms and SNOMED semantic types. There are 2,340 records of disease-symptom relationships, which include 1,623 diseases and 817 symptoms. The SNOMED semantic type component lists the semantic types of concepts and their numbers in SNOMED.
+
+`Suthram_TableS2_diseases-umls.xlsx` - data from [Supplementary Table S1](http://journals.plos.org/ploscompbiol/article/asset?unique&id=info:doi/10.1371/journal.pcbi.1000662.s004), [Sulthram-Butte paper](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000662).List of the 54 diseases, their UMLS IDs and GEO IDs.
+
+`Suthram_TableS2_disease-relationships.xlsx` - data from [Supplementary Table S2](http://journals.plos.org/ploscompbiol/article/asset?unique&id=info:doi/10.1371/journal.pcbi.1000662.s005), [Sulthram-Butte paper](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000662). List of the 138 significant disease correlations.
