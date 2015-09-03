@@ -202,30 +202,54 @@ Adding GenomeRunner data
 ```{r}
 # Add (combinations of) GenomeRunner's results
 if (mat.type == "PVAL") {
-  dname <- list("data.gr/2ENCODE_Tfbs/matrix_PVAL.txt",
-              "data.gr/2ENCODE_Dnase/matrix_PVAL.txt",
-              "data.gr/2ENCODE_Histone/matrix_PVAL.txt",
-              c("data.gr/2ENCODE_Tfbs/matrix_PVAL.txt", "data.gr/2ENCODE_Dnase/matrix_PVAL.txt", "data.gr/2ENCODE_Histone/matrix_PVAL.txt"),
-             "data.gr/2Roadmap_broadPeak/matrix_PVAL.txt",
-             "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt",
-             "data.gr/2Roadmap_DNase_narrowPeak/matrix_PVAL.txt",
-             "data.gr/2Roadmap_gappedPeak/matrix_PVAL.txt",
-             "data.gr/2Roadmap_narrowPeak/matrix_PVAL.txt",
-             "data.gr/2Roadmap_chromStates18/matrix_PVAL.txt",
-             c("data.gr/2Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/2Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/2Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/2Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/2Roadmap_chromStates18/matrix_PVAL.txt")
+  dname <- list("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt",
+                "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt",
+                "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt",
+                "data.gr.05/grweb_encDNase//matrix_PVAL.txt",
+                "data.gr.05/grweb_encHistone//matrix_PVAL.txt",
+                "data.gr.05/grweb_encSegway//matrix_PVAL.txt",
+                "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt",
+                "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapChrom18//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapChrom25//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt",
+                "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt",
+             c("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt", "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt", "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt", "data.gr.05/grweb_encDNase//matrix_PVAL.txt", "data.gr.05/grweb_encHistone//matrix_PVAL.txt", "data.gr.05/grweb_encSegway//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom18//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom25//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt"),
+             c("data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt"),
+             c("data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt")
            )
 } else if (mat.type == OR) {
-  dname <- list("data.gr/2ENCODE_Tfbs/matrix_OR.txt",
-              "data.gr/2ENCODE_Dnase/matrix_OR.txt",
-              "data.gr/2ENCODE_Histone/matrix_OR.txt",
-              c("data.gr/2ENCODE_Tfbs/matrix_OR.txt", "data.gr/2ENCODE_Dnase/matrix_OR.txt", "data.gr/2ENCODE_Histone/matrix_OR.txt"),
-             "data.gr/2Roadmap_broadPeak/matrix_OR.txt",
-             "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt",
-             "data.gr/2Roadmap_DNase_narrowPeak/matrix_OR.txt",
-             "data.gr/2Roadmap_gappedPeak/matrix_OR.txt",
-             "data.gr/2Roadmap_narrowPeak/matrix_OR.txt",
-             "data.gr/2Roadmap_chromStates18/matrix_OR.txt",
-             c("data.gr/2Roadmap_broadPeak/matrix_OR.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt", "data.gr/2Roadmap_DNase_narrowPeak/matrix_OR.txt", "data.gr/2Roadmap_gappedPeak/matrix_OR.txt", "data.gr/2Roadmap_narrowPeak/matrix_OR.txt", "data.gr/2Roadmap_chromStates18/matrix_OR.txt")
+  dname <- list("data.gr.05/grweb_encBroadHmm//matrix_OR.txt",
+                "data.gr.05/grweb_encChromCombined//matrix_OR.txt",
+                "data.gr.05/grweb_encChromHmm//matrix_OR.txt",
+                "data.gr.05/grweb_encDNase//matrix_OR.txt",
+                "data.gr.05/grweb_encHistone//matrix_OR.txt",
+                "data.gr.05/grweb_encSegway//matrix_OR.txt",
+                "data.gr.05/grweb_encTFBS_cellspecific//matrix_OR.txt",
+                "data.gr.05/grweb_encTFBS_clustered//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapChrom15//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapChrom18//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapChrom25//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_OR.txt",
+                "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_OR.txt",
+             c("data.gr.05/grweb_encBroadHmm//matrix_OR.txt", "data.gr.05/grweb_encChromCombined//matrix_OR.txt", "data.gr.05/grweb_encChromHmm//matrix_OR.txt", "data.gr.05/grweb_encDNase//matrix_OR.txt", "data.gr.05/grweb_encHistone//matrix_OR.txt", "data.gr.05/grweb_encSegway//matrix_OR.txt", "data.gr.05/grweb_encTFBS_cellspecific//matrix_OR.txt", "data.gr.05/grweb_encTFBS_clustered//matrix_OR.txt", "data.gr.05/grweb_roadmapChrom15//matrix_OR.txt", "data.gr.05/grweb_roadmapChrom18//matrix_OR.txt", "data.gr.05/grweb_roadmapChrom25//matrix_OR.txt", "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_OR.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_OR.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_OR.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_OR.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_OR.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_OR.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_OR.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_OR.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_OR.txt"),
+             c("data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_OR.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_OR.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_OR.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_OR.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_OR.txt"),
+             c("data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_OR.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_OR.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_OR.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_OR.txt")
            )
 }
 
@@ -246,7 +270,7 @@ for (x in dname) {
 }
 
 # Set the column names after merging lists
-colnames(mtx.cor.epi.joined)[ (length(mtx.list.epi) + 1):length(colnames(mtx.cor.epi.joined))] <- c("Encode.Tfbs", "Encode.Dnase", "Encode.Histone", "Encode.combined", "Roadmap.broadPeak", "Roadmap.Dnase.hotspotbroadall", "Roadmap.Dnase.narrowPeak", "Roadmap.gappedPeak", "Roadmap.narrowPeak", "Roadmap.chromStates18", "Roadmap.combined")
+colnames(mtx.cor.epi.joined)[ (length(mtx.list.epi) + 1):length(colnames(mtx.cor.epi.joined))] <- c("encBroadHmm", "encChromCombined", "encChromHmm", "encDNase", "encHistone", "encSegway", "encTFBS_cellspecific", "encTFBS_clustered", "roadmapChrom15", "roadmapChrom18", "roadmapChrom25", "roadmapDNase_bPk-processed", "roadmapDNase_gPk-imputed", "roadmapDNase_nPk-imputed", "roadmapDNase_nPk-processed", "roadmapHistone_bPk-processed", "roadmapHistone_gPk-imputed", "roadmapHistone_gPk-processed", "roadmapHistone_nPk-imputed", "roadmapHistone_nPk-processed", "Combined-ALL", "Processed-ALL", "Imputed-ALL")
 ```
 
 ```{r eval=FALSE}
@@ -282,8 +306,8 @@ if (cortype != "MIC") {
   
   # PDF only, overlay corr coeffs
   pdf(paste("results/comparison_analysis_corr_", cortype, "_", mat.type, ".pdf", sep=""), width=7.5, height=6)
-  par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
-  heatmap.2(mtx.cor, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.4, cellnote=formatC(mtx.cor, format="f", digits=2))
+  par(oma=c(3.3,0,0,5), mar=c(11, 4.1, 5.1, 5), cex.main=1) # Adjust margins
+  heatmap.2(mtx.cor, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.8, cexCol=0.8, notecol="black", notecex=0.7, cellnote=formatC(mtx.cor, format="f", digits=2))
   dev.off()
   # # PDF only, overlay pval coeffs
   # pdf(paste("results/comparison_analysis_pval_", cortype, ".pdf", sep=""), width=7.5, height=6)
