@@ -47,6 +47,8 @@ cortype <- "spearman"
 mat.type <- "PVAL" # "PVAL" or "OR", specify whether matrix_PVAL or matrix_OR should be used 
 ```
 
+Preparing Barabasi similarity
+
 ```{r diseaseNetwork1, echo=FALSE, cache=FALSE, eval=TRUE}
 # # All disease-disease relationships
 # mtx.disease <- readRDS("/Users/mikhail/Documents/Work/GenomeRunner/Paper-Similarity/data_gwasCatalog/AllNet5/AllNet5.Rds") # Full Barabasi matrix
@@ -75,9 +77,9 @@ mat.type <- "PVAL" # "PVAL" or "OR", specify whether matrix_PVAL or matrix_OR sh
 #     }
 #   }
 #   # If self-self relationship is -Inf, replace it with maximum existing
-#   term.ICD9.occur[i, i] <- max(term.ICD9.occur[i, ], na.omit=T)
-#   term.ICD9.risk[i, i] <- max(term.ICD9.risk[i, ], na.omit=T)
-#   term.ICD9.phi[i, i] <- max(term.ICD9.phi[i, ], na.omit=T)
+#   term.ICD9.occur[i, i] <- max(term.ICD9.occur[i, ], na.rm=T)
+#   term.ICD9.risk[i, i] <- max(term.ICD9.risk[i, ], na.rm=T)
+#   term.ICD9.phi[i, i] <- max(term.ICD9.phi[i, ], na.rm=T)
 # }
 # # Replace infinite by NAs
 # term.ICD9.occur[ is.infinite(term.ICD9.occur) ] <- NA
@@ -99,7 +101,37 @@ term.ICD9.risk <- readRDS("data/term.ICD9.risk.Rds")
 # term.ICD9.occur <- readRDS("data/term.ICD9.3.occur.Rds")
 # term.ICD9.phi <- readRDS("data/term.ICD9.3.phi.Rds")
 # term.ICD9.risk <- readRDS("data/term.ICD9.3.risk.Rds")
+```
 
+Preparing Zhou similarity
+
+```{r}
+mtx.sig <- read.table("/Users/mikhail/Documents/Work/GenomeRunner/gwas2bed/human-sig-disease-network.txt.gz", sep="\t", fill=T, header=T, as.is=T)
+# Subset by ZhouIDs associated with our terms
+mtx.sig <- mtx.sig[ mtx.sig$MeSH.Disease.Term %in% term.mapping$ZhouID[ term.mapping$ZhouID != "" ] & mtx.sig$MeSH.Disease.Term.1 %in% term.mapping$ZhouID[ term.mapping$ZhouID != ""], ]
+
+# Create empty matrix of term disease-disease relationships ($V5 - co-occurrence)
+term.Zhou.sig <- matrix(NA, nrow=nrow(term.mapping), ncol=nrow(term.mapping))
+rownames(term.Zhou.sig) <- term.mapping$Name
+colnames(term.Zhou.sig) <- term.mapping$Name
+
+# Populate this matrix with Barabasi relationship values
+for (i in 1:nrow(term.mapping)) {
+  for (j in 1:nrow(term.mapping)) {
+    if(term.mapping$ZhouID[i] != "" & term.mapping$ZhouID[j] != "") {
+      # The disease associations matrix is not symmetrical - we pull up the index with either disease1-disease2 relationship, or disease2-disease1 relationship
+      idx <- (mtx.sig$MeSH.Disease.Term == term.mapping$ZhouID[i] & mtx.sig$MeSH.Disease.Term.1 == term.mapping$ZhouID[j]) | (mtx.sig$MeSH.Disease.Term.1 == term.mapping$ZhouID[i] & mtx.sig$MeSH.Disease.Term == term.mapping$ZhouID[j])
+      # If relationship pair is found, store it. Self-self relationships will be 0
+      term.Zhou.sig[i, j] <- max(as.numeric(mtx.sig$symptom.similarity.score[idx]), na.rm=T)
+    }
+  }
+  # If self-self relationship is -Inf, replace it with maximum existing
+  term.Zhou.sig[i, i] <- max(as.numeric(term.Zhou.sig[i, ]), na.rm=T)
+}
+# Replace infinite by NAs
+term.Zhou.sig[ is.infinite(term.Zhou.sig) ] <- NA
+# Reformat the data
+term.Zhou.sig <- reshape_wide_data(term.Zhou.sig)
 ```
 
 Preparing disease ontology similarity
@@ -182,19 +214,18 @@ term.iridescent.relOverlap <- read.Bridget("data/iridescent.relOverlap.txt")
 term.iridescent.sharedRels <- read.Bridget("data/iridescent.sharedRels.txt")
 ```
 
-
 Combining with episimilarity
 
 ```{r}
 # Merge previously prepared matrixes
-mtx.list.epi <- c(list(mtx.fig1a), list(mtx.jaccard), list(term.msh.path), list(term.snomed.path), list(term.snomed.vector), list(term.iridescent.minMim), list(term.iridescent.misn), list(term.iridescent.obsExp), list(term.iridescent.relOverlap), list(term.iridescent.sharedRels), list(dose.jiang), list(dose.lin), list(dose.rel), list(dose.resnik), list(dose.wang), list(term.ICD9.occur), list(term.ICD9.risk), list(term.ICD9.phi)) #, list(mtx.gtc), list(mtx.shrunken))
+mtx.list.epi <- c(list(mtx.fig1a), list(mtx.jaccard), list(term.msh.path), list(term.snomed.path), list(term.snomed.vector), list(term.iridescent.minMim), list(term.iridescent.misn), list(term.iridescent.obsExp), list(term.iridescent.relOverlap), list(term.iridescent.sharedRels), list(dose.jiang), list(dose.lin), list(dose.rel), list(dose.resnik), list(dose.wang), list(term.ICD9.occur), list(term.ICD9.risk), list(term.ICD9.phi), list(term.Zhou.sig)) #, list(mtx.gtc), list(mtx.shrunken))
 #, list(mtx.clusterSim.MF.Resnik), list(mtx.clusterSim.MF.Wang))
 
 mtx.cor.epi.joined <- do.call(cbind, lapply(mtx.list.epi, function(x) x[match(rownames(mtx.list.epi[[1]]), rownames(x)), ]))
 rownames(mtx.cor.epi.joined) <- rownames(mtx.list.epi[[1]])
 
 # Set the column names after merging lists
-colnames(mtx.cor.epi.joined) <- c("Shared.loci", "Jaccard", "MSH.path", "SnoMed.path", "SnoMed.vector", "Iridescent.minMim", "Iridescent.misn", "Iridescent.obsExp", "Iridescent.relOverlap", "Iridescent.sharedRels", "DOSE.jiang", "DOSE.lin", "DOSE.rel", "DOSE.resnik", "DOSE.wang", "ICD9.occur", "ICD9.risk", "ICD9.phi") # , "genometricorr", "shrunken")
+colnames(mtx.cor.epi.joined) <- c("Shared.loci", "Jaccard", "MSH.path", "SnoMed.path", "SnoMed.vector", "Iridescent.minMim", "Iridescent.misn", "Iridescent.obsExp", "Iridescent.relOverlap", "Iridescent.sharedRels", "DOSE.jiang", "DOSE.lin", "DOSE.rel", "DOSE.resnik", "DOSE.wang", "ICD9.occur", "ICD9.risk", "ICD9.phi", "Zhou.sig") # , "genometricorr", "shrunken")
 ```
 
 Adding GenomeRunner data
