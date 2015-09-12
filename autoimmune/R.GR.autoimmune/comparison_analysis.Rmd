@@ -103,9 +103,9 @@ term.ICD9.risk <- readRDS("data/term.ICD9.risk.Rds")
 # term.ICD9.risk <- readRDS("data/term.ICD9.3.risk.Rds")
 ```
 
-Preparing Zhou similarity
+Preparing Zhou similarity (not used)
 
-```{r}
+```{r eval=FALSE}
 mtx.sig <- read.table("/Users/mikhail/Documents/Work/GenomeRunner/gwas2bed/human-sig-disease-network.txt.gz", sep="\t", fill=T, header=T, as.is=T)
 # Subset by ZhouIDs associated with our terms
 mtx.sig <- mtx.sig[ mtx.sig$MeSH.Disease.Term %in% term.mapping$ZhouID[ term.mapping$ZhouID != "" ] & mtx.sig$MeSH.Disease.Term.1 %in% term.mapping$ZhouID[ term.mapping$ZhouID != ""], ]
@@ -132,6 +132,42 @@ for (i in 1:nrow(term.mapping)) {
 term.Zhou.sig[ is.infinite(term.Zhou.sig) ] <- NA
 # Reformat the data
 term.Zhou.sig <- reshape_wide_data(term.Zhou.sig)
+```
+
+Preparing DiseaseConnect similarity 
+```{r}
+mtx.sig <- read.table("/Users/mikhail/Documents/Work/GenomeRunner/gwas2bed/Disease-Disease_v1.txt", sep="\t", fill=T, header=T, as.is=T)
+# Subset by DiseaseConnectIDs associated with our terms
+mtx.sig <- mtx.sig[ mtx.sig$Disease.1 %in% term.mapping$DiseaseConnectID[ term.mapping$DiseaseConnectID != "" ] & mtx.sig$Disease.2 %in% term.mapping$DiseaseConnectID[ term.mapping$DiseaseConnectID != ""], ]
+
+# Create empty matrix of term disease-disease relationships
+term.DC.sig <- matrix(NA, nrow=nrow(term.mapping), ncol=nrow(term.mapping))
+rownames(term.DC.sig) <- term.mapping$Name
+colnames(term.DC.sig) <- term.mapping$Name
+
+# Populate this matrix with Barabasi relationship values
+for (i in 1:nrow(term.mapping)) {
+  for (j in 1:nrow(term.mapping)) {
+    if(term.mapping$DiseaseConnectID[i] != "" & term.mapping$DiseaseConnectID[j] != "") {
+      # The disease associations matrix is not symmetrical - we pull up the index with either disease1-disease2 relationship, or disease2-disease1 relationship
+      idx <- (mtx.sig$Disease.1 == term.mapping$DiseaseConnectID[i] & mtx.sig$Disease.2 == term.mapping$DiseaseConnectID[j]) | (mtx.sig$Disease.2 == term.mapping$DiseaseConnectID[i] & mtx.sig$Disease.1 == term.mapping$DiseaseConnectID[j])
+      # If relationship pair is found, store it. Self-self relationships will be 0
+      # We use minimum, because it's a p-value
+      term.DC.sig[i, j] <- min(as.numeric(mtx.sig$P.value[idx]), na.rm=T)
+    }
+  }
+  # If self-self relationship is -Inf, replace it with minimum existing
+  term.DC.sig[i, i] <- min(as.numeric(term.DC.sig[i, ]), na.rm=T)
+}
+# Replace infinite by NAs
+term.DC.sig[ is.infinite(term.DC.sig) ] <- NA
+# -log10-transform the p-values, note that 0 p-values will be inf. Manually replace them with max values
+tmp <- mtx.transform(term.DC.sig)
+tmp.max <- melt(tmp)$value
+tmp.max <- max(tmp.max[!(is.infinite(tmp.max)) & !(is.na(tmp.max))])
+tmp[is.infinite(tmp)] <- tmp.max
+# Reformat the data
+term.DC.sig <- reshape_wide_data(term.DC.sig)
 ```
 
 Preparing disease ontology similarity
