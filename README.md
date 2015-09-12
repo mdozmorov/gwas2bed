@@ -39,3 +39,8 @@ Disease-disease associations
 `Suthram_TableS2_diseases-umls.xlsx` - data from [Supplementary Table S1](http://journals.plos.org/ploscompbiol/article/asset?unique&id=info:doi/10.1371/journal.pcbi.1000662.s004), [Sulthram-Butte paper](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000662).List of the 54 diseases, their UMLS IDs and GEO IDs.
 
 `Suthram_TableS2_disease-relationships.xlsx` - data from [Supplementary Table S2](http://journals.plos.org/ploscompbiol/article/asset?unique&id=info:doi/10.1371/journal.pcbi.1000662.s005), [Sulthram-Butte paper](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000662). List of the 138 significant disease correlations.
+
+[db_DiseaseConnect](http://disease-connect.org/)
+---
+
+`Disease-Disease_v1.txt` - Format: Disease 1, Disease 2, P value. The disease-disease relations are determined by the significance of the shared GWAS/OMIM/DEG genes between two diseases using hypergeometric test.
