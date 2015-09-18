@@ -1,5 +1,5 @@
 ---
-# title: ""
+# title: "Regulatory similarity analysis of 39 disease- and trait-associated SNP sets"
 # author: "Mikhail Dozmorov"
 # date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
@@ -14,14 +14,16 @@ suppressMessages(library(pander))
 panderOptions('table.split.table', Inf)
 set.seed(1)
 # Local functions and settings
-invisible(source("../../../../GenomeRunner/R.GenomeRunner/utils2.R")) # See the required packages there
-source("../../../../GenomeRunner/R.GenomeRunner/episimilarity.R")
+source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/utils2.R") # See the required packages there
+source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.R")
 # Correlation to use
-cortype <- "pearson"
+cortype <- "spearman"
 ```
 
 Load the data
 ===
+
+To perform regulatory similarity clustering, we selected regulatory datasets that produced disease/trait-specific regulatory similarity profiles most similar to the shared genetic loci counts. Specifically, we used 
 
 ```{r message=FALSE, results='hide'}
 library(xlsx)

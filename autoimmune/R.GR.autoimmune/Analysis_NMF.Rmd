@@ -13,6 +13,9 @@ tidy.opts=list(width.cutoff=200)
 suppressMessages(library(pander))
 panderOptions('table.split.table', Inf)
 set.seed(1)
+# Local functions and settings
+source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/utils2.R") # See the required packages there
+source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.R")
 ```
 
 ```{r message=FALSE}
@@ -20,16 +23,14 @@ library(xlsx)
 # Load term mapping
 term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
 #term.mapping <- term.mapping[ term.mapping$Category == "immunological", ]
-invisible(source("../../../../GenomeRunner/R.GenomeRunner/utils1.R")) # See the required packages there
-source("../../../../GenomeRunner/R.GenomeRunner/episimilarity.R")
 # Correlation to use
-cortype <- "pearson"
+cortype <- "spearman"
 ```
 
 ```{r}
 library(NMF)
-
-mtx <- as.matrix(load_gr_data(c("data.gr/Roadmap_broadPeak/matrix_OR.txt", "data.gr/Roadmap_DNase_hotspotbroadall/matrix_OR.txt")))
+fname <- c("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt") # Best correlation results
+mtx <- as.matrix(load_gr_data(fname))
 mtx <- 2^mtx
 
 annCol.category <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name)]

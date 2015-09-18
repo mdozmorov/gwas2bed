@@ -1,5 +1,5 @@
 ---
-# title: ""
+# title: "Regulatory similarity analysis of 39 disease- and trait-associated SNP sets"
 # author: "Mikhail Dozmorov"
 # date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
@@ -14,8 +14,8 @@ suppressMessages(library(pander))
 panderOptions('table.split.table', Inf)
 set.seed(1)
 # Local functions and settings
-invisible(source("../../../../GenomeRunner/R.GenomeRunner/utils2.R")) # See the required packages there
-source("../../../../GenomeRunner/R.GenomeRunner/episimilarity.R")
+source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/utils2.R") # See the required packages there
+source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.R")
 # Correlation to use
 cortype <- "spearman"
 ```
@@ -27,9 +27,13 @@ Load the data
 library(xlsx)
 # Load term mapping
 term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
-# term.mapping <- term.mapping[ term.mapping$BED != "Kawasaki_disease", ] # Exclude Kawasaki outlier
+# term.mapping <- term.mapping[ term.mapping$BED != "Migraine", ] # Exclude  outlier
 # Load the actual episimilarity data
-mtx <- as.matrix(load_gr_data(c("data.gr/2Roadmap_broadPeak/matrix_OR.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt")))
+fname <- c("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt") # Best correlation results
+# fname <- c("data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt") # Imputed-ALL
+# fname <- c("data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Processed-ALL
+# fname <- c("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt", "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt", "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt", "data.gr.05/grweb_encDNase//matrix_PVAL.txt", "data.gr.05/grweb_encHistone//matrix_PVAL.txt", "data.gr.05/grweb_encSegway//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom18//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom25//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Complete-ALL
+mtx <- as.matrix(load_gr_data(fname))
 mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
 # A vector of category names, same order as the correlation matrix
 categoryNames <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name) ]
@@ -43,7 +47,7 @@ ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
 ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
 ```
 
-We first check how the distributions of the log2-transformed odds ratios for each sample look like side-by-side.
+We first check how the distributions of the values for each sample look like side-by-side.
 
 ```{r eval=TRUE, results='hold'}
 ggplot(melt(mtx), aes(x=Var2, y=value, fill=Var2)) + 
@@ -53,16 +57,88 @@ ggplot(melt(mtx), aes(x=Var2, y=value, fill=Var2)) +
 #   coord_cartesian(ylim = c(-5, 5)) +
 ```
 
-It's a good idea to scale and center the data. Let's check how the scaled data looks like.
+It's a good idea to scale and center the data. Since we are  comparing sample distances, the matrix should be transposed (samples are rows), columns should be centered, and we transpose it back to the original dimensions. Let's check how the scaled data looks like.
 
 ```{r results='hold'}
-mtx <- scale(mtx)
-ggplot(melt(mtx), aes(x=Var2, y=value, fill=Var2)) + 
+mtx.scaled <- mtx  %>% scale # Column-wise (sample-wise) centering
+ggplot(melt(mtx.scaled), aes(x=Var2, y=value, fill=Var2)) + 
   geom_boxplot() + 
   theme(axis.text.x=element_text(angle=45,hjust=1,vjust=1)) +
   theme(legend.position="none")
 #   coord_cartesian(ylim = c(-5, 5)) +
 ```
+
+Multidimensional scaling
+
+```{r}
+d <- mtx.scaled %>% t %>% dist # Euclidean distance on individual scaled, transposed matrix
+#d <- as.dist(1 - cor(mtx.scaled, method = "spearman")) # Alternatively, correlation matrix
+mds.coor <- cmdscale(d) # Classical MDS
+mds.coor <- left_join(data.frame(Name=rownames(mds.coor), mds.coor), data.frame(Name=names(categoryNames), Category=categoryNames), by = c("Name" = "Name"))
+ggplot(data=mds.coor, aes(x=X1, y=X2, label=Name)) +
+  geom_point(aes(color = Category), size = 3) +
+  geom_text(colour = "black", alpha = 0.8, size = 4, vjust = 2, hjust = 0, angle=0) +
+  geom_hline(yintercept = 0, colour = "gray65") +
+  geom_vline(xintercept = 0, colour = "gray65")
+```
+
+Principal components analysis in 2D
+
+```{r}
+#pca <- prcomp(t(mtx.scaled[, !(colnames(mtx) %in% c("Migraine", "Platelet_counts"))]))
+pca <- prcomp(t(mtx.scaled))
+plot(pca, type="l")
+summary(pca)
+library(ggplot2)
+scores <- as.data.frame(pca$x)
+scores <- left_join(data.frame(Name=rownames(scores), scores), data.frame(Name=names(categoryNames), Category=categoryNames), by = c("Name" = "Name"))
+ggplot(data=scores, aes(x=PC1, y=PC2, label=Name)) +
+  geom_point(aes(color = Category), size = 3) +
+  geom_hline(yintercept = 0, colour = "gray65") +
+  geom_vline(xintercept = 0, colour = "gray65") +
+  geom_text(colour = "black", size = 4, vjust = 2, hjust = 0)
+```
+
+Principal component analysis in 3D
+
+```{r}
+# http://davetang.org/muse/2015/02/12/animated-plots-using-r/
+library(scatterplot3d)
+rename <- function(x){
+  if (x < 10) {
+    return(name <- paste('000',i,'plot.png',sep=''))
+  }
+  if (x < 100 && i >= 10) {
+    return(name <- paste('00',i,'plot.png', sep=''))
+  }
+  if (x >= 100) {
+    return(name <- paste('0', i,'plot.png', sep=''))
+  }
+}
+frames <- 360
+#loop through plots
+for(i in 1:frames){
+  name <- rename(i)
+  #saves the plot as a .png file in the working directory
+  png(name)
+  s3d <- scatterplot3d(scores[, c("PC1", "PC2", "PC3")],
+                main=paste("Angle", i),
+                angle=i,
+                pch=19,
+                cex.symbols=0.5,
+                color=as.numeric(factor(scores$Category)))
+  s3d.coords <- s3d$xyz.convert(scores[, c("PC1", "PC2", "PC3")])
+  text(s3d.coords$x, s3d.coords$y, labels=scores$Name, pos=2, offset=0.5, cex=0.7)
+  dev.off()
+}
+ 
+my_command <- 'convert *.png -delay 1 -loop 0 3d.gif'
+system(my_command)
+system("rm *.png")
+scatterplot3d(scores[, c("PC1", "PC2", "PC3")], color=as.numeric(factor(scores$Category)))
+```
+
+
 
 Testing number of clusters with COMMUNAL
 ===
@@ -71,14 +147,14 @@ Testing number of clusters with COMMUNAL
 # Testing cluster number with COMMUNAL
 library(COMMUNAL) 
 ks <- seq(2,6)
-result <- COMMUNAL(data=mtx, ks=ks, dist.metric = "correlation")
-result.list <- list(list(result), ncol(mtx))
+result <- COMMUNAL(data=mtx.scaled, ks=ks, dist.metric = "correlation", aggl.method = "ward")
+result.list <- list(list(result), ncol(mtx.scaled))
 goodAlgs <- c("hierarchical", "kmeans")
 goodMeasures <- c('wb.ratio', 'avg.silwidth', 'dunn')
 values <- plotRange3D(result.list, ks, goodAlgs, goodMeasures)
 # Testing cluster number with ConsensysClusterPlus
 library(ConsensusClusterPlus)
-results = ConsensusClusterPlus(mtx, maxK=6, reps=50, pItem=0.8, pFeature=1, title="ConsensusClusterPlus", clusterAlg="hc", distance="spearman", seed=1262118388.71279, plot="png")
+results = ConsensusClusterPlus(mtx.scaled, maxK=6, reps=50, pItem=0.8, pFeature=1, title="ConsensusClusterPlus", clusterAlg="hc", distance="spearman", seed=1262118388.71279, plot="png")
 # Store hclust object
 hclustergram <- results[[3]][["consensusTree"]]
 ```
@@ -88,7 +164,7 @@ Prepare the matrix of correlation coefficients, and cluster it.
 ```{r}
 ## Using spearman correlations
 # rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
-mtx.cor <- rcorr(as.matrix(mtx), type="spearman")[[1]]
+mtx.cor <- rcorr(as.matrix(scale(mtx)), type=cortype)[[1]]
 # Optionally, try Spearman or Kendall correlation
 # mtx.cor[[1]] <- cor(as.matrix(mtx), method="kendall")
 # Or, MIC
@@ -119,7 +195,7 @@ Plotting with aheatmap
 library(NMF)
 annot <- data.frame(Category=term.mapping$Category, Size=as.numeric(term.mapping$BEDcount))
 annotColor <- list(Category=c("red", "blue", "green", "yellow"), Size=c("red", "white", "blue"))
-h <- aheatmap(mtx.cor, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), color=matlab.like(50), distfun=dist.method, hclustfun=hclust.method, annCol=annot, annColors = annotColor)#, cexCol = 1, cexRow = 1)
+h <- aheatmap(mtx.cor, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), color=matlab.like(50), distfun=dist.method, hclustfun=hclust.method, annCol=annot, annColors = annotColor, cexCol = 1, cexRow = 1)
 ```
 
 Testing clustering stability
@@ -131,8 +207,8 @@ cl <- makeCluster(4, type="PSOCK")
 set.seed(1)
 result <- parPvclust(cl=cl, mtx, method.dist=dist.method, method.hclust=hclust.method, nboot=1000)
 stopCluster(cl)
-# saveRDS(result, "data/pvClust_10000.Rds")
-# result <- readRDS("data/pvClust_10000.Rds")
+saveRDS(result, "data/pvClust_1000.Rds")
+result <- readRDS("data/pvClust_1000.Rds")
 dev.off()
 plot(result, hang = -1)
 pvrect(result, alpha=0.95)
@@ -152,8 +228,11 @@ hclust.methods <- c("ward.D", "ward.D2", "single", "complete", "average", "mcqui
 pdf("results/clustering_combinations.pdf")
 for (d in dist.methods) {
   for (h in hclust.methods) {
+    hclustergram <- hclust(as.dist(1-mtx.cor), method=h) # Cluster it
     par(oma=c(10,0,0,10), mar=c(10, 4.1, 4.1, 10), cex.main=0.65) # Adjust margins
-    h<-heatmap.2(as.matrix(mtx.cor), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=d)}, hclustfun=function(x){hclust(x, method=h)}, cexRow=1, cexCol=1,  main=paste(d, h),  RowSideColors=ColSideColors) # cellnote=formatC(as.matrix(mtx.cor), format="f", digits=2), notecol="black", notecex=1,
+    h<-heatmap.2(as.matrix(mtx.cor), Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), trace="none", density.info="none", col=color,  cexRow=1, cexCol=1,  main=paste(d, h),  RowSideColors=ColSideColors) 
+    # distfun=function(x){dist(x, method=d)}, hclustfun=function(x){hclust(x, method=h)},
+    # cellnote=formatC(as.matrix(mtx.cor), format="f", digits=2), notecol="black", notecex=1,
   }
 }
 dev.off()
