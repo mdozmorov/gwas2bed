@@ -18,6 +18,8 @@ source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/utils2.R") # S
 source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.R")
 # Correlation to use
 cortype <- "spearman"
+# Clustering: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
+hclust.method <- "ward.D2"
 ```
 
 ### Load the data
@@ -123,8 +125,8 @@ s3d <- scatterplot3d(scores[, c("PC1", "PC2", "PC3")],
 legend(x=-3, y=0, legend=c("Hematological", "Immunological", "Metabolic", "Neurological"), col=c("black", "red", "green", "blue"), pch = 19)
 ```
 
-
 ```{r}
+# Principal component analysis in 3D
 # http://davetang.org/muse/2015/02/12/animated-plots-using-r/
 rename <- function(x){
   if (x < 10) {
@@ -160,11 +162,6 @@ system(my_command)
 scatterplot3d(scores[, c("PC1", "PC2", "PC3")], color=as.numeric(factor(scores$Category)))
 ```
 
-
-
-Testing number of clusters with COMMUNAL
-===
-
 ```{r eval=FALSE}
 # Testing cluster number with COMMUNAL
 library(COMMUNAL) 
@@ -181,12 +178,14 @@ results = ConsensusClusterPlus(mtx.scaled, maxK=6, reps=50, pItem=0.8, pFeature=
 hclustergram <- results[[3]][["consensusTree"]]
 ```
 
+### Hierarchical clustering
+
 Prepare the matrix of correlation coefficients, and cluster it.
 
-```{r}
+```{r eval=TRUE}
 ## Using spearman correlations
 # rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
-mtx.cor <- rcorr(as.matrix(scale(mtx)), type=cortype)[[1]]
+mtx.cor <- rcorr(mtx.scaled, type=cortype)[[1]]
 # Optionally, try Spearman or Kendall correlation
 # mtx.cor[[1]] <- cor(as.matrix(mtx), method="kendall")
 # Or, MIC
@@ -198,29 +197,18 @@ mtx.cor <- rcorr(as.matrix(scale(mtx)), type=cortype)[[1]]
 # mtx.cor <- dist(t(mtx), method = dist.method) # Get distance matrix
 
 ## Clustering
-# "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
-hclust.method <- "ward.D2"
 hclustergram <- hclust(as.dist(1-mtx.cor), method=hclust.method) # Cluster it
 ```
 
-Gene Epigenomic similarity
-===
-
-```{r fig.height=6}
-h <- mtx.plot(mtx.cor, SideColors=ColSideColors) # Clustering parameters
+```{r eval=TRUE, fig.height=9, fig.width=10}
+# Plotting with aheatmap
+suppressMessages(library(NMF))
+annot <- data.frame(Category=term.mapping$Category) #, Size=as.numeric(term.mapping$BEDcount))
+annotColor <- list(Category=c("black", "red", "green", "blue")) #, Size=c("red", "white", "blue"))
+h <- aheatmap(mtx.cor, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), color="-RdYlBu", annCol=annot, annColors = annotColor, fontsize = 10, cexRow = 1, cexCol = 1)
 ```
 
-Plotting with aheatmap
----
-
-```{r fig.height=6}
-library(NMF)
-annot <- data.frame(Category=term.mapping$Category, Size=as.numeric(term.mapping$BEDcount))
-annotColor <- list(Category=c("red", "blue", "green", "yellow"), Size=c("red", "white", "blue"))
-h <- aheatmap(mtx.cor, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), color=matlab.like(50), distfun=dist.method, hclustfun=hclust.method, annCol=annot, annColors = annotColor, cexCol = 1, cexRow = 1)
-```
-
-Testing clustering stability
+We observe immunological diseases being grouped into a cluster distinct from the other diseases/traits. Within the cluster of immunological diseases, two or three subgroups can be noted. We focus our attention on this cluster and the subgroups of 21 immunological diseases to identify potential regulatory differences associated with the corresponding SNP sets.
 
 ```{r eval=FALSE}
 library(pvclust)
@@ -237,14 +225,13 @@ pvrect(result, alpha=0.95)
 hclustergram <- result$hclust # Make the heatmap plot whatever hclust object
 ```
 
-It appears scaled data produces less stable clustering, but more visually appealing. For now, skip pvclust. Visualizing what pvClust clustered.
-
 ```{r epigenomicVisualization1, fig.height=6, eval=FALSE}
+# Quick visualization of the pre-clustered correlation matrix
 h <- heatmap.2(mtx.cor, symkey = TRUE, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), dendrogram="both", trace="none", density.info="none", col=color, RowSideColors=ColSideColors, ColSideColors=ColSideColors)  
 ```
 
-Example of testing combinations of clustering methods
 ```{r eval=FALSE}
+# Example of testing combinations of clustering methods
 dist.methods <- c("euclidean", "maximum","manhattan", "minkowski")
 hclust.methods <- c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid")
 pdf("results/clustering_combinations.pdf")
@@ -260,16 +247,24 @@ for (d in dist.methods) {
 dev.off()
 ```
 
+```{r eval=TRUE, fig.height=6}
+ind <- colnames(mtx.scaled) %in% term.mapping$Name[term.mapping$Category == "immunological"] # Indexes of immunological diseases
+mtx.cor.imm <- mtx.cor[ind, ind]
+hclustergram.imm <- hclust(as.dist(1-mtx.cor.imm), method=hclust.method) #  Cluster it
+h <- aheatmap(mtx.cor.imm, Rowv=as.dendrogram(hclustergram.imm), Colv=as.dendrogram(hclustergram.imm), color="-RdYlBu")
+```
+
+
 ```{r fig.height=3, eval=FALSE}
 # Empirically define clusters
 par(mfrow=c(1, 2), cex=0.5)
-plot(as.dendrogram(h$Colv, hang=-1)) # Plot dendrogram
-cl_num <- 3 # Empirically set desired numter of clusters
+plot(as.dendrogram(h$Colv, hang=-1), main = "Clustering dendrogram") # Plot dendrogram
+cl_num <- 2 # Empirically set desired numter of clusters
 cols <- rainbow(cl_num) # Make colors for clusters
 rect.hclust(as.hclust(h$Colv), k=cl_num, border=cols) # Define the clusters by rectangles
-hcut <- 2# Empirically set height to cut the tree
+hcut <- 1.3 # Empirically set height to cut the tree
 abline(h=hcut)
-as.hclust(h$Colv)$height %>% density %>% plot
+as.hclust(h$Colv)$height %>% density %>% plot(main = )
 abline(v=hcut)
 mtx.clust <- h$Colv %>% mtx.clusters(height=hcut, minmembers=3)
 par(mfrow=c(1, 1))
