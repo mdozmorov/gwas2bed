@@ -4,10 +4,10 @@
 # date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---
-```{r setup, echo=FALSE, include=FALSE, cache=FALSE, warning=FALSE, message=FALSE}
+```{r setup, echo=FALSE, include=FALSE, cache=FALSE, warning=FALSE, message=FALSE, eval=TRUE}
 # Set up the environment
 library(knitr) 
-opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=100,  echo=F, autodep=T, width=200, warning=FALSE, comment=NA)
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=100,  echo=F, autodep=T, width=200, warning=FALSE, comment=NA, results='hide', eval=FALSE) # Need to explicitly set eval=TRUE for chunks
 options(replace.assign=TRUE, width=500)
 tidy.opts=list(width.cutoff=200)
 suppressMessages(library(pander))
@@ -20,10 +20,9 @@ source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.
 cortype <- "spearman"
 ```
 
-Load the data
-===
+### Load the data
 
-```{r message=FALSE, results='hide'}
+```{r eval=TRUE}
 library(xlsx)
 # Load term mapping
 term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
@@ -47,9 +46,8 @@ ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
 ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
 ```
 
-We first check how the distributions of the values for each sample look like side-by-side.
-
-```{r eval=TRUE, results='hold'}
+```{r}
+# We first check how the distributions of the values for each sample look like side-by-side.
 ggplot(melt(mtx), aes(x=Var2, y=value, fill=Var2)) + 
   geom_boxplot() + 
   theme(axis.text.x=element_text(angle=45,hjust=1,vjust=1)) +
@@ -57,10 +55,14 @@ ggplot(melt(mtx), aes(x=Var2, y=value, fill=Var2)) +
 #   coord_cartesian(ylim = c(-5, 5)) +
 ```
 
-It's a good idea to scale and center the data. Since we are  comparing sample distances, the matrix should be transposed (samples are rows), columns should be centered, and we transpose it back to the original dimensions. Let's check how the scaled data looks like.
+The matrix is scaled, so the enrichment profile for each disease/phenotype has mean = 0 and SD = 1. 
 
-```{r results='hold'}
+```{r eval=TRUE}
 mtx.scaled <- mtx  %>% scale # Column-wise (sample-wise) centering
+```
+
+```{r}  
+# Check how the scaled data looks like
 ggplot(melt(mtx.scaled), aes(x=Var2, y=value, fill=Var2)) + 
   geom_boxplot() + 
   theme(axis.text.x=element_text(angle=45,hjust=1,vjust=1)) +
@@ -68,9 +70,8 @@ ggplot(melt(mtx.scaled), aes(x=Var2, y=value, fill=Var2)) +
 #   coord_cartesian(ylim = c(-5, 5)) +
 ```
 
-Multidimensional scaling
-
 ```{r}
+# Multidimensional scaling
 d <- mtx.scaled %>% t %>% dist # Euclidean distance on individual scaled, transposed matrix
 #d <- as.dist(1 - cor(mtx.scaled, method = "spearman")) # Alternatively, correlation matrix
 mds.coor <- cmdscale(d) # Classical MDS
@@ -82,28 +83,49 @@ ggplot(data=mds.coor, aes(x=X1, y=X2, label=Name)) +
   geom_vline(xintercept = 0, colour = "gray65")
 ```
 
-Principal components analysis in 2D
+### Principal components analysis
 
-```{r}
-#pca <- prcomp(t(mtx.scaled[, !(colnames(mtx) %in% c("Migraine", "Platelet_counts"))]))
+Proportion of variance explained for the first 10 principle components, and a plot of the variance against the number of the principal components (screeplot).
+
+```{r eval=TRUE, results='show'}
 pca <- prcomp(t(mtx.scaled))
-plot(pca, type="l")
-summary(pca)
+screeplot(pca, type="lines", main="PCA of the regulatory similarities")
+summary(pca)$importance[, 1:10] %>% round(digits = 2) %>% kable
+```
+
+First two principal components
+
+```{r eval=TRUE, fig.height=7, fig.width=11}
 library(ggplot2)
 scores <- as.data.frame(pca$x)
 scores <- left_join(data.frame(Name=rownames(scores), scores), data.frame(Name=names(categoryNames), Category=categoryNames), by = c("Name" = "Name"))
 ggplot(data=scores, aes(x=PC1, y=PC2, label=Name)) +
+  ggtitle("PCA of the regulatory similarities") + 
+  theme(plot.title = element_text(lineheight = 0.8, face="bold")) +
+  scale_color_manual(values=c("black", "red", "green", "blue")) +
   geom_point(aes(color = Category), size = 3) +
   geom_hline(yintercept = 0, colour = "gray65") +
   geom_vline(xintercept = 0, colour = "gray65") +
-  geom_text(colour = "black", size = 4, vjust = 2, hjust = 0)
+  geom_text(colour = "black", size = 4, vjust = 2, hjust = 0) +
+  scale_x_continuous(limits = c(-60, 110))
 ```
 
-Principal component analysis in 3D
+First three principal components
+
+```{r eval=TRUE, fig.height=6}
+library(scatterplot3d)
+s3d <- scatterplot3d(scores[, c("PC1", "PC2", "PC3")],
+              main="PCA of the regulatory similarities",
+              angle=40,
+              pch=19,
+              cex.symbols = 1.2,
+              color=as.numeric(factor(scores$Category)))
+legend(x=-3, y=0, legend=c("Hematological", "Immunological", "Metabolic", "Neurological"), col=c("black", "red", "green", "blue"), pch = 19)
+```
+
 
 ```{r}
 # http://davetang.org/muse/2015/02/12/animated-plots-using-r/
-library(scatterplot3d)
 rename <- function(x){
   if (x < 10) {
     return(name <- paste('000',i,'plot.png',sep=''))
@@ -134,7 +156,7 @@ for(i in 1:frames){
  
 my_command <- 'convert *.png -delay 1 -loop 0 3d.gif'
 system(my_command)
-system("rm *.png")
+#system("rm *.png")
 scatterplot3d(scores[, c("PC1", "PC2", "PC3")], color=as.numeric(factor(scores$Category)))
 ```
 
