@@ -31,7 +31,8 @@ cortype <- "spearman"
 library(NMF)
 fname <- c("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt") # Best correlation results
 mtx <- as.matrix(load_gr_data(fname))
-mtx <- 2^mtx
+mtx <- scale(mtx) # Scale columns
+mtx <- 2^mtx # To make all positive
 
 annCol.category <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name)]
 annCol.size <- as.numeric(term.mapping$BEDcount[ match(colnames(mtx), term.mapping$Name)])
