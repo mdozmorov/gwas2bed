@@ -20,6 +20,8 @@ source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.
 cortype <- "spearman"
 # Clustering: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
 hclust.method <- "ward.D2"
+# Color scheme
+col3 <- colorRampPalette(c("blue", "white", "red"))
 ```
 
 ### Load the data
@@ -57,10 +59,22 @@ ggplot(melt(mtx), aes(x=Var2, y=value, fill=Var2)) +
 #   coord_cartesian(ylim = c(-5, 5)) +
 ```
 
-The matrix is scaled, so the enrichment profile for each disease/phenotype has mean = 0 and SD = 1. 
+The matrix is scaled, so the enrichment profiles for each disease/phenotype have mean = 0 and SD = 1. 
 
 ```{r eval=TRUE}
-mtx.scaled <- mtx  %>% scale # Column-wise (sample-wise) centering
+# mtx.scaled <- mtx %>% t %>% scale %>% t # Row-wise (feature-wise) centering
+mtx.scaled <- mtx %>% scale # Column-wise (sample-wise) centering
+# Shorten labels
+labs <- colnames(mtx.scaled) # Names of samples
+num.char <- 20 # Length of a string, after which to trim
+labs.trim <- as.character(unlist(sapply(labs, function(x){
+  if(nchar(x) > num.char){
+    return(paste(substring(x,1,num.char), "..."))
+  } else{
+    return(x)
+  }
+})))
+colnames(mtx.scaled) <- labs.trim
 ```
 
 ```{r}  
@@ -109,7 +123,7 @@ ggplot(data=scores, aes(x=PC1, y=PC2, label=Name)) +
   geom_hline(yintercept = 0, colour = "gray65") +
   geom_vline(xintercept = 0, colour = "gray65") +
   geom_text(colour = "black", size = 4, vjust = 2, hjust = 0) +
-  scale_x_continuous(limits = c(-60, 110))
+  scale_x_continuous(limits = c(-60, 70))
 ```
 
 First three principal components
@@ -203,9 +217,11 @@ hclustergram <- hclust(as.dist(1-mtx.cor), method=hclust.method) # Cluster it
 ```{r eval=TRUE, fig.height=9, fig.width=10}
 # Plotting with aheatmap
 suppressMessages(library(NMF))
+library(dendextend)
 annot <- data.frame(Category=term.mapping$Category) #, Size=as.numeric(term.mapping$BEDcount))
 annotColor <- list(Category=c("black", "red", "green", "blue")) #, Size=c("red", "white", "blue"))
-h <- aheatmap(mtx.cor, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), color="-RdYlBu", annCol=annot, annColors = annotColor, fontsize = 10, cexRow = 1, cexCol = 1)
+hclustergram.ext <- hclustergram %>% as.dendrogram %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% ladderize
+h <- aheatmap(mtx.cor, Rowv=hclustergram.ext, Colv=hclustergram.ext, color=col3(20), annCol=annot, annColors = annotColor, fontsize = 10, cexRow = 1, cexCol = 1)
 ```
 
 We observe immunological diseases being grouped into a cluster distinct from the other diseases/traits. Within the cluster of immunological diseases, two or three subgroups can be noted. We focus our attention on this cluster and the subgroups of 21 immunological diseases to identify potential regulatory differences associated with the corresponding SNP sets.
@@ -251,7 +267,8 @@ dev.off()
 ind <- colnames(mtx.scaled) %in% term.mapping$Name[term.mapping$Category == "immunological"] # Indexes of immunological diseases
 mtx.cor.imm <- mtx.cor[ind, ind]
 hclustergram.imm <- hclust(as.dist(1-mtx.cor.imm), method=hclust.method) #  Cluster it
-h <- aheatmap(mtx.cor.imm, Rowv=as.dendrogram(hclustergram.imm), Colv=as.dendrogram(hclustergram.imm), color="-RdYlBu")
+hclustergram.imm.ext <- hclustergram.imm %>% as.dendrogram %>% set("branches_k_color", k = 3) %>% set("branches_lwd", 2) %>% ladderize
+h <- aheatmap(mtx.cor.imm, Rowv=hclustergram.imm.ext, Colv=hclustergram.imm.ext, color=col3(20), fontsize = 10, cexRow = 1, cexCol = 1)
 ```
 
 
