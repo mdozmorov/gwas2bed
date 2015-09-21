@@ -176,22 +176,6 @@ system(my_command)
 scatterplot3d(scores[, c("PC1", "PC2", "PC3")], color=as.numeric(factor(scores$Category)))
 ```
 
-```{r eval=FALSE}
-# Testing cluster number with COMMUNAL
-library(COMMUNAL) 
-ks <- seq(2,6)
-result <- COMMUNAL(data=mtx.scaled, ks=ks, dist.metric = "correlation", aggl.method = "ward")
-result.list <- list(list(result), ncol(mtx.scaled))
-goodAlgs <- c("hierarchical", "kmeans")
-goodMeasures <- c('wb.ratio', 'avg.silwidth', 'dunn')
-values <- plotRange3D(result.list, ks, goodAlgs, goodMeasures)
-# Testing cluster number with ConsensysClusterPlus
-library(ConsensusClusterPlus)
-results = ConsensusClusterPlus(mtx.scaled, maxK=6, reps=50, pItem=0.8, pFeature=1, title="ConsensusClusterPlus", clusterAlg="hc", distance="spearman", seed=1262118388.71279, plot="png")
-# Store hclust object
-hclustergram <- results[[3]][["consensusTree"]]
-```
-
 ### Hierarchical clustering
 
 Prepare the matrix of correlation coefficients, and cluster it.
@@ -214,10 +198,10 @@ mtx.cor <- rcorr(mtx.scaled, type=cortype)[[1]]
 hclustergram <- hclust(as.dist(1-mtx.cor), method=hclust.method) # Cluster it
 ```
 
-```{r eval=TRUE, fig.height=9, fig.width=10}
+```{r eval=TRUE, fig.height=8, fig.width=10}
 # Plotting with aheatmap
 suppressMessages(library(NMF))
-library(dendextend)
+suppressMessages(library(dendextend))
 annot <- data.frame(Category=term.mapping$Category) #, Size=as.numeric(term.mapping$BEDcount))
 annotColor <- list(Category=c("black", "red", "green", "blue")) #, Size=c("red", "white", "blue"))
 hclustergram.ext <- hclustergram %>% as.dendrogram %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% ladderize
@@ -225,21 +209,6 @@ h <- aheatmap(mtx.cor, Rowv=hclustergram.ext, Colv=hclustergram.ext, color=col3(
 ```
 
 We observe immunological diseases being grouped into a cluster distinct from the other diseases/traits. Within the cluster of immunological diseases, two or three subgroups can be noted. We focus our attention on this cluster and the subgroups of 21 immunological diseases to identify potential regulatory differences associated with the corresponding SNP sets.
-
-```{r eval=FALSE}
-library(pvclust)
-library(parallel)
-cl <- makeCluster(4, type="PSOCK")
-set.seed(1)
-result <- parPvclust(cl=cl, mtx, method.dist=dist.method, method.hclust=hclust.method, nboot=1000)
-stopCluster(cl)
-saveRDS(result, "data/pvClust_1000.Rds")
-result <- readRDS("data/pvClust_1000.Rds")
-dev.off()
-plot(result, hang = -1)
-pvrect(result, alpha=0.95)
-hclustergram <- result$hclust # Make the heatmap plot whatever hclust object
-```
 
 ```{r epigenomicVisualization1, fig.height=6, eval=FALSE}
 # Quick visualization of the pre-clustered correlation matrix
@@ -264,29 +233,70 @@ dev.off()
 ```
 
 ```{r eval=TRUE, fig.height=6}
-ind <- colnames(mtx.scaled) %in% term.mapping$Name[term.mapping$Category == "immunological"] # Indexes of immunological diseases
+ind <- term.mapping$Category == "immunological" # Indexes of immunological diseases
 mtx.cor.imm <- mtx.cor[ind, ind]
 hclustergram.imm <- hclust(as.dist(1-mtx.cor.imm), method=hclust.method) #  Cluster it
-hclustergram.imm.ext <- hclustergram.imm %>% as.dendrogram %>% set("branches_k_color", k = 3) %>% set("branches_lwd", 2) %>% ladderize
+hclustergram.imm.ext <- hclustergram.imm %>% as.dendrogram %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% ladderize
 h <- aheatmap(mtx.cor.imm, Rowv=hclustergram.imm.ext, Colv=hclustergram.imm.ext, color=col3(20), fontsize = 10, cexRow = 1, cexCol = 1)
 ```
 
+```{r eval=FALSE, fig.height=9}
+# Another look at the correlation heatmap
+library(corrplot)
+par(oma=c(0,0,8,0), mar=c(5.1, 4.1, 8.1, 5.1)) # Adjust margins
+corrplot(mtx.cor.imm, method = "color", type = "upper", col = col3(20), addCoef.col="black",
+         order = "hclust", hclust.method = "ward", 
+         tl.cex = 0.8, cl.pos = "r", diag = FALSE)
+```
 
-```{r fig.height=3, eval=FALSE}
+```{r eval=FALSE, fig.height=7}
+library(pvclust)
+library(parallel)
+cl <- makeCluster(4, type="PSOCK")
+set.seed(1)
+result <- parPvclust(cl=cl, mtx.scaled[, ind], method.dist="correlation", method.hclust=hclust.method, nboot=100)
+stopCluster(cl)
+#saveRDS(result, "data/pvClust_1000.Rds")
+#result <- readRDS("data/pvClust_1000.Rds")
+#dev.off()
+plot(result, hang = -1)
+pvrect(result, alpha=0.63)
+#hclustergram <- result$hclust # Make the heatmap plot whatever hclust object
+```
+
+```{r eval=FALSE}
+# Testing cluster number with COMMUNAL
+library(COMMUNAL) 
+ks <- seq(2,6)
+result <- COMMUNAL(data=mtx.scaled[, ind], ks=ks, dist.metric = "correlation", aggl.method = "ward")
+result.list <- list(list(result), ncol(mtx.scaled))
+goodAlgs <- c("hierarchical", "kmeans")
+goodMeasures <- c('wb.ratio', 'avg.silwidth', 'dunn')
+values <- plotRange3D(result.list, ks, goodAlgs, goodMeasures)
+# Testing cluster number with ConsensysClusterPlus
+library(ConsensusClusterPlus)
+results = ConsensusClusterPlus(mtx.scaled[, ind], maxK=6, reps=50, pItem=0.8, pFeature=1, title="ConsensusClusterPlus", clusterAlg="hc", distance="spearman", seed=1262118388.71279, plot="png")
+# Store hclust object
+hclustergram <- results[[3]][["consensusTree"]]
+```
+
+```{r fig.height=5, fig.width=10, eval=TRUE}
 # Empirically define clusters
-par(mfrow=c(1, 2), cex=0.5)
-plot(as.dendrogram(h$Colv, hang=-1), main = "Clustering dendrogram") # Plot dendrogram
-cl_num <- 2 # Empirically set desired numter of clusters
-cols <- rainbow(cl_num) # Make colors for clusters
-rect.hclust(as.hclust(h$Colv), k=cl_num, border=cols) # Define the clusters by rectangles
+par(mfrow=c(1, 2))
+par(oma=c(0,0,0,7), mar=c(5.1, 4.1, 4.1, 7.1)) # Adjust margins
+h$Colv %>% as.dendrogram %>% color_labels(k=3) %>% set("labels_cex", 0.8) %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2)  %>% plot(horiz = TRUE) # %>% rect.dendrogram(k=3, border = 8, lty = 5, lwd = 2)
+# plot(as.dendrogram(h$Colv, hang=-1), main = "Clustering dendrogram") # Plot dendrogram
+# cl_num <- 2 # Empirically set desired numter of clusters
+# cols <- rainbow(cl_num) # Make colors for clusters
+# rect.hclust(as.hclust(h$Colv), k=cl_num, border=cols) # Define the clusters by rectangles
 hcut <- 1.3 # Empirically set height to cut the tree
-abline(h=hcut)
-as.hclust(h$Colv)$height %>% density %>% plot(main = )
 abline(v=hcut)
-mtx.clust <- h$Colv %>% mtx.clusters(height=hcut, minmembers=3)
+as.hclust(h$Colv)$height %>% density %>% plot(main = "Density of clustered objects across the height of the dendrogram")
+abline(v=hcut)
+#mtx.clust <- h$Colv %>% mtx.clusters(height=hcut, minmembers=3)
 par(mfrow=c(1, 1))
 # Save the results of clustering
-write.table(as.data.frame(mtx.clust), "results/clustering_all.txt", sep="\t", row.names=FALSE, quote=FALSE)
+#write.table(as.data.frame(mtx.clust), "results/clustering_all.txt", sep="\t", row.names=FALSE, quote=FALSE)
 ```
 
 What are the DEGFs counts in each clustering?
