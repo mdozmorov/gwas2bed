@@ -35,7 +35,7 @@ term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
 fname <- c("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt") # Best correlation results
 # fname <- c("data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt") # Imputed-ALL
 # fname <- c("data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Processed-ALL
-# fname <- c("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt", "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt", "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt", "data.gr.05/grweb_encDNase//matrix_PVAL.txt", "data.gr.05/grweb_encHistone//matrix_PVAL.txt", "data.gr.05/grweb_encSegway//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom18//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom25//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Complete-ALL
+fname <- c("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt", "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt", "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt", "data.gr.05/grweb_encDNase//matrix_PVAL.txt", "data.gr.05/grweb_encHistone//matrix_PVAL.txt", "data.gr.05/grweb_encSegway//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom18//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom25//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Complete-ALL
 mtx <- as.matrix(load_gr_data(fname))
 mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
 # A vector of category names, same order as the correlation matrix
@@ -232,14 +232,6 @@ for (d in dist.methods) {
 dev.off()
 ```
 
-```{r eval=TRUE, fig.height=6}
-ind <- term.mapping$Category == "immunological" # Indexes of immunological diseases
-mtx.cor.imm <- mtx.cor[ind, ind]
-hclustergram.imm <- hclust(as.dist(1-mtx.cor.imm), method=hclust.method) #  Cluster it
-hclustergram.imm.ext <- hclustergram.imm %>% as.dendrogram %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% ladderize
-h <- aheatmap(mtx.cor.imm, Rowv=hclustergram.imm.ext, Colv=hclustergram.imm.ext, color=col3(20), fontsize = 10, cexRow = 1, cexCol = 1)
-```
-
 ```{r eval=FALSE, fig.height=9}
 # Another look at the correlation heatmap
 library(corrplot)
@@ -249,19 +241,27 @@ corrplot(mtx.cor.imm, method = "color", type = "upper", col = col3(20), addCoef.
          tl.cex = 0.8, cl.pos = "r", diag = FALSE)
 ```
 
-```{r eval=FALSE, fig.height=7}
+```{r eval=TRUE, fig.height=7}
 library(pvclust)
-library(parallel)
-cl <- makeCluster(4, type="PSOCK")
-set.seed(1)
-result <- parPvclust(cl=cl, mtx.scaled[, ind], method.dist="correlation", method.hclust=hclust.method, nboot=100)
-stopCluster(cl)
-#saveRDS(result, "data/pvClust_1000.Rds")
-#result <- readRDS("data/pvClust_1000.Rds")
+# library(parallel)
+# cl <- makeCluster(4, type="PSOCK")
+# set.seed(1)
+# result <- parPvclust(cl=cl, mtx.scaled[, ind], method.dist="correlation", method.hclust=hclust.method, nboot=10000)
+# stopCluster(cl)
+# saveRDS(result, "data/pvClust_01.Rds")
+result <- readRDS("data/pvClust_01.Rds") # ind-subset, method.dist="correlation", method.hclust=hclust.method, nboot=10000
 #dev.off()
 plot(result, hang = -1)
-pvrect(result, alpha=0.63)
-#hclustergram <- result$hclust # Make the heatmap plot whatever hclust object
+pvrect(result, alpha=0.9)
+hclustergram.imm <- result$hclust # Make the heatmap plot whatever hclust object
+```
+
+```{r eval=TRUE, fig.height=6}
+ind <- categoryNames == "immunological" # Indexes of immunological diseases
+mtx.cor.imm <- mtx.cor[ind, ind]
+# hclustergram.imm <- hclust(as.dist(1-mtx.cor.imm), method=hclust.method) #  Cluster it
+hclustergram.imm.ext <- hclustergram.imm %>% as.dendrogram %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% ladderize
+h <- aheatmap(mtx.cor.imm, Rowv=hclustergram.imm.ext, Colv=hclustergram.imm.ext, color=col3(20), fontsize = 10, cexRow = 1, cexCol = 1)
 ```
 
 ```{r eval=FALSE}
