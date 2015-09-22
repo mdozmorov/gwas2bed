@@ -246,8 +246,11 @@ library(pvclust)
 # saveRDS(result, "data/pvClust_01.Rds")
 result <- readRDS("data/pvClust_01.Rds") # ind-subset, method.dist="correlation", method.hclust=hclust.method, nboot=10000
 #dev.off()
-plot(result, hang = -1)
-pvrect(result, alpha=0.9)
+# plot(result, hang = -1)
+# pvrect(result, alpha=0.9)
+dend <- as.dendrogram(result) %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% plot(main="Cluster dendrogram with AU/BP values (%)\n reproduced plot with dendrogram")
+result %>% text
+result %>% pvrect(alpha=0.9)
 hclustergram.imm <- result$hclust # Make the heatmap plot whatever hclust object
 ```
 
