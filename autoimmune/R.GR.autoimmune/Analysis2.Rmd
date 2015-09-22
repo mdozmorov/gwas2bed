@@ -14,8 +14,11 @@ suppressMessages(library(pander))
 panderOptions('table.split.table', Inf)
 set.seed(1)
 # Local functions and settings
-source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/utils2.R") # See the required packages there
-source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.R")
+library(MDmisc)
+#source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/utils2.R") # See the required packages there
+#source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.R")
+# External libraries
+library(dplyr)
 # Correlation to use
 cortype <- "spearman"
 # Clustering: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
@@ -35,8 +38,8 @@ term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
 fname <- c("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt") # Best correlation results
 # fname <- c("data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt") # Imputed-ALL
 # fname <- c("data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Processed-ALL
-fname <- c("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt", "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt", "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt", "data.gr.05/grweb_encDNase//matrix_PVAL.txt", "data.gr.05/grweb_encHistone//matrix_PVAL.txt", "data.gr.05/grweb_encSegway//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom18//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom25//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Complete-ALL
-mtx <- as.matrix(load_gr_data(fname))
+# fname <- c("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt", "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt", "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt", "data.gr.05/grweb_encDNase//matrix_PVAL.txt", "data.gr.05/grweb_encHistone//matrix_PVAL.txt", "data.gr.05/grweb_encSegway//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom18//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom25//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Complete-ALL
+mtx <- gr_load_data(fname)
 mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
 # A vector of category names, same order as the correlation matrix
 categoryNames <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name) ]
@@ -48,6 +51,8 @@ ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
 ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
 ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
 ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
+# Trim column names
+colnames(mtx) <- gr_trimnames(colnames(mtx))
 ```
 
 ```{r}
@@ -64,17 +69,6 @@ The matrix is scaled, so the enrichment profiles for each disease/phenotype have
 ```{r eval=TRUE}
 # mtx.scaled <- mtx %>% t %>% scale %>% t # Row-wise (feature-wise) centering
 mtx.scaled <- mtx %>% scale # Column-wise (sample-wise) centering
-# Shorten labels
-labs <- colnames(mtx.scaled) # Names of samples
-num.char <- 20 # Length of a string, after which to trim
-labs.trim <- as.character(unlist(sapply(labs, function(x){
-  if(nchar(x) > num.char){
-    return(paste(substring(x,1,num.char), "..."))
-  } else{
-    return(x)
-  }
-})))
-colnames(mtx.scaled) <- labs.trim
 ```
 
 ```{r}  
@@ -181,6 +175,7 @@ scatterplot3d(scores[, c("PC1", "PC2", "PC3")], color=as.numeric(factor(scores$C
 Prepare the matrix of correlation coefficients, and cluster it.
 
 ```{r eval=TRUE}
+library(Hmisc)
 ## Using spearman correlations
 # rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
 mtx.cor <- rcorr(mtx.scaled, type=cortype)[[1]]
@@ -284,16 +279,16 @@ hclustergram <- results[[3]][["consensusTree"]]
 # Empirically define clusters
 par(mfrow=c(1, 2))
 par(oma=c(0,0,0,7), mar=c(5.1, 4.1, 4.1, 7.1)) # Adjust margins
-h$Colv %>% as.dendrogram %>% color_labels(k=3) %>% set("labels_cex", 0.8) %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2)  %>% plot(horiz = TRUE) # %>% rect.dendrogram(k=3, border = 8, lty = 5, lwd = 2)
+h$Colv %>% as.dendrogram %>% color_labels(k=2) %>% set("labels_cex", 0.8) %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2)  %>% plot(horiz = TRUE) # %>% rect.dendrogram(k=3, border = 8, lty = 5, lwd = 2)
 # plot(as.dendrogram(h$Colv, hang=-1), main = "Clustering dendrogram") # Plot dendrogram
 # cl_num <- 2 # Empirically set desired numter of clusters
 # cols <- rainbow(cl_num) # Make colors for clusters
 # rect.hclust(as.hclust(h$Colv), k=cl_num, border=cols) # Define the clusters by rectangles
-hcut <- 1.3 # Empirically set height to cut the tree
+hcut <- 1.5 # Empirically set height to cut the tree
 abline(v=hcut)
-as.hclust(h$Colv)$height %>% density %>% plot(main = "Density of clustered objects across the height of the dendrogram")
+as.hclust(h$Colv)$height %>% density %>% plot(main = "Density of the clustered objects across the dendrogram height")
 abline(v=hcut)
-#mtx.clust <- h$Colv %>% mtx.clusters(height=hcut, minmembers=3)
+mtx.clust <- h$Colv %>% gr_clusters(height=hcut, minmembers=3, fileName="results/clustering_imm.txt")
 par(mfrow=c(1, 1))
 # Save the results of clustering
 #write.table(as.data.frame(mtx.clust), "results/clustering_all.txt", sep="\t", row.names=FALSE, quote=FALSE)
@@ -306,9 +301,9 @@ chromStates18
 ---
 
 ```{r eval=FALSE}
-mtx.degs <- load_gr_data("data.gr/2Roadmap_chromStates18/matrix_OR.txt")
-mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx))]
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="chromStates18_2_clust"))
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom18/matrix_PVAL.txt")
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+tmp <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "none")
 ```
 
 DNase-hotspotbroadall
