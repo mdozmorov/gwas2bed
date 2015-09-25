@@ -208,3 +208,14 @@ Lots of data, in the *data/Pleasance* folder.
 
 **Pedican.txt** - All the 735 human Pediatric cancer genes with cancer types
 
+
+[Stephens PJ, Tarpey PS, Davies H, Van Loo P, Greenman C, Wedge DC, Zainal SN, Martin S, Varela I, Bignell GR, Yates LR, Papaemmanuil E, Beare D, Butler A, Cheverton A, Gamble J, Hinton J, Jia M, Jayakumar A, Jones D, Latimer C, Lau KW, McLaren S, McBride DJ, Menzies A, Mudie L, Raine K, Rad R, Spencer Chapman M, Teague J, et al.: The landscape of cancer genes and mutational processes in breast cancer. Nature 2012.](http://www.nature.com.proxy.library.vcu.edu/nature/journal/v486/n7403/full/nature11017.html)
+===
+
+**Stephens-Stratton_nature11017-s3.xlsx** - Breast cancer somatic mutations, CNVs, genes and more.
+
+[Vogelstein B, Papadopoulos N, Velculescu VE, Zhou S, Diaz L a, Kinzler KW: Cancer genome landscapes. Science 2013, 339(March):1546–58.](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3749880/?tool=pmcentrez#SD1)
+===
+
+**Vogelstein-Kinzler_suppl.xlsx** - all cancers. 1A) cancer sequencing studies; 1C,D) mutation stats; 2A,B) Driver genes; 3A,B,C) gene rearrangements; 4) cancer predisposition genes.
+
