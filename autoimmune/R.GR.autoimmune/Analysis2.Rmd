@@ -24,7 +24,7 @@ cortype <- "spearman"
 # Clustering: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
 hclust.method <- "ward.D2"
 # Color scheme
-col3 <- colorRampPalette(c("blue", "white", "red"))
+col3 <- colorRampPalette(c("blue", "yellow", "red"))
 ```
 
 ### Load the data
@@ -203,8 +203,6 @@ hclustergram.ext <- hclustergram %>% as.dendrogram %>% set("branches_k_color", k
 h <- aheatmap(mtx.cor, Rowv=hclustergram.ext, Colv=hclustergram.ext, color=col3(20), annCol=annot, annColors = annotColor, fontsize = 10, cexRow = 1, cexCol = 1)
 ```
 
-We observe immunological diseases being grouped into a cluster distinct from the other diseases/traits. Within the cluster of immunological diseases, two or three subgroups can be noted. We focus our attention on this cluster and the subgroups of 21 immunological diseases to identify potential regulatory differences associated with the corresponding SNP sets.
-
 ```{r epigenomicVisualization1, fig.height=6, eval=FALSE}
 # Quick visualization of the pre-clustered correlation matrix
 h <- heatmap.2(mtx.cor, symkey = TRUE, Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), dendrogram="both", trace="none", density.info="none", col=color, RowSideColors=ColSideColors, ColSideColors=ColSideColors)  
@@ -227,27 +225,32 @@ for (d in dist.methods) {
 dev.off()
 ```
 
-```{r eval=FALSE, fig.height=9}
-# Another look at the correlation heatmap
-library(corrplot)
-par(oma=c(0,0,8,0), mar=c(5.1, 4.1, 8.1, 5.1)) # Adjust margins
-corrplot(mtx.cor.imm, method = "color", type = "upper", col = col3(20), addCoef.col="black",
-         order = "hclust", hclust.method = "ward", 
-         tl.cex = 0.8, cl.pos = "r", diag = FALSE)
+We observe immunological diseases being grouped into a cluster distinct from the other diseases/traits. Within the cluster of immunological diseases, two or three subgroups can be noted. We focus our attention on this cluster and the subgroups of 21 immunological diseases to identify potential regulatory differences associated with the corresponding SNP sets.
+
+```{r eval=TRUE}
+ind <- categoryNames == "immunological" # Indexes of immunological diseases
 ```
+
+
 
 ```{r eval=TRUE, fig.height=7}
 library(pvclust)
+# # A function to calculate Spearman correlations
+# spm <- function(x) {
+#   res <- 1 - cor(x, method = "spearman", use = "pairwise.complete.obs")
+#   res <- as.dist(res)
+#   attr(res, "method") <- "spearman"
+#   return(res)
+# }
+# 
 # library(parallel)
 # cl <- makeCluster(4, type="PSOCK")
 # set.seed(1)
-# result <- parPvclust(cl=cl, mtx.scaled[, ind], method.dist="correlation", method.hclust=hclust.method, nboot=10000)
+# result <- parPvclust(cl=cl, mtx.scaled[, ind], method.dist=spm, method.hclust=hclust.method, nboot=10000)
 # stopCluster(cl)
-# saveRDS(result, "data/pvClust_01.Rds")
-result <- readRDS("data/pvClust_01.Rds") # ind-subset, method.dist="correlation", method.hclust=hclust.method, nboot=10000
-#dev.off()
-# plot(result, hang = -1)
-# pvrect(result, alpha=0.9)
+# saveRDS(result, "data/pvClust_02.Rds")
+# result <- readRDS("data/pvClust_01.Rds") # ind-subset, method.dist="correlation", method.hclust=hclust.method, nboot=10000
+result <- readRDS("data/pvClust_02.Rds") # ind-subset, method.dist=spm, method.hclust=hclust.method, nboot=10000
 dend <- as.dendrogram(result) %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% plot(main="Cluster dendrogram with AU/BP values (%)\n reproduced plot with dendrogram")
 result %>% text
 result %>% pvrect(alpha=0.9)
@@ -255,11 +258,19 @@ hclustergram.imm <- result$hclust # Make the heatmap plot whatever hclust object
 ```
 
 ```{r eval=TRUE, fig.height=6}
-ind <- categoryNames == "immunological" # Indexes of immunological diseases
 mtx.cor.imm <- mtx.cor[ind, ind]
 # hclustergram.imm <- hclust(as.dist(1-mtx.cor.imm), method=hclust.method) #  Cluster it
 hclustergram.imm.ext <- hclustergram.imm %>% as.dendrogram %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% ladderize
 h <- aheatmap(mtx.cor.imm, Rowv=hclustergram.imm.ext, Colv=hclustergram.imm.ext, color=col3(20), fontsize = 10, cexRow = 1, cexCol = 1)
+```
+
+```{r eval=FALSE, fig.height=9}
+# Another look at the correlation heatmap
+library(corrplot)
+par(oma=c(0,0,8,0), mar=c(5.1, 4.1, 8.1, 5.1)) # Adjust margins
+corrplot(mtx.cor.imm, method = "color", type = "upper", col = col3(20), addCoef.col="black",
+         order = "hclust", hclust.method = "ward", 
+         tl.cex = 0.8, cl.pos = "r", diag = FALSE)
 ```
 
 ```{r eval=FALSE}
@@ -287,7 +298,7 @@ h$Colv %>% as.dendrogram %>% color_labels(k=2) %>% set("labels_cex", 0.8) %>% se
 # cl_num <- 2 # Empirically set desired numter of clusters
 # cols <- rainbow(cl_num) # Make colors for clusters
 # rect.hclust(as.hclust(h$Colv), k=cl_num, border=cols) # Define the clusters by rectangles
-hcut <- 1.5 # Empirically set height to cut the tree
+hcut <- 1.3 # Empirically set height to cut the tree
 abline(v=hcut)
 as.hclust(h$Colv)$height %>% density %>% plot(main = "Density of the clustered objects across the dendrogram height")
 abline(v=hcut)
@@ -303,10 +314,10 @@ What are the DEGFs counts in each clustering?
 chromStates18
 ---
 
-```{r eval=FALSE}
+```{r eval=TRUE, results='show'}
 mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom18/matrix_PVAL.txt")
 colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-tmp <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "none")
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr")
 ```
 
 DNase-hotspotbroadall
@@ -356,8 +367,9 @@ Cell type-specific analysis
 ---
 
 ```{r eval=FALSE}
-mtx <- load_gr_data(c("data.gr/2Roadmap_broadPeak/matrix_PVAL.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_PVAL.txt", "data.gr/2Roadmap_DNase_narrowPeak/matrix_PVAL.txt", "data.gr/2Roadmap_gappedPeak/matrix_PVAL.txt", "data.gr/2Roadmap_narrowPeak/matrix_PVAL.txt", "data.gr/2Roadmap_chromStates18/matrix_PVAL.txt"))
-mtx.cellspecific(mtx, "results/cellspecific_Roadmap.xlsx")
+fname <- c("data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Processed-ALL
+mtx <- gr_load_data(fname)
+res <- gr_cellspecific(mtx, fileName="test.xlsx")
 ```
 
 
