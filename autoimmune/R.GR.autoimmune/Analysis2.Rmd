@@ -25,6 +25,7 @@ cortype <- "spearman"
 hclust.method <- "ward.D2"
 # Color scheme
 col3 <- colorRampPalette(c("blue", "yellow", "red"))
+cells_blood_all <- c("E033", "E034", "E037", "E038", "E039", "E040", "E041", "E042", "E043", "E044", "E045", "E047", "E048", "E062", "E115", "E116", "E123", "E124", "E029", "E030", "E031", "E032", "E035", "E036", "E046", "E050", "E051")
 ```
 
 ### Load the data
@@ -175,7 +176,7 @@ scatterplot3d(scores[, c("PC1", "PC2", "PC3")], color=as.numeric(factor(scores$C
 Prepare the matrix of correlation coefficients, and cluster it.
 
 ```{r eval=TRUE}
-library(Hmisc)
+suppressMessages(library(Hmisc))
 ## Using spearman correlations
 # rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
 mtx.cor <- rcorr(mtx.scaled, type=cortype)[[1]]
@@ -191,6 +192,12 @@ mtx.cor <- rcorr(mtx.scaled, type=cortype)[[1]]
 
 ## Clustering
 hclustergram <- hclust(as.dist(1-mtx.cor), method=hclust.method) # Cluster it
+```
+
+Get the minimum and maximum correlations among all diseases
+
+```{r eval=TRUE, results='show'}
+kable(gr_maxmin(mtx.scaled, cortype="spearman", "results/maxmin_corr_all.txt"))
 ```
 
 ```{r eval=TRUE, fig.height=8, fig.width=10}
@@ -231,7 +238,11 @@ We observe immunological diseases being grouped into a cluster distinct from the
 ind <- categoryNames == "immunological" # Indexes of immunological diseases
 ```
 
+Get the minimum and maximum correlations among all diseases
 
+```{r eval=TRUE, results='show'}
+kable(gr_maxmin(mtx.scaled[, ind], cortype="spearman", "results/maxmin_corr_imm.txt"))
+```
 
 ```{r eval=TRUE, fig.height=7}
 library(pvclust)
@@ -308,45 +319,134 @@ par(mfrow=c(1, 1))
 #write.table(as.data.frame(mtx.clust), "results/clustering_all.txt", sep="\t", row.names=FALSE, quote=FALSE)
 ```
 
-What are the DEGFs counts in each clustering?
-===
+## What are the Differentially Expressed Genomic Features (DEGFs) in each cluster
 
-chromStates18
----
+### ENCODE TFBS cellspecific
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom18/matrix_PVAL.txt")
+mtx.degs <- gr_load_data("data.gr.05/grweb_encTFBS_cellspecific/matrix_PVAL.txt")
 colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr")
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_encTFBS_cellspecific.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
 ```
 
-DNase-hotspotbroadall
----
+### ENCODE TFBS clustered
 
-```{r eval=FALSE}
-mtx.degs <- load_gr_data("data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt")
-mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx))]
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="DNasehotspotbroadall_2_clust"))
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_encTFBS_clustered/matrix_PVAL.txt")
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_encTFBS_clustered.xlsx")
+#res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", nperm = 1000, fileName = "results/degfs_encTFBS_clustered_perm.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
 ```
 
-broadPeak
----
+### chromStates15
 
-```{r eval=FALSE}
-mtx.degs <- load_gr_data("data.gr/2Roadmap_broadPeak/matrix_OR.txt")
-mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx))] 
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="broadPeak_2_clust"))
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom15/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_chromStates15.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
 ```
 
-ENCODE TFBS
----
+### chromStates18
 
-```{r eval=FALSE}
-mtx.degs <- load_gr_data("data.gr/2ENCODE_Tfbs/matrix_OR.txt")
-mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx))]
-sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, label="encTfbs_2_clust"))
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom18/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_chromStates18.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
 ```
 
+### chromStates25
+
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom25/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_chromStates25.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+```
+
+### DNase_bPk-processed
+
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_bPk-processed/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_DNase_bPk-processed.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+```
+
+### DNase_gPk-imputed
+
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_DNase_gPk-imputed.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+```
+
+### DNase_nPk-imputed
+
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_nPk-imputed/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_DNase_nPk-imputed.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+```
+
+### DNase_nPk-processed
+
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_nPk-processed/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_DNase_nPk-processed.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+```
+
+### Histone_bPk-processed
+
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_bPk-processed/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_Histone_bPk-processed.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+```
+
+### Histone_gPk-imputed
+
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_Histone_gPk-imputed.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+```
+
+### Histone_gPk-processed
+
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_gPk-processed/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_Histone_gPk-processed.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+```
+
+### Histone_nPk-imputed
+
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_nPk-imputed/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_Histone_nPk-imputed.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+```
+
+### Histone_nPk-processed
+
+```{r eval=TRUE, results='show'}
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_nPk-processed/matrix_PVAL.txt", subset = cells_blood_all)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_Histone_nPk-processed.xlsx")
+kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+```
 
 Testing random chance, Using GENES OR chromStates18+encHistone+encBroadHmm
 ---
