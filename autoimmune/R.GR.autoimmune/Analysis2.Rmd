@@ -40,7 +40,7 @@ fname <- c("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", "data.
 # fname <- c("data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt") # Imputed-ALL
 # fname <- c("data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Processed-ALL
 # fname <- c("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt", "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt", "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt", "data.gr.05/grweb_encDNase//matrix_PVAL.txt", "data.gr.05/grweb_encHistone//matrix_PVAL.txt", "data.gr.05/grweb_encSegway//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom18//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom25//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Complete-ALL
-mtx <- gr_load_data(fname)
+mtx <- gr_load_data(fname, p2z = T)
 mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
 # A vector of category names, same order as the correlation matrix
 categoryNames <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name) ]
@@ -58,7 +58,7 @@ colnames(mtx) <- gr_trimnames(colnames(mtx))
 
 ```{r}
 # We first check how the distributions of the values for each sample look like side-by-side.
-ggplot(melt(mtx), aes(x=Var2, y=value, fill=Var2)) + 
+ggplot(reshape2::melt(mtx), aes(x=Var2, y=value, fill=Var2)) + 
   geom_boxplot() + 
   theme(axis.text.x=element_text(angle=45,hjust=1,vjust=1)) +
   theme(legend.position="none")
@@ -74,7 +74,7 @@ mtx.scaled <- mtx %>% scale # Column-wise (sample-wise) centering
 
 ```{r}  
 # Check how the scaled data looks like
-ggplot(melt(mtx.scaled), aes(x=Var2, y=value, fill=Var2)) + 
+ggplot(reshape2::melt(mtx.scaled), aes(x=Var2, y=value, fill=Var2)) + 
   geom_boxplot() + 
   theme(axis.text.x=element_text(angle=45,hjust=1,vjust=1)) +
   theme(legend.position="none")
