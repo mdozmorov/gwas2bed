@@ -6,9 +6,11 @@ output: html_document
 ---
 
 ```{r setup, echo=FALSE, message=FALSE}
-source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/utils2.R")
-source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.R")
+library(MDmisc)
+#source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/utils2.R")
+#source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.R")
 # Set up the environment
+col3 <- colorRampPalette(c("blue", "yellow", "red"))
 library(knitr) 
 opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', echo=F, dpi=100, warnings=F, message=F, comment=NA, warning=F) #out.width=700, 
 options(replace.assign=TRUE, stringsAsFactors = FALSE)#, width=120)
@@ -32,7 +34,7 @@ set.seed(1)
 reshape_wide_data <- function(mtx) {
   mtx <- mtx[ order(rownames(mtx)), order(colnames(mtx))]
   mtx[ lower.tri(mtx, diag=TRUE) ] <- NaN # Set lower portion to NaN, including the diagonal
-  mtx <- melt(mtx) # Melt, and remove Nan associations
+  mtx <- reshape2::melt(mtx) # Melt, and remove Nan associations
   mtx <- mtx[ !is.nan(mtx$value), ]
   rownames(mtx) <- paste(mtx$Var1, mtx$Var2, sep="_")
   mtx <- mtx[, 3, drop=F]
@@ -166,8 +168,8 @@ for (i in 1:nrow(term.mapping)) {
 # Replace infinite by NAs
 term.DC.sig[ is.infinite(term.DC.sig) ] <- NA
 # -log10-transform the p-values, note that 0 p-values will be inf. Manually replace them with max values
-tmp <- mtx.transform(term.DC.sig)
-tmp.max <- melt(tmp)$value
+tmp <- gr_transform(term.DC.sig)
+tmp.max <- reshape2::melt(tmp)$value
 tmp.max <- max(tmp.max[!(is.infinite(tmp.max)) & !(is.na(tmp.max))])
 tmp[is.infinite(tmp)] <- tmp.max
 # Reformat the data
@@ -241,7 +243,7 @@ Preparing Bridget similarity
 read.Bridget <- function(fname){
   mtx <- read.table(fname, sep="\t", stringsAsFactors = FALSE)
   mtx <- mtx[ mtx$V1 %in% term.mapping$name | mtx$V2 %in% term.mapping$Name, ]  # Subset by Names that are mapped
-  tmp <- dcast(mtx, V1 ~ V2, value.var="V3", mean)
+  tmp <- reshape2::dcast(mtx, V1 ~ V2, value.var="V3", mean)
   rownames(tmp) <- tmp$V1
   tmp$V1 <- NULL
   return(reshape_wide_data(as.matrix(tmp)))
@@ -333,9 +335,9 @@ if (mat.type == "PVAL") {
 
 # Read in data in a loop
 for (x in dname) {
-  mtx <- load_gr_data(x)
+  mtx <- gr_load_data(x, p2z = T)
   mtx <- mtx[, colnames(mtx) %in% term.mapping$Name]  # Subset by Names that are mapped
-  mtx.cor <- rcorr(mtx, type=cortype)[[1]]
+  mtx.cor <- Hmisc::rcorr(mtx, type=cortype)[[1]]
   # mtx.cor <- mine(mtx, n.cores=4)$MIC
   mtx.cor.long <- reshape_wide_data(mtx.cor)
   mtx.cor.epi.joined <- cbind(mtx.cor.epi.joined, mtx.cor.long[match(rownames(mtx.cor.epi.joined), rownames(mtx.cor.long)), ])
@@ -348,7 +350,7 @@ colnames(mtx.cor.epi.joined)[ (length(mtx.list.epi) + 1):length(colnames(mtx.cor
 ```{r eval=FALSE}
 # Visualize distributions
 #mtx.cor.epi.joined <- normalizeQuantiles()
-ggplot(melt(mtx.cor.epi.joined), aes(x=Var2, y=value, fill=Var2)) + 
+ggplot(reshape2::melt(mtx.cor.epi.joined), aes(x=Var2, y=value, fill=Var2)) + 
   geom_boxplot() + 
   coord_cartesian(ylim = c(-1, 1)) +
   theme(axis.text.x=element_text(angle=45,hjust=1,vjust=1))
@@ -361,7 +363,7 @@ Summarize all, and most correlated with episimilarity metrics. Visualize it as a
 mtx.cor.epi.joined <- scale(mtx.cor.epi.joined)
 
 if (cortype != "MIC") {
-  mtx.cor <- rcorr(as.matrix(mtx.cor.epi.joined), type=cortype)
+  mtx.cor <- Hmisc::rcorr(as.matrix(mtx.cor.epi.joined), type=cortype)
   ## Clustering
   hclust.method <- "ward.D2"
   hclustergram <- hclust(as.dist(1-mtx.cor[[1]]), method=hclust.method) # Cluster it
@@ -374,12 +376,12 @@ if (cortype != "MIC") {
   # To have corr coeffs overlayed on the cells: cellnote=formatC(mtx.summary[[3]], format="e", digits=2)
   # Visualization only
   par(oma=c(5.3,0,0,5), mar=c(5, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
-  heatmap.2(mtx.cor[[1]], Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), symbreaks = TRUE, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=1, cexCol=1, notecol="black", notecex=0.9, cellnote=formatC(mtx.cor[[1]], format="f", digits=2))
+  gplots::heatmap.2(mtx.cor[[1]], Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), symbreaks = TRUE, trace="none", density.info="none", col=col3, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=1, cexCol=1, notecol="black", notecex=0.9, cellnote=formatC(mtx.cor[[1]], format="f", digits=2))
   
   # PDF only, overlay corr coeffs
   pdf(paste("results/comparison_analysis_corr_", cortype, "_", mat.type, ".pdf", sep=""), width=7.5, height=6)
   par(oma=c(6,0,0,6), mar=c(11, 4.1, 5.1, 6), cex.main=1) # Adjust margins
-  heatmap.2(mtx.cor[[1]], Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.8, cexCol=0.8, notecol="black", notecex=0.3, cellnote=formatC(mtx.cor[[1]], format="f", digits=2))
+  gplots::heatmap.2(mtx.cor[[1]], Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), trace="none", density.info="none", col=col3, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.8, cexCol=0.8, notecol="black", notecex=0.3, cellnote=formatC(mtx.cor[[1]], format="f", digits=2))
   dev.off()
   # # PDF only, overlay pval coeffs
   # pdf(paste("results/comparison_analysis_pval_", cortype, ".pdf", sep=""), width=7.5, height=6)
