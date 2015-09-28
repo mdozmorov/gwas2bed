@@ -140,8 +140,8 @@ term.Zhou.sig[ is.infinite(term.Zhou.sig) ] <- NA
 term.Zhou.sig <- reshape_wide_data(term.Zhou.sig)
 ```
 
-Preparing DiseaseConnect similarity 
-```{r}
+```{r eval=FALSE}
+# Preparing DiseaseConnect similarity 
 mtx.sig <- read.table("/Users/mikhail/Documents/Work/GenomeRunner/gwas2bed/Disease-Disease_v1.txt", sep="\t", fill=T, header=T, as.is=T)
 # Subset by DiseaseConnectIDs associated with our terms
 mtx.sig <- mtx.sig[ mtx.sig$Disease.1 %in% term.mapping$DiseaseConnectID[ term.mapping$DiseaseConnectID != "" ] & mtx.sig$Disease.2 %in% term.mapping$DiseaseConnectID[ term.mapping$DiseaseConnectID != ""], ]
@@ -200,9 +200,9 @@ dose.jiang <- dose.select("Jiang")
 dose.lin <- dose.select("Lin")
 ```
 
-Loading genomic jaccard similarity
 
-```{r}
+```{r eval=FALSE}
+# Loading genomic jaccard similarity
 mtx <- as.matrix(read.table("data/jaccard.autoimmune.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
 mtx <- mtx[rownames(mtx) %in% term.mapping$Name, colnames(mtx) %in% term.mapping$Name] 
 mtx.jaccard <- reshape_wide_data(mtx)
@@ -219,9 +219,8 @@ mtx.fig1a <- mtx.fig1a[term.mapping$Name, term.mapping$Name] # Subset by Names t
 mtx.fig1a <- reshape_wide_data(mtx.fig1a)
 ```
 
-Loading GenometriCorr similarity
-
 ```{r eval=FALSE}
+# Loading GenometriCorr similarity
 # mtx.gtc <- as.matrix(read.table("data/gtc.reldist.ecdfdeviation.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
 # mtx.gtc <- as.matrix(read.table("data/gtc.scaled.absolute.min.distance.sum.1.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
 mtx.gtc <- as.matrix(read.table("data/gtc.scaled.absolute.min.distance.sum.1.wide.txt", sep="\t", header=T, row.names=1, stringsAsFactors=F))
@@ -229,18 +228,17 @@ mtx.gtc <- mtx.gtc[rownames(mtx.gtc) %in% term.mapping$Name, colnames(mtx.gtc) %
 mtx.gtc <- reshape_wide_data(mtx.gtc)
 ```
 
-Shrunken matrix
-
 ```{r eval=FALSE}
+# Shrunken matrix
 mtx.shrunken <- as.matrix(read.table("data/Similarity_Shrunken.txt", sep="\t", header=T, row.names=1, stringsAsFactors = FALSE))
 mtx.shrunken <- mtx.shrunken[rownames(mtx.shrunken) %in% term.mapping$Name, colnames(mtx.shrunken) %in% term.mapping$Name] 
 mtx.shrunken <- reshape_wide_data(mtx.shrunken)
 ```
 
-Preparing Bridget similarity
+Preparing literature similarity
 
 ```{r}
-read.Bridget <- function(fname){
+read.lit <- function(fname){
   mtx <- read.table(fname, sep="\t", stringsAsFactors = FALSE)
   mtx <- mtx[ mtx$V1 %in% term.mapping$name | mtx$V2 %in% term.mapping$Name, ]  # Subset by Names that are mapped
   tmp <- reshape2::dcast(mtx, V1 ~ V2, value.var="V3", mean)
@@ -248,27 +246,35 @@ read.Bridget <- function(fname){
   tmp$V1 <- NULL
   return(reshape_wide_data(as.matrix(tmp)))
 }
-term.msh.path <- read.Bridget("data/terms.msh.path.txt")
-term.snomed.path <- read.Bridget("data/terms.snomed.path.txt")
-term.snomed.vector <- read.Bridget("data/terms.snomed.vector.txt")
-term.iridescent.minMim <- read.Bridget("data/iridescent.minMim.txt")
-term.iridescent.misn <- read.Bridget("data/iridescent.misn.txt")
-term.iridescent.obsExp <- read.Bridget("data/iridescent.obsExp.txt")
-term.iridescent.relOverlap <- read.Bridget("data/iridescent.relOverlap.txt")
-term.iridescent.sharedRels <- read.Bridget("data/iridescent.sharedRels.txt")
+# term.msh.path <- read.lit("data/terms.msh.path.txt")
+# term.snomed.path <- read.lit("data/terms.snomed.path.txt")
+# term.snomed.vector <- read.lit("data/terms.snomed.vector.txt")
+term.iridescent.minMim <- read.lit("data/iridescent.minMim.txt")
+term.iridescent.misn <- read.lit("data/iridescent.misn.txt")
+term.iridescent.obsExp <- read.lit("data/iridescent.obsExp.txt")
+term.iridescent.relOverlap <- read.lit("data/iridescent.relOverlap.txt")
+term.iridescent.sharedRels <- read.lit("data/iridescent.sharedRels.txt")
 ```
 
 Combining with episimilarity
 
 ```{r}
 # Merge previously prepared matrixes
-mtx.list.epi <- c(list(mtx.fig1a), list(mtx.jaccard), list(term.msh.path), list(term.snomed.path), list(term.snomed.vector), list(term.iridescent.minMim), list(term.iridescent.misn), list(term.iridescent.obsExp), list(term.iridescent.relOverlap), list(term.iridescent.sharedRels), list(dose.jiang), list(dose.lin), list(dose.rel), list(dose.resnik), list(dose.wang)) #, list(term.ICD9.occur), list(term.ICD9.risk), list(term.ICD9.phi), list(term.DC.sig)) #, list(mtx.gtc), list(mtx.shrunken), list(mtx.clusterSim.MF.Resnik), list(mtx.clusterSim.MF.Wang))
+mtx.list.epi <- c(list(mtx.fig1a), list(term.iridescent.minMim), list(term.iridescent.misn), list(term.iridescent.obsExp), list(term.iridescent.relOverlap), list(term.iridescent.sharedRels), list(dose.jiang), list(dose.lin), list(dose.rel), list(dose.resnik), list(dose.wang)) 
+#, list(mtx.jaccard)
+#, list(term.DC.sig)
+#, list(term.ICD9.occur), list(term.ICD9.risk), list(term.ICD9.phi) 
+#, list(mtx.gtc), list(mtx.shrunken), list(mtx.clusterSim.MF.Resnik), list(mtx.clusterSim.MF.Wang))
+#, list(term.msh.path), list(term.snomed.path), list(term.snomed.vector)
 
 mtx.cor.epi.joined <- do.call(cbind, lapply(mtx.list.epi, function(x) x[match(rownames(mtx.list.epi[[1]]), rownames(x)), ]))
 rownames(mtx.cor.epi.joined) <- rownames(mtx.list.epi[[1]])
 
 # Set the column names after merging lists
-colnames(mtx.cor.epi.joined) <- c("Shared.loci", "Jaccard", "MSH.path", "SnoMed.path", "SnoMed.vector", "Iridescent.minMim", "Iridescent.misn", "Iridescent.obsExp", "Iridescent.relOverlap", "Iridescent.sharedRels", "DOSE.jiang", "DOSE.lin", "DOSE.rel", "DOSE.resnik", "DOSE.wang") #, "ICD9.occur", "ICD9.risk", "ICD9.phi", "DiseaseConnect", "genometricorr", "shrunken")
+colnames(mtx.cor.epi.joined) <- c("Shared.loci", "Iridescent.minMim", "Iridescent.misn", "Iridescent.obsExp", "Iridescent.relOverlap", "Iridescent.sharedRels", "DOSE.jiang", "DOSE.lin", "DOSE.rel", "DOSE.resnik", "DOSE.wang") 
+#, "DiseaseConnect"
+#, "ICD9.occur", "ICD9.risk", "ICD9.phi", "genometricorr", "shrunken")
+#  "Jaccard", "MSH.path", "SnoMed.path", "SnoMed.vector",
 ```
 
 Adding GenomeRunner data
@@ -279,9 +285,9 @@ if (mat.type == "PVAL") {
   dname <- list("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt",
                 "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt",
                 "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt",
+                "data.gr.05/grweb_encSegway//matrix_PVAL.txt",
                 "data.gr.05/grweb_encDNase//matrix_PVAL.txt",
                 "data.gr.05/grweb_encHistone//matrix_PVAL.txt",
-                "data.gr.05/grweb_encSegway//matrix_PVAL.txt",
                 "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt",
                 "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt",
                 "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt",
@@ -304,9 +310,9 @@ if (mat.type == "PVAL") {
   dname <- list("data.gr.05/grweb_encBroadHmm//matrix_OR.txt",
                 "data.gr.05/grweb_encChromCombined//matrix_OR.txt",
                 "data.gr.05/grweb_encChromHmm//matrix_OR.txt",
+                "data.gr.05/grweb_encSegway//matrix_OR.txt",
                 "data.gr.05/grweb_encDNase//matrix_OR.txt",
                 "data.gr.05/grweb_encHistone//matrix_OR.txt",
-                "data.gr.05/grweb_encSegway//matrix_OR.txt",
                 "data.gr.05/grweb_encTFBS_cellspecific//matrix_OR.txt",
                 "data.gr.05/grweb_encTFBS_clustered//matrix_OR.txt",
                 "data.gr.05/grweb_roadmapChrom15//matrix_OR.txt",
@@ -327,12 +333,6 @@ if (mat.type == "PVAL") {
            )
 }
 
-# # Not used
-# "data.gr/ENCODE_Dgf/matrix_PVAL.txt",
-# "data.gr/Roadmap_DNase_hotspot01/matrix_PVAL.txt",
-# "data.gr/Roadmap_DNase_hotspotall/matrix_PVAL.txt",
-# "data.gr/Roadmap_DNase_hotspotbroad01/matrix_PVAL.txt",
-
 # Read in data in a loop
 for (x in dname) {
   mtx <- gr_load_data(x, p2z = T)
@@ -344,7 +344,7 @@ for (x in dname) {
 }
 
 # Set the column names after merging lists
-colnames(mtx.cor.epi.joined)[ (length(mtx.list.epi) + 1):length(colnames(mtx.cor.epi.joined))] <- c("encBroadHmm", "encChromCombined", "encChromHmm", "encDNase", "encHistone", "encSegway", "encTFBS_cellspecific", "encTFBS_clustered", "roadmapChrom15", "roadmapChrom18", "roadmapChrom25", "roadmapDNase_bPk-processed", "roadmapDNase_gPk-imputed", "roadmapDNase_nPk-imputed", "roadmapDNase_nPk-processed", "roadmapHistone_bPk-processed", "roadmapHistone_gPk-imputed", "roadmapHistone_gPk-processed", "roadmapHistone_nPk-imputed", "roadmapHistone_nPk-processed", "Combined-ALL", "Processed-ALL", "Imputed-ALL")
+colnames(mtx.cor.epi.joined)[ (length(mtx.list.epi) + 1):length(colnames(mtx.cor.epi.joined))] <- c("enc.BroadHmm", "enc.ChromCombined", "enc.ChromHmm", "enc.Segway", "enc.DNase", "enc.Histone", "enc.TFBS.cellspecific", "enc.TFBS.clustered", "rdm.Chrom15", "rdm.Chrom18", "rdm.Chrom25", "rdm.DNase.bPk.processed", "rdm.DNase.gPk.imputed", "rdm.DNase.nPk.imputed", "rdm.DNase.nPk.processed", "rdm.Histone.bPk.processed", "rdm.Histone.gPk.imputed", "rdm.Histone.gPk.processed", "rdm.Histone.nPk.imputed", "rdm.Histone.nPk.processed", "Combined.ALL", "Processed.ALL", "Imputed.ALL")
 ```
 
 ```{r eval=FALSE}
@@ -368,9 +368,9 @@ if (cortype != "MIC") {
   hclust.method <- "ward.D2"
   hclustergram <- hclust(as.dist(1-mtx.cor[[1]]), method=hclust.method) # Cluster it
 
-#   # Save the results
-#   write.xlsx2(formatC(mtx.cor[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("corr", cortype, mat.type, sep="_"), append=TRUE)
-#   write.xlsx2(formatC(mtx.cor[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("pval", cortype, mat.type, sep="_"), append=TRUE)
+  # Save the results
+  write.xlsx2(formatC(mtx.cor[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("corr", cortype, mat.type, sep="_"), append=TRUE)
+  write.xlsx2(formatC(mtx.cor[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("pval", cortype, mat.type, sep="_"), append=TRUE)
   
   # To have p-values overlayed on the cells: cellnote=formatC(mtx.summary[[1]], format="f", digits=2)
   # To have corr coeffs overlayed on the cells: cellnote=formatC(mtx.summary[[3]], format="e", digits=2)
@@ -400,6 +400,27 @@ mtx.summary <- mine(mtx.cor.epi.joined[ complete.cases(mtx.cor.epi.joined), ], n
 }
 ```
 
+Another view of the correlogram
+
+```{r fig.height=8}
+library(corrplot)
+col3 <- colorRampPalette(c("blue", "yellow", "red"))
+corrplot.mixed(mtx.cor[[1]], lower="color", upper="circle", order="original", col = col3(20), tl.pos = "lt", tl.cex=0.5, tl.col="black", cl.cex=0.5)
+par(col="black")
+pdf("results/comparison_analysis_corrplot.pdf", height = 20, width = 18)
+corrplot(mtx.cor[[1]], method = "color", type="upper", col=col3(20), tl.col = "black", tl.cex=1.4, cl.pos = NULL, addCoef.col = "black", diag=F)
+dev.off()
+```
+
+Combining p-values
+
+```{r eval=FALSE}
+# https://stats.stackexchange.com/questions/59360/fishers-method-for-combing-p-values-what-about-the-lower-tail
+pchisq( -2*sum(log(p-values)), df, lower.tail=FALSE)
+df = 2*length(p-values)
+```
+
+
 Comparison with random chance
 ====
 
@@ -408,6 +429,7 @@ Comparison with random chance
 set.seed(1)
 mtx.summary <- rcorr(as.matrix(mtx.rand(as.matrix(mtx.cor.epi.joined), randomize="mix")) , type=cortype)
 # Save the results
+unlink("results/comparison_analysis.xlsx")
 write.xlsx2(formatC(mtx.summary[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName="corr_random", append=TRUE)
 write.xlsx2(formatC(mtx.summary[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName="pval_random", append=TRUE)
 
