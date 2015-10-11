@@ -63,3 +63,8 @@ OMIM: Genes that are relevant to Arthritis based on the OMIM Gene Map.
 DEG: Genes that are differentially expressed (DEG) between an condition related to the disease and other condition.
 
 `Disease-Disease_v1.csv.gz` - Format: Disease 1, Disease 2, P value. The disease-disease relations are determined by the significance of the shared GWAS/OMIM/DEG genes between two diseases using hypergeometric test.
+
+[phenotypes](https://github.com/joepickrell/phenotypes) - JSON files with genetic score models
+---
+
+See [README.md](https://github.com/joepickrell/phenotypes/blob/master/README.md) in the Git repository.
