@@ -44,16 +44,16 @@ mtx <- gr_load_data(fname, p2z = T)
 mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
 # A vector of category names, same order as the correlation matrix
 categoryNames <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name) ]
-names(categoryNames) <- term.mapping$Name[ match(colnames(mtx), term.mapping$Name)]
-# Set side colors
-ColSideColors <- as.numeric(factor(categoryNames[ colnames(mtx) ]))
-cbind((categoryNames), ColSideColors) # Sanity check
-ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
-ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
-ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
-ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
+# # Set side colors
+# ColSideColors <- as.numeric(factor(categoryNames))
+# cbind(categoryNames, ColSideColors) # Sanity check
+# ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
+# ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
+# ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
+# ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
 # Trim column names
-colnames(mtx) <- gr_trimnames(colnames(mtx))
+colnames(mtx) <- gr_trimnames(colnames(mtx), num.char = 25)
+names(categoryNames) <- colnames(mtx)
 ```
 
 ```{r}
@@ -131,7 +131,7 @@ s3d <- scatterplot3d(scores[, c("PC1", "PC2", "PC3")],
               pch=19,
               cex.symbols = 1.2,
               color=as.numeric(factor(scores$Category)))
-legend(x=-3, y=0, legend=c("Hematological", "Immunological", "Metabolic", "Neurological"), col=c("black", "red", "green", "blue"), pch = 19)
+legend(x=-3, y=-1, legend=c("Hematological", "Immunological", "Metabolic", "Neurological"), col=c("black", "red", "green", "blue"), pch = 19)
 ```
 
 ```{r}
@@ -176,10 +176,9 @@ scatterplot3d(scores[, c("PC1", "PC2", "PC3")], color=as.numeric(factor(scores$C
 Prepare the matrix of correlation coefficients, and cluster it.
 
 ```{r eval=TRUE}
-suppressMessages(library(Hmisc))
 ## Using spearman correlations
 # rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
-mtx.cor <- rcorr(mtx.scaled, type=cortype)[[1]]
+mtx.cor <- Hmisc::rcorr(mtx.scaled, type=cortype)[[1]]
 # Optionally, try Spearman or Kendall correlation
 # mtx.cor[[1]] <- cor(as.matrix(mtx), method="kendall")
 # Or, MIC
@@ -197,7 +196,7 @@ hclustergram <- hclust(as.dist(1-mtx.cor), method=hclust.method) # Cluster it
 Get the minimum and maximum correlations among all diseases
 
 ```{r eval=TRUE, results='show'}
-kable(gr_maxmin(mtx.scaled, cortype="spearman", "results/maxmin_corr_all.txt"))
+kable(head(gr_maxmin(mtx.scaled, cortype="spearman", "results/maxmin_corr_all.txt")))
 ```
 
 ```{r eval=TRUE, fig.height=8, fig.width=10}
@@ -235,13 +234,13 @@ dev.off()
 We observe immunological diseases being grouped into a cluster distinct from the other diseases/traits. Within the cluster of immunological diseases, two or three subgroups can be noted. We focus our attention on this cluster and the subgroups of 21 immunological diseases to identify potential regulatory differences associated with the corresponding SNP sets.
 
 ```{r eval=TRUE}
-ind <- categoryNames == "immunological" # Indexes of immunological diseases
+ind <- categoryNames == "immunologic" # Indexes of immunological diseases
 ```
 
-Get the minimum and maximum correlations among all diseases
+Get the minimum and maximum correlations among immunologic diseases
 
 ```{r eval=TRUE, results='show'}
-kable(gr_maxmin(mtx.scaled[, ind], cortype="spearman", "results/maxmin_corr_imm.txt"))
+kable(head(gr_maxmin(mtx.scaled[, ind], cortype="spearman", "results/maxmin_corr_imm.txt")))
 ```
 
 ```{r eval=TRUE, fig.height=7}
@@ -253,15 +252,15 @@ library(pvclust)
 #   attr(res, "method") <- "spearman"
 #   return(res)
 # }
-# 
 # library(parallel)
 # cl <- makeCluster(4, type="PSOCK")
 # set.seed(1)
 # result <- parPvclust(cl=cl, mtx.scaled[, ind], method.dist=spm, method.hclust=hclust.method, nboot=10000)
 # stopCluster(cl)
-# saveRDS(result, "data/pvClust_02.Rds")
-# result <- readRDS("data/pvClust_01.Rds") # ind-subset, method.dist="correlation", method.hclust=hclust.method, nboot=10000
-result <- readRDS("data/pvClust_02.Rds") # ind-subset, method.dist=spm, method.hclust=hclust.method, nboot=10000
+# saveRDS(result, "data/pvClust_03.Rds")
+# result <- readRDS("data/pvClust_01.Rds") # p-vals, ind-subset, method.dist="correlation", method.hclust=hclust.method, nboot=10000
+# result <- readRDS("data/pvClust_02.Rds") # p-vals, ind-subset, method.dist=spm, method.hclust=hclust.method, nboot=10000
+result <- readRDS("data/pvClust_03.Rds") # z-scores, ind-subset, method.dist=spm, method.hclust=hclust.method, nboot=10000
 dend <- as.dendrogram(result) %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% plot(main="Cluster dendrogram with AU/BP values (%)\n reproduced plot with dendrogram")
 result %>% text
 result %>% pvrect(alpha=0.9)
@@ -324,134 +323,214 @@ par(mfrow=c(1, 1))
 ### ENCODE TFBS cellspecific
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_encTFBS_cellspecific/matrix_PVAL.txt")
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_encTFBS_cellspecific.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_encTFBS_cellspecific/matrix_PVAL.txt", p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_encTFBS_cellspecific.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### ENCODE TFBS clustered
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_encTFBS_clustered/matrix_PVAL.txt")
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_encTFBS_clustered.xlsx")
-#res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", nperm = 1000, fileName = "results/degfs_encTFBS_clustered_perm.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_encTFBS_clustered/matrix_PVAL.txt", p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+#res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "none", p2z = TRUE, fileName = "results/degfs_encTFBS_clustered_perm.xlsx", nperm = 10000)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "none", p2z = TRUE, fileName = "results/degfs_encTFBS_clustered.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### chromStates15
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom15/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_chromStates15.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom15/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_chromStates15.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### chromStates18
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom18/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_chromStates18.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom18/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_chromStates18.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### chromStates25
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom25/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_chromStates25.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom25/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_chromStates25.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### DNase_bPk-processed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_bPk-processed/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_DNase_bPk-processed.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_bPk-processed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_DNase_bPk-processed.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### DNase_gPk-imputed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_DNase_gPk-imputed.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_DNase_gPk-imputed.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### DNase_nPk-imputed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_nPk-imputed/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_DNase_nPk-imputed.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_nPk-imputed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_DNase_nPk-imputed.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### DNase_nPk-processed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_nPk-processed/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_DNase_nPk-processed.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_nPk-processed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_DNase_nPk-processed.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### Histone_bPk-processed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_bPk-processed/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_Histone_bPk-processed.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_bPk-processed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_Histone_bPk-processed.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### Histone_gPk-imputed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_Histone_gPk-imputed.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_Histone_gPk-imputed.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### Histone_gPk-processed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_gPk-processed/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_Histone_gPk-processed.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_gPk-processed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_Histone_gPk-processed.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### Histone_nPk-imputed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_nPk-imputed/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_Histone_nPk-imputed.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_nPk-imputed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_Histone_nPk-imputed.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
 ### Histone_nPk-processed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_nPk-processed/matrix_PVAL.txt", subset = cells_blood_all)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs))
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", fileName = "results/degfs_Histone_nPk-processed.xlsx")
-kable(res[[1]][1:10, c(1, 2, 3, 4, 10, 11, 12, 13)])
+mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_nPk-processed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
+colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
+res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_Histone_nPk-processed.xlsx")
+if (length(res) > 0) {
+  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+} else {
+  print("Nothing significant")
+}
 ```
 
-Testing random chance, Using GENES OR chromStates18+encHistone+encBroadHmm
----
+
+## Cell type-specific analysis
+
+```{r eval=TRUE}
+fname <- c("data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt") # Imputed-ALL
+mtx <- gr_load_data(fname, p2z = TRUE)
+res <- gr_cellspecific(mtx, p2z = TRUE, fileName="results/cellspecific.xlsx")
+```
+
+
 
 ```{r eval=FALSE}
+# Testing random chance, Using GENES OR chromStates18+encHistone+encBroadHmm
+# ---
 mtx.degs <- load_gr_data(c("data.gr/2Roadmap_broadPeak/matrix_OR.txt", "data.gr/2Roadmap_DNase_hotspotbroadall/matrix_OR.txt", "data.gr/2ENCODE_Tfbs/matrix_OR.txt"))
 mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx))]
 sum(mtx.degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust))
@@ -463,13 +542,5 @@ mtx.rnd <- mtx.degs %>% mtx.rand(randomize = "rnd")
 sum(mtx.degfs(mtx.rnd[, mtx.clust$eset.labels], mtx.clust))
 ```
 
-Cell type-specific analysis
----
-
-```{r eval=FALSE}
-fname <- c("data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Processed-ALL
-mtx <- gr_load_data(fname)
-res <- gr_cellspecific(mtx, fileName="test.xlsx")
-```
 
 
