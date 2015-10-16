@@ -109,9 +109,8 @@ term.ICD9.risk <- reshape_wide_data(term.ICD9.risk)
 # term.ICD9.risk <- readRDS("data/term.ICD9.3.risk.Rds")
 ```
 
-Preparing Zhou similarity
-
 ```{r eval=FALSE}
+# Preparing Zhou similarity
 mtx.sig <- read.table("/Users/mikhail/Documents/Work/GenomeRunner/gwas2bed/human-sig-disease-network.txt.gz", sep="\t", fill=T, header=T, as.is=T)
 # Subset by ZhouIDs associated with our terms
 mtx.sig <- mtx.sig[ mtx.sig$MeSH.Disease.Term %in% term.mapping$ZhouID[ term.mapping$ZhouID != "" ] & mtx.sig$MeSH.Disease.Term.1 %in% term.mapping$ZhouID[ term.mapping$ZhouID != ""], ]
@@ -199,7 +198,6 @@ dose.rel <- dose.select("Rel")
 dose.jiang <- dose.select("Jiang")
 dose.lin <- dose.select("Lin")
 ```
-
 
 ```{r eval=FALSE}
 # Loading genomic jaccard similarity
@@ -347,6 +345,44 @@ for (x in dname) {
 colnames(mtx.cor.epi.joined)[ (length(mtx.list.epi) + 1):length(colnames(mtx.cor.epi.joined))] <- c("enc.BroadHmm", "enc.ChromCombined", "enc.ChromHmm", "enc.Segway", "enc.DNase", "enc.Histone", "enc.TFBS.cellspecific", "enc.TFBS.clustered", "rdm.Chrom15", "rdm.Chrom18", "rdm.Chrom25", "rdm.DNase.bPk.processed", "rdm.DNase.gPk.imputed", "rdm.DNase.nPk.imputed", "rdm.DNase.nPk.processed", "rdm.Histone.bPk.processed", "rdm.Histone.gPk.imputed", "rdm.Histone.gPk.processed", "rdm.Histone.nPk.imputed", "rdm.Histone.nPk.processed", "Combined.ALL", "Processed.ALL", "Imputed.ALL")
 ```
 
+Adding GoShifter results
+
+```{r}
+# Function to load GoShifter data
+gs_load_data <- function(postfix) {
+  mtx.list <- list()
+  for (i in term.mapping$BED) {
+    mtx.list <- c(mtx.list, list(as.matrix(read.table(
+      paste("data.gosifter/", i, "-gf_", postfix, ".txt", sep=""), 
+      sep="\t", header = F, row.names = 1, stringsAsFactors = F, check.names = F), drop = F)))
+  }
+  
+  mtx <- do.call("cbind", lapply(mtx.list, function(x) x[match(rownames(mtx.list[[1]]), rownames(x)), , drop = F]))
+  class(mtx) <- "numeric"
+  colnames(mtx) <- term.mapping$BED
+  mtx <- gr_transform(mtx, p2z = F)
+  mtx[is.infinite(mtx)] <- max(mtx[!is.infinite(mtx)])
+  # Trim the matrix
+  mtx <- mtx[apply(mtx, 1, function(x) sum(!is.na(x))) > 0, apply(mtx, 2, function(x) sum(!is.na(x))) > 
+               0, drop = FALSE]  # Remove rows/columns with all NAs
+  mtx <- mtx[!(apply(mtx, 1, function(x) sum(x == 0) == ncol(mtx))), , drop = F]  # If all values in a row are 0, remove these rows
+  return(mtx)
+}
+# All GF categories
+postfixes <- c("encchromStates", "encDNase", "encHistone", "encTFBS_cellspecific", "encTFBS_clustered", "rdmchromStates15", "rdmchromStates18", "rdmchromStates25", "rdmDNase_bPk-processed", "rdmDNase_gPk-imputed", "rdmDNase_nPk-imputed", "rdmDNase_nPk-processed", "rdmHistone_bPk-processed", "rdmHistone_gPk-imputed", "rdmHistone_gPk-processed", "rdmHistone_nPk-imputed", "rdmHistone_nPk-processed")
+
+# Read in data in a loop
+for (x in postfixes) {
+  mtx <- gs_load_data(x)
+  mtx <- mtx[, colnames(mtx) %in% term.mapping$Name]  # Subset by Names that are mapped
+  mtx.cor <- Hmisc::rcorr(mtx, type=cortype)[[1]]
+  # mtx.cor <- mine(mtx, n.cores=4)$MIC
+  mtx.cor.long <- reshape_wide_data(mtx.cor)
+  mtx.cor.epi.joined <- cbind(mtx.cor.epi.joined, mtx.cor.long[match(rownames(mtx.cor.epi.joined), rownames(mtx.cor.long)), ])
+  colnames(mtx.cor.epi.joined)[length(colnames(mtx.cor.epi.joined))] <- paste("gs", x, sep=".")
+}
+```
+
 ```{r eval=FALSE}
 # Visualize distributions
 #mtx.cor.epi.joined <- normalizeQuantiles()
@@ -370,12 +406,12 @@ if (cortype != "MIC") {
 
   # Save the results
   write.xlsx2(formatC(mtx.cor[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("corr", cortype, mat.type, sep="_"), append=TRUE)
-  write.xlsx2(formatC(mtx.cor[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("pval", cortype, mat.type, sep="_"), append=TRUE)
+  # write.xlsx2(formatC(mtx.cor[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("pval", cortype, mat.type, sep="_"), append=TRUE)
   
   # To have p-values overlayed on the cells: cellnote=formatC(mtx.summary[[1]], format="f", digits=2)
   # To have corr coeffs overlayed on the cells: cellnote=formatC(mtx.summary[[3]], format="e", digits=2)
   # Visualization only
-  par(oma=c(5.3,0,0,5), mar=c(5, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
+  par(oma=c(7.3,0,0,5), mar=c(6, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
   gplots::heatmap.2(mtx.cor[[1]], Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), symbreaks = TRUE, trace="none", density.info="none", col=col3, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=1, cexCol=1, notecol="black", notecex=0.9, cellnote=formatC(mtx.cor[[1]], format="f", digits=2))
   
   # PDF only, overlay corr coeffs
