@@ -406,7 +406,7 @@ if (cortype != "MIC") {
 
   # Save the results
   write.xlsx2(formatC(mtx.cor[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("corr", cortype, mat.type, sep="_"), append=TRUE)
-  # write.xlsx2(formatC(mtx.cor[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("pval", cortype, mat.type, sep="_"), append=TRUE)
+  write.xlsx2(formatC(mtx.cor[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("pval", cortype, mat.type, sep="_"), append=TRUE)
   
   # To have p-values overlayed on the cells: cellnote=formatC(mtx.summary[[1]], format="f", digits=2)
   # To have corr coeffs overlayed on the cells: cellnote=formatC(mtx.summary[[3]], format="e", digits=2)
@@ -417,7 +417,7 @@ if (cortype != "MIC") {
   # PDF only, overlay corr coeffs
   pdf(paste("results/comparison_analysis_corr_", cortype, "_", mat.type, ".pdf", sep=""), width=7.5, height=6)
   par(oma=c(6,0,0,6), mar=c(11, 4.1, 5.1, 6), cex.main=1) # Adjust margins
-  gplots::heatmap.2(mtx.cor[[1]], Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), trace="none", density.info="none", col=col3, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.8, cexCol=0.8, notecol="black", notecex=0.3, cellnote=formatC(mtx.cor[[1]], format="f", digits=2))
+  gplots::heatmap.2(mtx.cor[[1]], Rowv=as.dendrogram(hclustergram), Colv=as.dendrogram(hclustergram), trace="none", density.info="none", col=col3, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.5, notecol="black", notecex=0.25, cellnote=formatC(mtx.cor[[1]], format="f", digits=2))
   dev.off()
   # # PDF only, overlay pval coeffs
   # pdf(paste("results/comparison_analysis_pval_", cortype, ".pdf", sep=""), width=7.5, height=6)
@@ -430,8 +430,8 @@ if (cortype != "MIC") {
 mtx.summary <- mine(mtx.cor.epi.joined[ complete.cases(mtx.cor.epi.joined), ], n.cores=4)$MIC
   # PDF only, overlay corr coeffs
   pdf(paste("results/comparison_analysis_corr_", cortype, ".pdf", sep=""), width=7.5, height=6)
-  par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.5) # Adjust margins
-  heatmap.2(mtx.summary, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.5, cexCol=0.6, notecol="black", notecex=0.4, cellnote=formatC(mtx.summary, format="f", digits=2), breaks=seq(-1, 1, , 20))
+  par(oma=c(3.3,0,0,2.8), mar=c(11, 4.1, 5.1, 5), cex.main=0.45) # Adjust margins
+  gplots::heatmap.2(mtx.summary, trace="none", density.info="none", col=color, distfun=function(x){dist(x, method=dist.method)}, hclustfun=function(x){hclust(x, method=hclust.method)}, cexRow=0.4, cexCol=0.4, notecol="black", notecex=0.4, cellnote=formatC(mtx.summary, format="f", digits=2), breaks=seq(-1, 1, 1, 20))
   dev.off()
 }
 ```
@@ -440,11 +440,10 @@ Another view of the correlogram
 
 ```{r fig.height=8}
 library(corrplot)
-col3 <- colorRampPalette(c("blue", "yellow", "red"))
 corrplot.mixed(mtx.cor[[1]], lower="color", upper="circle", order="original", col = col3(20), tl.pos = "lt", tl.cex=0.5, tl.col="black", cl.cex=0.5)
 par(col="black")
 pdf("results/comparison_analysis_corrplot.pdf", height = 20, width = 18)
-corrplot(mtx.cor[[1]], method = "color", type="upper", col=col3(20), tl.col = "black", tl.cex=1.4, cl.pos = NULL, addCoef.col = "black", diag=F)
+corrplot(mtx.cor[[1]], method = "circle", type="upper", col=col3(20), tl.col = "black", tl.cex=1.4, cl.pos = NULL, diag=F)
 dev.off()
 ```
 
