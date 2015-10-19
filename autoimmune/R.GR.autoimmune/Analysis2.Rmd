@@ -319,12 +319,12 @@ enrich <- function(postfix = "encBroadHMM", subset = "none") {
   mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx.degs))] # Match and subset the data
   colnames(mtx.degs) <- term.mapping$Name
   res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = paste("results/degfs_", postfix, ".xlsx", sep=""))
-  if (length(res) > 0) {
-    num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-    kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-  } else {
-    print("Nothing significant")
-  }
+#   if (length(res) > 0) {
+#     num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+#     kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+#   } else {
+#     print("Nothing significant")
+#   }
 }
 ```
 
