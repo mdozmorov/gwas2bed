@@ -43,17 +43,10 @@ fname <- c("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", "data.
 mtx <- gr_load_data(fname, p2z = T)
 mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
 # A vector of category names, same order as the correlation matrix
-categoryNames <- term.mapping$Category[ match(colnames(mtx), term.mapping$Name) ]
-# # Set side colors
-# ColSideColors <- as.numeric(factor(categoryNames))
-# cbind(categoryNames, ColSideColors) # Sanity check
-# ColSideColors[ ColSideColors == 1 ] <- "red" # Immunological
-# ColSideColors[ ColSideColors == 2 ] <- "blue" # Metabolic
-# ColSideColors[ ColSideColors == 3 ] <- "green" # Neurological
-# ColSideColors[ ColSideColors == 4 ] <- "yellow" # Trait
+categoryNames <- term.mapping$Category
+names(categoryNames) <- term.mapping$Name
 # Trim column names
-colnames(mtx) <- gr_trimnames(colnames(mtx), num.char = 25)
-names(categoryNames) <- colnames(mtx)
+colnames(mtx) <- term.mapping$Name
 ```
 
 ```{r}
@@ -113,17 +106,17 @@ scores <- left_join(data.frame(Name=rownames(scores), scores), data.frame(Name=n
 ggplot(data=scores, aes(x=PC1, y=PC2, label=Name)) +
   ggtitle("PCA of the regulatory similarities") + 
   theme(plot.title = element_text(lineheight = 0.8, face="bold")) +
-  scale_color_manual(values=c("black", "red", "green", "blue")) +
-  geom_point(aes(color = Category), size = 3) +
+  scale_color_manual(values=c("red", "green", "blue", "black")) +
+  geom_point(aes(color = Category), size = 4) +
   geom_hline(yintercept = 0, colour = "gray65") +
   geom_vline(xintercept = 0, colour = "gray65") +
-  geom_text(colour = "black", size = 4, vjust = 2, hjust = 0) +
+  geom_text(colour = "black", size = 4, vjust = -1) +
   scale_x_continuous(limits = c(-60, 70))
+#, vjust = 2, hjust = 0
 ```
 
-First three principal components
-
-```{r eval=TRUE, fig.height=6}
+```{r eval=FALSE, fig.height=6}
+# First three principal components
 library(scatterplot3d)
 s3d <- scatterplot3d(scores[, c("PC1", "PC2", "PC3")],
               main="PCA of the regulatory similarities",
@@ -131,7 +124,7 @@ s3d <- scatterplot3d(scores[, c("PC1", "PC2", "PC3")],
               pch=19,
               cex.symbols = 1.2,
               color=as.numeric(factor(scores$Category)))
-legend(x=-3, y=-1, legend=c("Hematological", "Immunological", "Metabolic", "Neurological"), col=c("black", "red", "green", "blue"), pch = 19)
+legend(x=-3, y=-1, legend=c("immunologic", "metabolic", "neurologic", "other"), col=c("red", "green", "blue", "black"), pch = 19)
 ```
 
 ```{r}
@@ -204,7 +197,7 @@ kable(head(gr_maxmin(mtx.scaled, cortype="spearman", "results/maxmin_corr_all.tx
 suppressMessages(library(NMF))
 suppressMessages(library(dendextend))
 annot <- data.frame(Category=term.mapping$Category) #, Size=as.numeric(term.mapping$BEDcount))
-annotColor <- list(Category=c("black", "red", "green", "blue")) #, Size=c("red", "white", "blue"))
+annotColor <- list(Category=c("red", "green", "blue", "black")) #, Size=c("red", "white", "blue"))
 hclustergram.ext <- hclustergram %>% as.dendrogram %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% ladderize
 h <- aheatmap(mtx.cor, Rowv=hclustergram.ext, Colv=hclustergram.ext, color=col3(20), annCol=annot, annColors = annotColor, fontsize = 10, cexRow = 1, cexCol = 1)
 ```
@@ -258,12 +251,12 @@ library(pvclust)
 # result <- parPvclust(cl=cl, mtx.scaled[, ind], method.dist=spm, method.hclust=hclust.method, nboot=10000)
 # stopCluster(cl)
 # saveRDS(result, "data/pvClust_03.Rds")
-# result <- readRDS("data/pvClust_01.Rds") # p-vals, ind-subset, method.dist="correlation", method.hclust=hclust.method, nboot=10000
-# result <- readRDS("data/pvClust_02.Rds") # p-vals, ind-subset, method.dist=spm, method.hclust=hclust.method, nboot=10000
+# # result <- readRDS("data/pvClust_01.Rds") # p-vals, ind-subset, method.dist="correlation", method.hclust=hclust.method, nboot=10000
+# # result <- readRDS("data/pvClust_02.Rds") # p-vals, ind-subset, method.dist=spm, method.hclust=hclust.method, nboot=10000
 result <- readRDS("data/pvClust_03.Rds") # z-scores, ind-subset, method.dist=spm, method.hclust=hclust.method, nboot=10000
 dend <- as.dendrogram(result) %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% plot(main="Cluster dendrogram with AU/BP values (%)\n reproduced plot with dendrogram")
 result %>% text
-result %>% pvrect(alpha=0.9)
+result %>% pvrect(alpha=0.89)
 hclustergram.imm <- result$hclust # Make the heatmap plot whatever hclust object
 ```
 
@@ -320,207 +313,147 @@ par(mfrow=c(1, 1))
 
 ## What are the Differentially Expressed Genomic Features (DEGFs) in each cluster
 
+```{r eval=TRUE}
+enrich <- function(postfix = "encBroadHMM", subset = "none") {
+  mtx.degs <- gr_load_data(paste("data.gr.05/grweb_", postfix, "/matrix_PVAL.txt", sep=""), p2z = TRUE, subset)
+  mtx.degs <- mtx.degs[, match(term.mapping$BED, colnames(mtx.degs))] # Match and subset the data
+  colnames(mtx.degs) <- term.mapping$Name
+  res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = paste("results/degfs_", postfix, ".xlsx", sep=""))
+  if (length(res) > 0) {
+    num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
+    kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
+  } else {
+    print("Nothing significant")
+  }
+}
+```
+
+### ENCODE Broad HMM
+
+```{r eval=TRUE, results='show'}
+enrich("encBroadHMM")
+```
+
+### ENCODE ChromCombined
+
+```{r eval=TRUE, results='show'}
+enrich("encChromCombined")
+```
+
+### ENCODE ChromHMM
+
+```{r eval=TRUE, results='show'}
+enrich("encChromHmm")
+```
+
+### ENCODE Segway
+
+```{r eval=TRUE, results='show'}
+enrich("encSegway")
+```
+
+### ENCODE DNAse
+
+```{r eval=TRUE, results='show'}
+enrich("encDNase")
+```
+
+### ENCODE Histone
+
+```{r eval=TRUE, results='show'}
+enrich("encHistone")
+```
+
 ### ENCODE TFBS cellspecific
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_encTFBS_cellspecific/matrix_PVAL.txt", p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_encTFBS_cellspecific.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
+enrich("encTFBS_cellspecific")
 ```
 
 ### ENCODE TFBS clustered
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_encTFBS_clustered/matrix_PVAL.txt", p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-#res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "none", p2z = TRUE, fileName = "results/degfs_encTFBS_clustered_perm.xlsx", nperm = 10000)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "none", p2z = TRUE, fileName = "results/degfs_encTFBS_clustered.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
+enrich("encTFBS_clustered")
 ```
 
 ### chromStates15
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom15/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_chromStates15.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
+enrich(postfix = "roadmapChrom15", subset = cells_blood_all)
 ```
+
+# Roadmap Epigenomics
 
 ### chromStates18
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom18/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_chromStates18.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
+enrich(postfix = "roadmapChrom18", subset = cells_blood_all)
 ```
 
 ### chromStates25
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapChrom25/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_chromStates25.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
+enrich(postfix = "roadmapChrom25", subset = cells_blood_all)
 ```
 
 ### DNase_bPk-processed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_bPk-processed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_DNase_bPk-processed.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
-```
-
-### DNase_gPk-imputed
-
-```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_DNase_gPk-imputed.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
-```
-
-### DNase_nPk-imputed
-
-```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_nPk-imputed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_DNase_nPk-imputed.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
+enrich(postfix = "roadmapDNase_bPk-processed", subset = cells_blood_all)
 ```
 
 ### DNase_nPk-processed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapDNase_nPk-processed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_DNase_nPk-processed.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
+enrich(postfix = "roadmapDNase_nPk-processed", subset = cells_blood_all)
+```
+
+### DNase_gPk-imputed
+
+```{r eval=TRUE, results='show'}
+enrich(postfix = "roadmapDNase_gPk-imputed", subset = cells_blood_all)
+```
+
+### DNase_nPk-imputed
+
+```{r eval=TRUE, results='show'}
+enrich(postfix = "roadmapDNase_nPk-imputed", subset = cells_blood_all)
 ```
 
 ### Histone_bPk-processed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_bPk-processed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_Histone_bPk-processed.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
-```
-
-### Histone_gPk-imputed
-
-```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_Histone_gPk-imputed.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
+enrich(postfix = "roadmapHistone_bPk-processed", subset = cells_blood_all)
 ```
 
 ### Histone_gPk-processed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_gPk-processed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_Histone_gPk-processed.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
-```
-
-### Histone_nPk-imputed
-
-```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_nPk-imputed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_Histone_nPk-imputed.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
+enrich(postfix = "roadmapHistone_gPk-processed", subset = cells_blood_all)
 ```
 
 ### Histone_nPk-processed
 
 ```{r eval=TRUE, results='show'}
-mtx.degs <- gr_load_data("data.gr.05/grweb_roadmapHistone_nPk-processed/matrix_PVAL.txt", subset = cells_blood_all, p2z = TRUE)
-colnames(mtx.degs) <- gr_trimnames(colnames(mtx.degs), num.char = 25)
-res <- gr_degfs(mtx.degs[, mtx.clust$eset.labels], mtx.clust, cutoff.pval = 0.1, cutoff.adjust = "fdr", p2z = TRUE, fileName = "results/degfs_Histone_nPk-processed.xlsx")
-if (length(res) > 0) {
-  num.rows <- ifelse(nrow(res[[1]]) < 10, nrow(res[[1]]), 10)
-  kable(res[[1]][1:num.rows, c(1, 2, 3, 4, 10, 11, 12, 13)])
-} else {
-  print("Nothing significant")
-}
+enrich(postfix = "roadmapHistone_nPk-processed", subset = cells_blood_all)
+```
+
+### Histone_gPk-imputed
+
+```{r eval=TRUE, results='show'}
+enrich(postfix = "roadmapHistone_gPk-imputed", subset = cells_blood_all)
+```
+
+### Histone_nPk-imputed
+
+```{r eval=TRUE, results='show'}
+enrich(postfix = "roadmapHistone_nPk-imputed", subset = cells_blood_all)
 ```
 
 
-## Cell type-specific analysis
 
-```{r eval=TRUE}
+```{r eval=FALSE}
+## Cell type-specific analysis
 fname <- c("data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt") # Imputed-ALL
 mtx <- gr_load_data(fname, p2z = TRUE)
 res <- gr_cellspecific(mtx, p2z = TRUE, fileName="results/cellspecific.xlsx")
