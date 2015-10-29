@@ -83,6 +83,7 @@ Processing method, using the script [munge_sumstats.py](https://github.com/bulik
 6. Remove indels and structural variants.
 7. Remove strand-ambiguous SNPs.
 8. Remove SNPs whose alleles do not match the alleles in the 1000 Genomes Project.
+
 - PGC (psychiatric) summary statistics, http://www.med.unc.edu/pgc/ downloads;
 - GIANT (anthropometric) summary statistics, http:// www.broadinstitute.org/collaboration/giant/index.php/GIANT_ consortium_data_files; 
 - EGG (Early Growth Genetics) summary statistics, http://www.egg-consortium.org/; 
