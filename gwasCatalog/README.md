@@ -84,14 +84,14 @@ Processing method, using the script [munge_sumstats.py](https://github.com/bulik
 7. Remove strand-ambiguous SNPs.
 8. Remove SNPs whose alleles do not match the alleles in the 1000 Genomes Project.
 
-PGC (psychiatric) summary statistics, http://www.med.unc.edu/pgc/ downloads;
-GIANT (anthropometric) summary statistics, http:// www.broadinstitute.org/collaboration/giant/index.php/GIANT_ consortium_data_files; 
-EGG (Early Growth Genetics) summary statistics, http://www.egg-consortium.org/; 
-MAGIC (insulin, glucose) summary statistics, http://www.magicinvestigators.org/ downloads/; 
-CARDIoGRAM (coronary artery disease) summary statistics, http://www.cardiogramplusc4d.org/; 
-DIAGRAM (type 2 diabetes) summary statistics, http://www.diagram-consortium.org/; 
-rheumatoid arthritis summary statistics, http://www.broadinstitute. org/ftp/pub/rheumatoid_arthritis/Stahl_etal_2010NG/; 
-IGAP (Alzheimer’s) summary statistics, http://www.pasteur-lille.fr/en/ recherche/u744/igap/igap_download.php; 
-IIBDGC (inflammatory bowel disease) summary statistics (we used a newer version of these data with 1000 Genomes Project imputation), http://www.ibdgenetics. org/downloads.html; 
-plasma lipid summary statistics, http://www. broadinstitute.org/mpg/pubs/lipids2010/; 
-SSGAC (educational attainment) summary statistics, http://www.ssgac.org/.
+- PGC (psychiatric) summary statistics, http://www.med.unc.edu/pgc/ downloads;
+- GIANT (anthropometric) summary statistics, http:// www.broadinstitute.org/collaboration/giant/index.php/GIANT_ consortium_data_files; 
+- EGG (Early Growth Genetics) summary statistics, http://www.egg-consortium.org/; 
+- MAGIC (insulin, glucose) summary statistics, http://www.magicinvestigators.org/ downloads/; 
+- CARDIoGRAM (coronary artery disease) summary statistics, http://www.cardiogramplusc4d.org/; 
+- DIAGRAM (type 2 diabetes) summary statistics, http://www.diagram-consortium.org/; 
+- rheumatoid arthritis summary statistics, http://www.broadinstitute. org/ftp/pub/rheumatoid_arthritis/Stahl_etal_2010NG/; 
+- IGAP (Alzheimer’s) summary statistics, http://www.pasteur-lille.fr/en/ recherche/u744/igap/igap_download.php; 
+- IIBDGC (inflammatory bowel disease) summary statistics (we used a newer version of these data with 1000 Genomes Project imputation), http://www.ibdgenetics. org/downloads.html; 
+- plasma lipid summary statistics, http://www. broadinstitute.org/mpg/pubs/lipids2010/; 
+- SSGAC (educational attainment) summary statistics, http://www.ssgac.org/.
