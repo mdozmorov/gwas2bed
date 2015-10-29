@@ -68,3 +68,30 @@ DEG: Genes that are differentially expressed (DEG) between an condition related 
 ---
 
 See [README.md](https://github.com/joepickrell/phenotypes/blob/master/README.md) in the Git repository.
+
+# Summary statistics
+
+49 traits from 24 phenotypes. Summary statistics from [Bulik-Sullivan B, Finucane HK, Anttila V, Gusev A, Day FR, Consortium R, Genomics Consortium P, of the Wellcome Trust Consortium GC for A, Perry JRB, Patterson N, Robinson E, Daly MJ, Price AL, Neale BM: An Atlas of Genetic Correlations across Human Diseases and Traits. bioRxiv 2015, 47:1–44.](http://www.nature.com/ng/journal/v47/n11/full/ng.3406.html#supplementary-information)
+
+Processing method, using the script [munge_sumstats.py](https://github.com/bulik/ldsc/blob/master/munge_sumstats.py) included with [ldsc](https://github.com/bulik/ldsc):
+
+1. For studies that provide a measure of imputation quality, filter to INFO above 0.9.
+2. For studies that provide sample MAF, filter to sample MAF above 1%.
+3. To restrict to well-imputed SNPs in studies that do not provide a measure of imputation quality, filter to SNPs in the HapMap 3 panel61 with a 1000 Genomes Project EUR (European) MAF above 5%, which tend to be well imputed in most studies. This step should be skipped if INFO scores are available for all studies.
+4. If the sample size varies from SNP to SNP, remove SNPs with an effective sample size less than 0.67 times the 90th percentile of sample size.
+5. For meta-analyses with specialty chips (for example, the Metabochip), remove SNPs with a sample size above the maximum GWAS sample size.
+6. Remove indels and structural variants.
+7. Remove strand-ambiguous SNPs.
+8. Remove SNPs whose alleles do not match the alleles in the 1000 Genomes Project.
+
+PGC (psychiatric) summary statistics, http://www.med.unc.edu/pgc/ downloads;
+GIANT (anthropometric) summary statistics, http:// www.broadinstitute.org/collaboration/giant/index.php/GIANT_ consortium_data_files; 
+EGG (Early Growth Genetics) summary statistics, http://www.egg-consortium.org/; 
+MAGIC (insulin, glucose) summary statistics, http://www.magicinvestigators.org/ downloads/; 
+CARDIoGRAM (coronary artery disease) summary statistics, http://www.cardiogramplusc4d.org/; 
+DIAGRAM (type 2 diabetes) summary statistics, http://www.diagram-consortium.org/; 
+rheumatoid arthritis summary statistics, http://www.broadinstitute. org/ftp/pub/rheumatoid_arthritis/Stahl_etal_2010NG/; 
+IGAP (Alzheimer’s) summary statistics, http://www.pasteur-lille.fr/en/ recherche/u744/igap/igap_download.php; 
+IIBDGC (inflammatory bowel disease) summary statistics (we used a newer version of these data with 1000 Genomes Project imputation), http://www.ibdgenetics. org/downloads.html; 
+plasma lipid summary statistics, http://www. broadinstitute.org/mpg/pubs/lipids2010/; 
+SSGAC (educational attainment) summary statistics, http://www.ssgac.org/.
