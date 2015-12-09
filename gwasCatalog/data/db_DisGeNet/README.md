@@ -8,3 +8,4 @@
 
 `allgenes.txt` - EntrezIDs of all 17,181 genes.
 
+`genes_length.txt` - Number of genes associated with each disease
