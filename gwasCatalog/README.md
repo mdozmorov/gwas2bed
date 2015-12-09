@@ -41,11 +41,6 @@ omim2omim.txt - score column 5, "inferred_gene" some NULL but most are OK. OMIM 
 
 orpha2orpha.txt - score column 5, "inferred_gene" some NULL but most are OK. But this is for Ophranet IDs.
 
-[db_GWASdb2](http://jjwanglab.org/gwasdb)
----
-
-`./make.sh` will create trait-specific BED files
-
 [db_DiseaseConnect](http://disease-connect.org/)
 ---
 
