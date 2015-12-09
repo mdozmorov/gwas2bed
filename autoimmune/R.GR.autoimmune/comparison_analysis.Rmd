@@ -109,6 +109,13 @@ term.ICD9.risk <- reshape_wide_data(term.ICD9.risk)
 # term.ICD9.risk <- readRDS("data/term.ICD9.3.risk.Rds")
 ```
 
+Preparing AR similarity
+
+```{r}
+mtx.ar <- read.table("data/ar_11-11-2015.txt", sep="\t", header = T, as.is = T)
+```
+
+
 ```{r eval=FALSE}
 # Preparing Zhou similarity
 mtx.sig <- read.table("/Users/mikhail/Documents/Work/GenomeRunner/gwas2bed/human-sig-disease-network.txt.gz", sep="\t", fill=T, header=T, as.is=T)
