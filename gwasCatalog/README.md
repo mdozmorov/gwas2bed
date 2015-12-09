@@ -46,11 +46,6 @@ orpha2orpha.txt - score column 5, "inferred_gene" some NULL but most are OK. But
 
 `./make.sh` will create trait-specific BED files
 
-[db_DisGeNet](http://www.disgenet.org/web/DisGeNET/menu/downloads)
----
-
-`./make.sh` will create trait-specific EntrezIDs list files
-
 [db_DiseaseConnect](http://disease-connect.org/)
 ---
 
