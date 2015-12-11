@@ -16,6 +16,8 @@ Output: A 'gwasCatalog-[date].bed' file with the coordinates of all GWAS SNPs. T
 `data` folder
 ===
 
+`mapping.xlsx` - maping between DisGeNet genes and GWASdb2 SNPs
+
 [db_snps3d.org](http://www.snps3d.org/download/)
 ---
 	- `Candidate_genes.xlsx` - a set of pre-compiled candidate genes for 76 selected diseases. 
