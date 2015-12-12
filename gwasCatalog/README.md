@@ -8,10 +8,12 @@ Sort disease-associated SNP sets by size, specified by the first argument to the
 
 Usage:
 ```
-make
+python gwas2bed.py 5
 ```
 
-Output: A 'gwasCatalog-[date].bed' file with the coordinates of all GWAS SNPs. Two subfolders under 'bed' folder, 'more15' and 'less15', containing sets having more that 15 SNPs, or less.
+Output: A 'gwasCatalog-[date].bed' file with the coordinates of all GWAS SNPs. Two subfolders under 'bed' folder, 'more' and 'less', containing sets having more/less that X SNPs, respectively. X is specified as an argument.
+
+Getting the number of SNPs per file: `for file in bed/more5/*.bed; do wc -l $file; done | awk '{OFS="\t"} {print $2,$1}' | sed 's/\.bed//' | sed 's/bed\/more5\///' |  sort -n -k2 -r > bed_length.txt`
 
 `data` folder
 ===
