@@ -72,25 +72,27 @@ PanCan - Combined cohort
 
 `Cheng_S18.xlsx` - 456 cancer cell metabolism genes and 154 DNA repair genes
 
+### `data/CCG` subfolder
+
 [Interactome of cancer genes](http://bioinfo.mc.vanderbilt.edu/CCG/) has even more:
 
 - Catalogue of Cancer Genes
 
-		- 4,050 Cancer-associated genes
+		- `Table_S1.xlsx` - 4,050 Cancer-associated genes
 
-- Prorein Interactome Network
+- Prorein Interactome Network (Binary interactions, Gene names, Entrez IDs, descriptions, map locations)
 
-		- Physical Protein-Protein Interaction Network (PPIN, 113,473 PPIs)
-		- Three-Dimensional Protein-Protein Interaction Network (3DPPIN, 4,278 3DPPIs)
-		- Kinase-Substrate Interaction Network (KSIN, 7,346 KSIs)
-		- INnate immunity Protein-Protein Interaction Network (INPPIN, 6,009 INPPIs)
-		- Comprehensive Protein-Protein Interaction Network (CPPIN, 474,017 CPPIs)
+		- `PPIN.xlsx` - Physical Protein-Protein Interaction Network (PPIN, 113,473 PPIs)
+		- `3DPPIN.xlsx` - Three-Dimensional Protein-Protein Interaction Network (3DPPIN, 4,278 3DPPIs)
+		- `KSIN.xlsx` - Kinase-Substrate Interaction Network (KSIN, 7,346 KSIs)
+		- `INPPIN.xslx` - INnate immunity Protein-Protein Interaction Network (INPPIN, 6,009 INPPIs)
+		- `CPPIN.xlsx` - Comprehensive Protein-Protein Interaction Network (CPPIN, 474,017 CPPIs)
 
 - Disease-Associated Genes
 
-		- Mendelian disease genes (2,716 genes)
-		- Orphan disease genes (2,124 genes)
-		- Essential genes (2,721 genes)
+		- `MDG.xlsx` - Mendelian disease genes (2,716 genes)
+		- `ODMG.xlsx` - Orphan disease genes (2,124 genes)
+		- `Essentialgenes.xlsx` - Essential genes (2,721 genes)
 
 ### [Kandoth, C., McLellan, M. D., Vandin, F., Ye, K., Niu, B., Lu, C., … Ding, L. (2013). Mutational landscape and significance across 12 major cancer types. Nature, 502(7471), 333–9. doi:10.1038/nature12634](http://www.nature.com/nature/journal/v502/n7471/full/nature12634.html)
 
