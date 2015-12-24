@@ -1,6 +1,6 @@
-## Extracting disease-specific genomic coordinates from GWAS catalog
+## Extracting genomic coordinates of disease-associated SNPs from GWAS catalog
 
-* `gwas2bed.py` - A Pyhton script to download the coordinates and separate them into disease-specific .bed files
+* `gwas2bed.py` - A Pyhton script to download the coordinates of disease-associated SNPs and separate them into disease-specific .bed files
 
 Get GWAScatalog data from the UCSC MySQL server, extract hg19 genomic coordinates into separate files defined by the 'title' column. At this time, only standard chromosome names are considered.
 
@@ -15,51 +15,65 @@ Output: A 'gwasCatalog-[date].bed' file with the coordinates of all GWAS SNPs. T
 
 Getting the number of SNPs per file: `for file in bed/more5/*.bed; do wc -l $file; done | awk '{OFS="\t"} {print $2,$1}' | sed 's/\.bed//' | sed 's/bed\/more5\///' |  sort -n -k2 -r > bed_length.txt`
 
-`data` folder
-===
+# `data` folder
 
-`mapping.xlsx` - maping between DisGeNet genes and GWASdb2 SNPs
+`mapping_DisGeNet-GWASdb2.xlsx` - maping between DisGeNet genes and GWASdb2 SNPs
 
-[db_snps3d.org](http://www.snps3d.org/download/)
----
-	- `Candidate_genes.xlsx` - a set of pre-compiled candidate genes for 76 selected diseases. 
+`mapping_DisGeNet-gwascatalog.xlsx` - maping between DisGeNet genes and gwasCatalog SNPs
 
-[db_HuGeNavigator](http://64.29.163.162:8080/HuGENavigator/downloadCenter.do)
----
-	- `Disease-GeneID.xlsx` - Phenopedia. Disease-gene relationships
-	- `GWAS.xlsx` - GWASintegrator, like gwasCatalog
-	- `Cancer_GAMA.xlsx` - Cancer GAMAdb. Cancer type-gene-SNP relationships
-
-`./make.sh` will make SNP files from GWAS.txt
-
-[db_Johnson](http://www.biomedcentral.com/1471-2350/10/6)
----
-	- `JohnsonOdonnell_Table.txt.gz` - 56,411 GWAS genotype-phenotype associations and annotation.
-
-[db_Phenuma](http://cath.gisum.uma.es:8080/Phenuma/resources/networks/phenuma_networks.zip)
----
-
-gene2gene.txt - many different scores
-
-omim2omim.txt - score column 5, "inferred_gene" some NULL but most are OK. OMIM IDs
-
-orpha2orpha.txt - score column 5, "inferred_gene" some NULL but most are OK. But this is for Ophranet IDs.
-
-[db_DiseaseConnect](http://disease-connect.org/)
----
-
-`Disease-Gene_v1.csv.gz` - Format: Concept ID, Disease Name, Type, Gene. There are three types of disease-gene relations as follows:
-
-GWAS: Genes that are reported to be relevant to the disease based on the catalog of published genome-wide association studies (GWAS).
-
-OMIM: Genes that are relevant to Arthritis based on the OMIM Gene Map.
-
-DEG: Genes that are differentially expressed (DEG) between an condition related to the disease and other condition.
+### [db_DiseaseConnect](http://disease-connect.org/) Disease-Disease and Disease-Gene associations
 
 `Disease-Disease_v1.csv.gz` - Format: Disease 1, Disease 2, P value. The disease-disease relations are determined by the significance of the shared GWAS/OMIM/DEG genes between two diseases using hypergeometric test.
 
-[phenotypes](https://github.com/joepickrell/phenotypes) - JSON files with genetic score models
----
+`Disease-Gene_v1.csv.gz` - Format: CUI, Disease Name, Type, Gene. The types are:
+
+- GWAS: Genes that are reported to be relevant to the disease based on the catalog of published genome-wide association studies (GWAS).
+- OMIM: Genes that are relevant to Arthritis based on the OMIM Gene Map.
+- DEG: Genes that are differentially expressed (DEG) between an condition related to the disease and other condition.
+
+### [db_DisGeNet](http://www.disgenet.org/web/DisGeNET/menu/home) Disease-Gene associations
+
+A collection of disease-associated genes. Scripts are used to extract disease-specific gene lists.
+
+### [db_GWASdb2](http://jjwanglab.org/gwasdb) Disease-SNP associations
+
+A collection of disease-associated SNPs. Some diseases, like "type 1 diabetes" with 14,486 SNPs, contain unreasonable number of SNPs, so the data should be used with caution
+
+### [db_HuGeNavigator](https://phgkb.cdc.gov/HuGENavigator/downloadCenter.do) Disease-Gene and Disease-SNP associations
+
+	- `Disease-GeneID.txt.gz` - Phenopedia. Disease-gene relationships. 2,860 diseases (CUIs) (first column) vs. gene names (EntrezIDs) (rows, different length). 
+	- `GWAS.xlsx` - GWASintegrator, like gwasCatalog
+	- `Cancer_GAMA.xlsx` - Cancer GAMAdb. Cancer type-gene-SNP relationships
+
+`./make-GWAS.sh` will make SNP files from GWAS.txt
+
+### [db_Johnson](http://www.biomedcentral.com/1471-2350/10/6) Disease-SNP associations
+
+Johnson AD, O'Donnell CJ. An open access database of genome-wide association
+results. BMC Med Genet. 2009 Jan 22;10:6. doi: 10.1186/1471-2350-10-6. PubMed
+PMID: 19161620; PubMed Central PMCID: PMC2639349.
+
+	- `JohnsonOdonnell_Table.txt.gz` - 56,411 GWAS genotype-phenotype associations and annotation.
+
+### [db_omim](http://omim.org/)
+
+Attempt to play with OMIM files
+
+### [db_Phenuma](http://cath.gisum.uma.es:8080/Phenuma/main.jsf) Disease-Disease associations
+
+[phenuma_networks.zip](http://cath.gisum.uma.es:8080/Phenuma/resources/networks/phenuma_networks.zip) contains three files:
+
+- gene2gene.txt - Gene-Gene associations, many different scores
+- omim2omim.txt - Disease-Disease associations, score column 5, "inferred_gene" -some NULL but most are OK. OMIM IDs
+- orpha2orpha.txt - Disease-Disease associations, score column 5, "inferred_gene" some NULL but most are OK. But this is for Ophranet IDs.
+
+### [db_snps3d.org](http://www.snps3d.org/download/) Disease-Gene associations
+
+- `Candidate_genes.xlsx` - a set of pre-compiled candidate genes for 76 selected diseases. 
+
+### [phenotypes](https://github.com/joepickrell/phenotypes) Disease-SNP associations
+
+JSON files with genetic score models
 
 See [README.md](https://github.com/joepickrell/phenotypes/blob/master/README.md) in the Git repository.
 
