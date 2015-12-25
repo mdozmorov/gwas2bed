@@ -24,6 +24,14 @@ Farh KK-H, Marson A, Zhu J, Kleinewietfeld M, Housley WJ, Beik S, Shoresh N, Whi
 
 9 autoimmune diseases. Full summary statistics, hg19 genomic coordinates.
 
+### [db_lincRNA-autoimmune](http://genomemedicine.com/content/6/10/88) - Protein-coding and lincRNA regions associated with nine autoimmune diseases
+
+Hrdlickova, B., Kumar, V., Kanduri, K., Zhernakova, D. V, Tripathi, S., Karjalainen, J., … Withoff, S. (2014). **Expression profiles of long non-coding RNAs located in autoimmune disease-associated regions reveal immune cell-type specificity**. Genome Medicine, 6(10), 88. doi:10.1186/s13073-014-0088-0
+
+- `s13073-014-0088-0-s2.xlsx` - [Additional file 2: Table S1](http://genomemedicine.com/content/supplementary/s13073-014-0088-0-s2.xlsx) - List of loci associated with nine autoimmune diseases. For each disease phenotype, the table shows a list of loci including additional information like chromosome position (Chr), genome coordinates of the beginning in human genome build 19 (Start position (hg19)) and of the end (End position (hg19)) of each locus, the size of the locus in base pairs (Locus size [bp]) and the label of the disease loci (AID loci ID).
+
+Potentially interesting is [Additional file 5: Table S3](http://genomemedicine.com/content/supplementary/s13073-014-0088-0-s5.xlsx) - AID loci annotated with genes and listed by disease phenotype. Can be parsed into disease-specific sets.
+
 ### [db_Sjogren](http://www.nature.com/articles/srep18855) - Sjogren's syndrome associated genes
 
 Fang K, Zhang K, Wang J. **Network-assisted analysis of primary Sjögren's
