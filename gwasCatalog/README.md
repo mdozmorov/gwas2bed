@@ -77,6 +77,21 @@ List of disease-associated rsIDs from [LincSNP](http://210.46.85.180:8080/LincSN
 
 `make.sh` - will download `gwas_snp_lincrna.txt` file with a list of SNPs, extract disease-specific rsIDs into separate files in `snps` folder, striping the file names off special characters, and sorting files in place.
 
+### [db_Maurano](http://www.sciencemag.org/content/337/6099/1190.full) - Diaseas-SNP associations
+
+Maurano MT, Humbert R, Rynes E, Thurman RE, Haugen E, Wang H, Reynolds AP,
+Sandstrom R, Qu H, Brody J, Shafer A, Neri F, Lee K, Kutyavin T, Stehling-Sun S, 
+Johnson AK, Canfield TK, Giste E, Diegel M, Bates D, Hansen RS, Neph S, Sabo PJ, 
+Heimfeld S, Raubitschek A, Ziegler S, Cotsapas C, Sotoodehnia N, Glass I, Sunyaev
+SR, Kaul R, Stamatoyannopoulos JA. **Systematic localization of common
+disease-associated variation in regulatory DNA**. Science. 2012 Sep
+7;337(6099):1190-5. doi: 10.1126/science.1222794. Epub 2012 Sep 5. PubMed PMID:
+22955828; PubMed Central PMCID: PMC3771521.
+
+Classic example of the enrichment analysis in DNAse hypersensitive regions. 
+
+- `1222794-Maurano-tableS2.txt` - [Table S2](http://www.sciencemag.org/content/suppl/2012/09/04/science.1222794.DC1/1222794-Maurano-tableS2.txt) - a list of the disease-associated SNPs used in the paper. 
+
 ### [db_Okada-Plenge](http://plaza.umin.ac.jp/~yokada/datasource/software.htm) - Curated Disease-SNP data from the GWAS catalogue
 
 Okada Y, Wu D, Trynka G, Raj T, Terao C, Ikari K, Kochi Y, Ohmura K, Suzuki A, Yoshida S, Graham RR, Manoharan A, Ortmann W, Bhangale T, Denny JC, Carroll RJ, Eyler AE, Greenberg JD, Kremer JM, Pappas DA, Jiang L, Yin J, Ye L, Su DF, Yang J, Xie G, Keystone E, Westra HJ, Esko T, Metspalu A, Zhou X, Gupta N, Mirel D, Stahl EA, Diogo D, Cui J, Liao K, Guo MH, Myouzen K, Kawaguchi T, Coenen MJ, van  Riel PL, van de Laar MA, Guchelaar HJ, Huizinga TW, Dieudé P, Mariette X, Bridges SL Jr, Zhernakova A, Toes RE, Tak PP, Miceli-Richard C, Bang SY, Lee HS, Martin J, Gonzalez-Gay MA, Rodriguez-Rodriguez L, Rantapää-Dahlqvist S, Arlestig L, Choi HK, Kamatani Y, Galan P, Lathrop M; RACI consortium; GARNET consortium, Eyre S, Bowes J, Barton A, de Vries N, Moreland LW, Criswell LA, Karlson EW, Taniguchi A, Yamada R, Kubo M, Liu JS, Bae SC, Worthington J, Padyukov L, Klareskog L, Gregersen PK, Raychaudhuri S, Stranger BE, De Jager PL, Franke L, Visscher PM, Brown MA, Yamanaka H, Mimori T, Takahashi A, Xu H, Behrens TW, Siminovitch KA, Momohara S, Matsuda F, Yamamoto K, Plenge RM. **Genetics of rheumatoid arthritis contributes to biology and drug discovery**. Nature. 2014 Feb 20;506(7488):376-81. doi: 10.1038/nature12873. Epub 2013 Dec 25. PubMed PMID: 24390342; PubMed Central PMCID: PMC3944098.
