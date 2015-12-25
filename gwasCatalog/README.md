@@ -1,6 +1,6 @@
 ## Extracting genomic coordinates of disease-associated SNPs from GWAS catalog
 
-* `gwas2bed.py` - A Pyhton script to download the coordinates of disease-associated SNPs and separate them into disease-specific .bed files
+- `gwas2bed.py` - A Pyhton script for downloading the coordinates of disease-associated SNPs and separate them into disease-specific .bed files
 
 Get GWAScatalog data from the UCSC MySQL server, extract hg19 genomic coordinates into separate files defined by the 'title' column. At this time, only standard chromosome names are considered.
 
@@ -11,9 +11,25 @@ Usage:
 python gwas2bed.py 5
 ```
 
-Output: A 'gwasCatalog-[date].bed' file with the coordinates of all GWAS SNPs. Two subfolders under 'bed' folder, 'more' and 'less', containing sets having more/less that X SNPs, respectively. X is specified as an argument.
+Output: A `gwasCatalog-[date].bed` file with the coordinates of all GWAS SNPs. Two subfolders under `bed` folder, `more` and `less`, containing sets having more/less that X SNPs, respectively. X is specified as an argument.
 
 Getting the number of SNPs per file: `for file in bed/more5/*.bed; do wc -l $file; done | awk '{OFS="\t"} {print $2,$1}' | sed 's/\.bed//' | sed 's/bed\/more5\///' |  sort -n -k2 -r > bed_length.txt`
+
+- `gwas_catalog_download.pl` - a Perl script for extracting hg19 disease-specific genomic coordinates from the latest [GWAScatalog](http://www.genome.gov/gwastudies/). (C) Krista Bean
+
+Usage:
+```
+perl gwas_catalog_download.pl
+```
+
+Output: 
+
+- `current_gwas_catalog.txt` - a file containing the most current version of GWAScatalog;
+- `diseases.genes` - a subfolder containing symbols of disease-associated genes in separate files;
+- `diseases.snps_bed` - a subfolder containing hg19 genomic coordinates of disease-associated SNPs;
+- `diseases.snps_empty` - a subfolder containing lists of diseases that don't have SNPs;
+- `diseases.snp_not_found` - a subfolder containing lists of SNPs that can't be mapped.
+
 
 # `data` folder
 
@@ -53,7 +69,13 @@ Johnson AD, O'Donnell CJ. An open access database of genome-wide association
 results. BMC Med Genet. 2009 Jan 22;10:6. doi: 10.1186/1471-2350-10-6. PubMed
 PMID: 19161620; PubMed Central PMCID: PMC2639349.
 
-	- `JohnsonOdonnell_Table.txt.gz` - 56,411 GWAS genotype-phenotype associations and annotation.
+- `JohnsonOdonnell_Table.txt.gz` - 56,411 GWAS genotype-phenotype associations and annotation.
+
+### [db_LincSNP](http://210.46.85.180:8080/LincSNP/home.jsp) - Disease-SNP associations
+
+List of disease-associated rsIDs from [LincSNP](http://210.46.85.180:8080/LincSNP/home.jsp) database. 
+
+`make.sh` - will download `gwas_snp_lincrna.txt` file with a list of SNPs, extract disease-specific rsIDs into separate files in `snps` folder, striping the file names off special characters, and sorting files in place.
 
 ### [db_Okada-Plenge](http://plaza.umin.ac.jp/~yokada/datasource/software.htm) - Curated Disease-SNP data from the GWAS catalogue
 
