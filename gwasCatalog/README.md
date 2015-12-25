@@ -73,6 +73,15 @@ Attempt to play with OMIM files
 - omim2omim.txt - Disease-Disease associations, score column 5, "inferred_gene" -some NULL but most are OK. OMIM IDs
 - orpha2orpha.txt - Disease-Disease associations, score column 5, "inferred_gene" some NULL but most are OK. But this is for Ophranet IDs.
 
+### [db_Shaub-Snyder](http://genome.cshlp.org/content/22/9/1748.long) - Disease-SNP associations 
+
+Schaub MA, Boyle AP, Kundaje A, Batzoglou S, Snyder M. **Linking disease
+associations with regulatory information in the human genome**. Genome Res. 2012
+Sep;22(9):1748-59. doi: 10.1101/gr.136127.111. PubMed PMID: 22955986; PubMed
+Central PMCID: PMC3431491
+
+`functional_SNPs_list.txt` - List of disease and trait-associated lead SNPs and SNPs overlapping with functional regions from RegulomeDB in LD with the lead SNPs
+
 ### [db_snps3d.org](http://www.snps3d.org/download/) Disease-Gene associations
 
 - `Candidate_genes.xlsx` - a set of pre-compiled candidate genes for 76 selected diseases. 
