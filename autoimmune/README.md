@@ -32,4 +32,10 @@ syndrome GWAS data in Han Chinese**. Sci Rep. 2015 Dec 21;5:18855. doi:
 
 `Sjogren_genes.xlsx` - 71 Sjogren's associated genes, obtained using PPI. hg19 genomic coordinates
 
+### [db_SLE_methylation](http://www.sciencedirect.com/science/article/pii/S0896841115000050)
 
+Coit P, Yalavarthi S, Ognenovski M, Zhao W, Hasni S, Wren JD, Kaplan MJ, Sawalha AH. **Epigenome profiling reveals significant DNA demethylation of interferon signature genes in lupus neutrophils**. J Autoimmun. 2015 Apr;58:59-66. doi: 10.1016/j.jaut.2015.01.004. Epub 2015 Jan 28. PubMed PMID: 25638528; PubMed Central PMCID: PMC4363276.
+
+Illumina 450K. Peripheral blood
+
+There were a total of 293 differentially methylated CG sites, with 199 (68%) hypomethylated (`sle_hypomethylated_cpg.txt`) and 94 (32%) hypermethylated (`sle_hypermethylated_cpg.txt`) in lupus neutrophils (`mmc1.docx` and `mmc1.pdf` - Supplementary Table S1).
