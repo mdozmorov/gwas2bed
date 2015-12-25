@@ -1,6 +1,3 @@
-
-
-
 # `data` folder
 
 ### [db_delRosario](http://www.nature.com/nmeth/journal/v12/n5/full/nmeth.3326.html) - regulatory SNPs associated with autoimmune diseases.
@@ -18,6 +15,10 @@ Farh KK-H, Marson A, Zhu J, Kleinewietfeld M, Housley WJ, Beik S, Shoresh N, Whi
 `nature13835-s1.xls` - hg19 genomic coordinates of 39 disease-associated SNPs.
 
 `make` will extract disease-specific SNPs into separate BED files. It also contains a command for making pair-wise overlap counts, stored in `overlapMatrix.txt` file.
+
+### [db_Immunobase_ic](https://www.immunobase.org/downloads/protected_data/iChip_Data/) - Association Statistics from ImmunoChip Studies
+
+9 autoimmune diseases. Full summary statistics, hg19 genomic coordinates.
 
 ### [db_Sjogren](http://www.nature.com/articles/srep18855) - Sjogren's syndrome associated genes
 
