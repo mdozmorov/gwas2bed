@@ -3,7 +3,7 @@ Disease- or trait-specific SNP sets, genomic coordinates
 
 A collection of datasets from various publications containing genomic coordinates of disease- and/or trait-associated SNPs. And, scripts for their processing.
 
-Each subfolder has its own README file with dataset-specific explanations.
+Large data collections are in `data` subfolders of the `autoimmune`, `gwasCatalog`, and `tumorportal` folders. Each subfolder has its own README file with dataset-specific explanations.
 
 # Disease-disease similarities
 
