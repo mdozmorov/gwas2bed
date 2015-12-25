@@ -36,6 +36,26 @@ Abbreviations
 
 # `data` folder
 
+### [db_Alexandrov](http://www.nature.com/nature/journal/v500/n7463/full/nature12477.html) - Signatures of mutational processes in human cancer
+
+Alexandrov LB, Nik-Zainal S, Wedge DC, Aparicio SA, Behjati S, Biankin AV,
+Bignell GR, Bolli N, Borg A, Børresen-Dale AL, Boyault S, Burkhardt B, Butler AP,
+Caldas C, Davies HR, Desmedt C, Eils R, Eyfjörd JE, Foekens JA, Greaves M, Hosoda
+F, Hutter B, Ilicic T, Imbeaud S, Imielinski M, Jäger N, Jones DT, Jones D,
+Knappskog S, Kool M, Lakhani SR, López-Otín C, Martin S, Munshi NC, Nakamura H,
+Northcott PA, Pajic M, Papaemmanuil E, Paradiso A, Pearson JV, Puente XS, Raine
+K, Ramakrishna M, Richardson AL, Richter J, Rosenstiel P, Schlesner M, Schumacher
+TN, Span PN, Teague JW, Totoki Y, Tutt AN, Valdés-Mas R, van Buuren MM, van 't
+Veer L, Vincent-Salomon A, Waddell N, Yates LR; Australian Pancreatic Cancer
+Genome Initiative; ICGC Breast Cancer Consortium; ICGC MMML-Seq Consortium; ICGC 
+PedBrain, Zucman-Rossi J, Futreal PA, McDermott U, Lichter P, Meyerson M,
+Grimmond SM, Siebert R, Campo E, Shibata T, Pfister SM, Campbell PJ, Stratton MR.
+**Signatures of mutational processes in human cancer**. Nature. 2013 Aug
+22;500(7463):415-21. doi: 10.1038/nature12477. Epub 2013 Aug 14. Erratum in:
+Nature. 2013 Oct 10;502(7470):258. PubMed PMID: 23945592; PubMed Central PMCID: PMC3776390.
+
+`links.txt` - links to download cleaned mutation data.
+
 ### [db_CCG - Interactome of cancer genes](http://bioinfo.mc.vanderbilt.edu/CCG/)
 
 - Catalogue of Cancer Genes
