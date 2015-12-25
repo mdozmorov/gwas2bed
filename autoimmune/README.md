@@ -16,6 +16,10 @@ Farh KK-H, Marson A, Zhu J, Kleinewietfeld M, Housley WJ, Beik S, Shoresh N, Whi
 
 `make` will extract disease-specific SNPs into separate BED files. It also contains a command for making pair-wise overlap counts, stored in `overlapMatrix.txt` file.
 
+### [db_Immunobase](http://www.immunobase.org/page/Welcome/display) - Disease-associated SNPs and genes
+
+20 autoimmune diseases, downloaded on 12/24/2015. `urls.txt` - links for download. `make.sh` - download files and extract genomic coordinates of SNPs and EntrezIDs of genes
+
 ### [db_Immunobase_ic](https://www.immunobase.org/downloads/protected_data/iChip_Data/) - Association Statistics from ImmunoChip Studies
 
 9 autoimmune diseases. Full summary statistics, hg19 genomic coordinates.
