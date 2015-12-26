@@ -51,6 +51,12 @@ Output:
 
 A collection of disease-associated genes. Scripts are used to extract disease-specific gene lists.
 
+### [db_GRASP](http://grasp.nhlbi.nih.gov/Updates.aspx) Disease-SNP associations
+
+Leslie R, O’Donnell CJ, Johnson AD: **GRASP: analysis of genotype-phenotype results from 1390 genome-wide association studies and corresponding open access database**. Bioinformatics 2014, 30:i185–94.
+
+Annotated and categorized disease-associated SNPs. The unzipped [GRASP2fullDataset](https://s3.amazonaws.com/NHLBI_Public/GRASP/GraspFullDataset2.zip) is ~5Gb. See `README.md` in the subfolder for more details.
+
 ### [db_GWASdb2](http://jjwanglab.org/gwasdb) Disease-SNP associations
 
 A collection of disease-associated SNPs. Some diseases, like "type 1 diabetes" with 14,486 SNPs, contain unreasonable number of SNPs, so the data should be used with caution
