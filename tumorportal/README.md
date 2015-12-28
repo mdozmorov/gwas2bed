@@ -80,6 +80,17 @@ Nature. 2013 Oct 10;502(7470):258. PubMed PMID: 23945592; PubMed Central PMCID: 
 
 Pleasance, E. D., Cheetham, R. K., Stephens, P. J., McBride, D. J., Humphray, S. J., Greenman, C. D., … Stratton, M. R. (2010). **A comprehensive catalogue of somatic mutations from a human cancer genome**. Nature, 463(January), 191–196. doi:10.1038/nature08658
 
+### db_TCGA
+
+TCGA data from multiple sources
+
+Sebestyén E, Zawisza M, Eyras E, Zawisza M: **Recurrent alternative splicing isoform switches in tumor samples provide novel signatures of cancer**. bioRxiv 2014:1–12. [Supplementary PDF](http://nar.oxfordjournals.org/content/suppl/2015/01/10/gku1392.DC1/nar-02177-met-g-2014-File009.pdf)
+
+- `Sebestyen_urls_RNA-seq.txt` - URLs to publicly available RNA-seq data.
+- `Sebestyen_urls_SNPs.txt` - URLs to publicly available mutation data.
+- [`SupplementaryFile1.zip`](http://nar.oxfordjournals.org/content/suppl/2015/01/10/gku1392.DC1/nar-02177-met-g-2014-File010.zip) - curated and QC'd lists of patient-samples used for the analysis.
+- [https://figshare.com/articles/TCGA_Iso_kTSP_analysis_dataset/1061917](https://figshare.com/articles/TCGA_Iso_kTSP_analysis_dataset/1061917) - `*_gene_mutation_full.bed.gz` files have patient-specific somatic mutations
+
 ### [Cheng F, Jia P, Wang Q, Lin CC, Li WH, Zhao Z: Studying tumorigenesis through network evolution and somatic mutational perturbations in the cancer interactome. Mol Biol Evol 2014, 31:2156–2169.](http://mbe.oxfordjournals.org/content/31/8/2156.long)
 
 `Cheng_S1.xlsx` - 4,050 cancer genes from Cheng study. Gene names, Entrez IDs, annotations and classifications by source. To analyze as a general pan-cancer gene set, and as subsets by source/type.
