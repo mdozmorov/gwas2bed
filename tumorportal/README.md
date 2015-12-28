@@ -60,21 +60,21 @@ Nature. 2013 Oct 10;502(7470):258. PubMed PMID: 23945592; PubMed Central PMCID: 
 
 - Catalogue of Cancer Genes
 
-		- `Table_S1.xlsx` - 4,050 Cancer-associated genes
+, , - `Table_S1.xlsx` - 4,050 Cancer-associated genes
 
 - Prorein Interactome Network (Binary interactions, Gene names, Entrez IDs, descriptions, map locations)
 
-		- `PPIN.xlsx` - Physical Protein-Protein Interaction Network (PPIN, 113,473 PPIs)
-		- `3DPPIN.xlsx` - Three-Dimensional Protein-Protein Interaction Network (3DPPIN, 4,278 3DPPIs)
-		- `KSIN.xlsx` - Kinase-Substrate Interaction Network (KSIN, 7,346 KSIs)
-		- `INPPIN.xslx` - INnate immunity Protein-Protein Interaction Network (INPPIN, 6,009 INPPIs)
-		- `CPPIN.xlsx` - Comprehensive Protein-Protein Interaction Network (CPPIN, 474,017 CPPIs)
+, , - `PPIN.xlsx` - Physical Protein-Protein Interaction Network (PPIN, 113,473 PPIs)
+, , - `3DPPIN.xlsx` - Three-Dimensional Protein-Protein Interaction Network (3DPPIN, 4,278 3DPPIs)
+, , - `KSIN.xlsx` - Kinase-Substrate Interaction Network (KSIN, 7,346 KSIs)
+, , - `INPPIN.xslx` - INnate immunity Protein-Protein Interaction Network (INPPIN, 6,009 INPPIs)
+, , - `CPPIN.xlsx` - Comprehensive Protein-Protein Interaction Network (CPPIN, 474,017 CPPIs)
 
 - Disease-Associated Genes
 
-		- `MDG.xlsx` - Mendelian disease genes (2,716 genes)
-		- `ODMG.xlsx` - Orphan disease genes (2,124 genes)
-		- `Essentialgenes.xlsx` - Essential genes (2,721 genes)
+, , - `MDG.xlsx` - Mendelian disease genes (2,716 genes)
+, , - `ODMG.xlsx` - Orphan disease genes (2,124 genes)
+, , - `Essentialgenes.xlsx` - Essential genes (2,721 genes)
 
 ### [db_Pleasance](http://www.nature.com/nature/journal/v463/n7278/full/nature08658.html)
 
@@ -90,6 +90,17 @@ Sebestyén E, Zawisza M, Eyras E, Zawisza M: **Recurrent alternative splicing is
 - `Sebestyen_urls_SNPs.txt` - URLs to publicly available mutation data.
 - [`SupplementaryFile1.zip`](http://nar.oxfordjournals.org/content/suppl/2015/01/10/gku1392.DC1/nar-02177-met-g-2014-File010.zip) - curated and QC'd lists of patient-samples used for the analysis.
 - [https://figshare.com/articles/TCGA_Iso_kTSP_analysis_dataset/1061917](https://figshare.com/articles/TCGA_Iso_kTSP_analysis_dataset/1061917) - `*_gene_mutation_full.bed.gz` files have patient-specific somatic mutations
+
+Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulative haploinsufficiency and triplosensitivity drive aneuploidy patterns and shape the cancer genome**. Cell 2013, 155:948–62.
+
+- `Mutation_Dataset.txt.gz` - dataset of somatic mutations in 37 different cancers. hg19 genomic coordinates. Column names: "Gene", "Genome.position.hg19", "Reference", "Mutation", "Protein_Change", "Mutation_Type", "Tumor_Sample", "Tumor_Type". `Mutation_Dataset_counts.txt` - Number of somatic mutations per cancer type. [Source](http://elledgelab.med.harvard.edu/?page_id=689)
+
+`make_Mutation_Dataset.sh` will extract hg19 genomic coordinates of cancer-specific somatic mutations into `Mutation_Dataset`folder. `all_mutation_dataset.bed` - 1,097,812 unique mutations total.
+
+- `Davoli_Table_S3.xlsx` - Table S3B/S3C - ranking of oncogenes (OG) and tumor suppressor genes (TSG), respectively. Gene names, sorted by "TUSON_q_value" column. Use the top 300 TSGs (q value < 0.18) and 250OGs (q value < 0.22). [Source](http://www.sciencedirect.com/science/MiamiMultiMediaURL/1-s2.0-S0092867413012877/1-s2.0-S0092867413012877-mmc3.xlsx/272196/html/S0092867413012877/14453e605fb6374cde60de9592d46cad/mmc3.xlsx)
+- `Davoli_Table_S4.xlsx` - Table S4 - Cancer-specific OGs and TSGs. [Source](http://www.sciencedirect.com/science/MiamiMultiMediaURL/1-s2.0-S0092867413012877/1-s2.0-S0092867413012877-mmc4.zip/272196/html/S0092867413012877/b49a2f6d346596010f44546c16fe61e1/mmc4.zip)
+- `Davoli_Table_S5.xlsx` - Table S5A - Lists of tumor suppressor (STOP) genes, lists of essential genes (145 and 332 genes), and genes localized in regions of recurrent focal deletions or amplifications (Beroukhim et al., 2010). [Source](http://www.sciencedirect.com/science/MiamiMultiMediaURL/1-s2.0-S0092867413012877/1-s2.0-S0092867413012877-mmc5.xlsx/272196/html/S0092867413012877/67b5b6730171a63b617034b9bf8d6ec1/mmc5.xlsx)
+- `Davoli_Table_S7.xlsx` - Table S7A/B - manually curated lists of TSG/OG genes, respectively. [Source](http://www.sciencedirect.com/science/MiamiMultiMediaURL/1-s2.0-S0092867413012877/1-s2.0-S0092867413012877-mmc7.xlsx/272196/html/S0092867413012877/102ba9da31942f6ccec236a565aac494/mmc7.xlsx)
 
 ### [Cheng F, Jia P, Wang Q, Lin CC, Li WH, Zhao Z: Studying tumorigenesis through network evolution and somatic mutational perturbations in the cancer interactome. Mol Biol Evol 2014, 31:2156–2169.](http://mbe.oxfordjournals.org/content/31/8/2156.long)
 
@@ -132,62 +143,62 @@ The somatic mutation data set was downloaded from Dr. Elledge’s laboratory web
 
 `Mutation_Dataset.txt.gz` - [Mutation Dataset](http://elledgelab.med.harvard.edu/wp-content/uploads/2013/11/Mutation_Dataset.txt.zip) - Dataset of somatic mutations in cancer used for the TUSON Explorer predictions in the paper. The dataset contains the list of somatic mutations in tumors and the corresponding tumor type and tumor samples where they were found. The TCGA (The Cancer Genome Atlas) samples are identified with the tumor sample IDs. Mutation types:
 
-		  12  3'UTR
-		   7  5'UTR
-		 365  Complex Missense
-		  23  Complex Nonsense
-		  22  De_novo_Start_InFrame
-		 160  De_novo_Start_OutOfFrame
-	   25294  Indel Frameshift
-		6203  Indel In Frame
-		   6  Indel Nonsense
-		  27  Intron
-	  791744  Missense
-	   60488  Nonsense
-		 822  Nonstop Extension
-	  291505  Silent
-	   17857  Splice Site
-		 688  Translation_Start_Site
+, ,   12  3'UTR
+, ,    7  5'UTR
+, ,  365  Complex Missense
+, ,   23  Complex Nonsense
+, ,   22  De_novo_Start_InFrame
+, ,  160  De_novo_Start_OutOfFrame
+,    25294  Indel Frameshift
+, , 6203  Indel In Frame
+, ,    6  Indel Nonsense
+, ,   27  Intron
+,   791744  Missense
+,    60488  Nonsense
+, ,  822  Nonstop Extension
+,   291505  Silent
+,    17857  Splice Site
+, ,  688  Translation_Start_Site
 
 Number of SNPs per cancer type:
 
-	1295   ALL
-	2221   AML
-	 134   Astrocytoma
-	 203   Biliary Tract
-	36991  Bladder Carcinoma
-	55210  Breast Adenocarcinoma
-	 633   CLL
-	 549   Central Nersous System NS
-	8989   Cervical Carcinoma
-	125702 Colorectal Adenocarcinoma
-	1867   Endometrial Carcinoma
-	22572  Esophageal Adenocarcinoma
-	23854  Glioblastoma
-	66495  Head and Neck Squamous Cell Carcinoma
-	8629   Hematological_NS
-	1311   Kidney Chromophobe
-	26850  Kidney Clear Cell Carcinoma
-	  77   Kidney NS
-	7904   Kidney Papillary Cell Carcinoma
-	8035   Liver Hepatocellular carcinoma
-	26039  Low Grade Glioma
-	94748  Lung Adenocarcinoma
-	1088   Lung NS
-	16629  Lung Small Cell Carcinoma
-	64093  Lung Squamous Cell Carcinoma
-	1204   Lymphoma B-cell
-	4497   Medulloblastoma
-	4454   NS
-	5248   Neuroblastoma
-	29670  Ovarian Adenocarcinoma
-	10780  Pancreatic Adenocarcinoma
-	20431  Prostate Adenocarcinoma
-	214338 Skin Melanoma
-	 122   Soft Tissue Sarcoma
-	130552 Stomach Adenocarcinoma
-	6863   Thyroic Carcinoma
-	164946 Uterin Carcinoma
+, 1295   ALL
+, 2221   AML
+,  134   Astrocytoma
+,  203   Biliary Tract
+, 36991  Bladder Carcinoma
+, 55210  Breast Adenocarcinoma
+,  633   CLL
+,  549   Central Nersous System NS
+, 8989   Cervical Carcinoma
+, 125702 Colorectal Adenocarcinoma
+, 1867   Endometrial Carcinoma
+, 22572  Esophageal Adenocarcinoma
+, 23854  Glioblastoma
+, 66495  Head and Neck Squamous Cell Carcinoma
+, 8629   Hematological_NS
+, 1311   Kidney Chromophobe
+, 26850  Kidney Clear Cell Carcinoma
+,   77   Kidney NS
+, 7904   Kidney Papillary Cell Carcinoma
+, 8035   Liver Hepatocellular carcinoma
+, 26039  Low Grade Glioma
+, 94748  Lung Adenocarcinoma
+, 1088   Lung NS
+, 16629  Lung Small Cell Carcinoma
+, 64093  Lung Squamous Cell Carcinoma
+, 1204   Lymphoma B-cell
+, 4497   Medulloblastoma
+, 4454   NS
+, 5248   Neuroblastoma
+, 29670  Ovarian Adenocarcinoma
+, 10780  Pancreatic Adenocarcinoma
+, 20431  Prostate Adenocarcinoma
+, 214338 Skin Melanoma
+,  122   Soft Tissue Sarcoma
+, 130552 Stomach Adenocarcinoma
+, 6863   Thyroic Carcinoma
+, 164946 Uterin Carcinoma
 
 ### [Stefansson, O. a., Moran, S., Gomez, A., Sayols, S., Arribas-Jorba, C., Sandoval, J., … Esteller, M. (2014). A DNA methylation-based definition of biologically distinct breast cancer subtypes. Molecular Oncology, 1–14. doi:10.1016/j.molonc.2014.10.012](http://www.moloncol.org/article/S1574-7891(14)00261-0/addons)
 
