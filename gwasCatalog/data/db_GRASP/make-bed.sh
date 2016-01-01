@@ -12,9 +12,9 @@ cd $PBS_O_WORKDIR
 export LC_CTYPE=C 
 export LANG=C
 
-FILE=GRASP2fullDataset
-PVAL=1e-4
-DIR=bed.$PVAL
+FILE=GRASP2fullDataset # Name of the file to process
+PVAL=1e-4 # P-value cutoff
+DIR=$FILE".bed."$PVAL # Folder to output processed BED files
 
 mkdir -p $DIR
 

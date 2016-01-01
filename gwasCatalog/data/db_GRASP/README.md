@@ -1,6 +1,19 @@
+# [GRASP](http://grasp.nhlbi.nih.gov/Overview.aspx): Genome-Wide Repository of Associations Between SNPs and Phenotypes
+
+[Download the catalog](https://s3.amazonaws.com/NHLBI_Public/GRASP/GraspFullDataset2.zip)
+
 Columns annotated using [Glossary](http://grasp.nhlbi.nih.gov/Glossary.aspx)
 
 Extract phenotype-specific SNPs (column 12). Subset by P-value (column 11). Note categories (column 14), need to be parsed. Potentially subset by ancestry (column 24)
+
+Categories:
+
+- "Gene expression (RNA)" and "Quantitative trait(s)" are the most frequent terms defining Expression QTLs (eQTLs): 707,439 results [Download the Results](http://grasp.nhlbi.nih.gov/downloads/GRASP2_eQTL_results.zip).
+- "Quantitative trait(s)" and "Blood-related" are the most frequent terms defining Metabolomics QTLs (mQTLs): 232,008 results [Download the Results](http://grasp.nhlbi.nih.gov/downloads/GRASP2_metabQTL_results.zip).
+- "Quantitative trait(s)" and "Methylation" are the most frequent terms defining Methylation QTLs (meQTLs): 52,419 results [Download the Results](http://grasp.nhlbi.nih.gov/downloads/GRASP2_meQTL_results.zip).
+- "Quantitative trait(s)" and "Plasma" are the most frequent terms defining Glycosylation QTLs (gQTLs): 6,582 results [Download the Results](http://grasp.nhlbi.nih.gov/downloads/GRASP2_gQTL_results.zip).
+- "Quantitative trait(s)" and "Protein expression" are the most frequent terms defining Protein QTLs (pQTLs): 2,142 results [Download the Results](http://grasp.nhlbi.nih.gov/downloads/GRASP2_pQTL_results.zip).
+- "miRNA" and "Gene expression (RNA)" are the most frequent terms microRNA QTLs (mirQTLs): 1,260 results [Download the Results](http://grasp.nhlbi.nih.gov/downloads/GRASP2_mirQTL_results.zip).
 
 - 1, NHLBIkey - Unique key for NHLBI GRASP db (concatenation of PMID with row # in database) (203831461, 204538422)
 - 2, HUPfield - NULL field for release date in Entrez (Jan2014)
