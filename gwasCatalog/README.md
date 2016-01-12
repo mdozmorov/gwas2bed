@@ -59,7 +59,13 @@ Annotated and categorized disease-associated SNPs. The unzipped [GRASP2fullDatas
 
 ### [db_GWASdb2](http://jjwanglab.org/gwasdb) Disease-SNP associations
 
-A collection of disease-associated SNPs. Some diseases, like "type 1 diabetes" with 14,486 SNPs, contain unreasonable number of SNPs, so the data should be used with caution
+A collection of disease-associated SNPs. Some diseases, like "type 1 diabetes" with 14,486 SNPs, contain unreasonable number of SNPs, so the data should be used with caution.
+
+### [db_HMDD](http://www.cuilab.cn/hmdd) Disease-miRNA associations
+
+The Human microRNA Disease Database. 
+
+- `alldata.txt.gz` - full database, [downloaded](http://www.cuilab.cn/files/images/hmdd2/alldata.txt) at 01/12/2016. Columns 2-4 have miRNA name, disease, Pubmed ID. 10,381 entries, 578 miRNAs, 383 diseases.
 
 ### [db_HuGeNavigator](https://phgkb.cdc.gov/HuGENavigator/downloadCenter.do) Disease-Gene and Disease-SNP associations
 
@@ -75,7 +81,13 @@ Johnson AD, O'Donnell CJ. An open access database of genome-wide association
 results. BMC Med Genet. 2009 Jan 22;10:6. doi: 10.1186/1471-2350-10-6. PubMed
 PMID: 19161620; PubMed Central PMCID: PMC2639349.
 
-- `JohnsonOdonnell_Table.txt.gz` - 56,411 GWAS genotype-phenotype associations and annotation.
+	- `JohnsonOdonnell_Table.txt.gz` - 56,411 GWAS genotype-phenotype associations and annotation.
+
+### [db_lncRNAdisease](http://www.cuilab.cn/lncrnadisease) Disease-lncRNA associations
+
+	- `data.txt` - the experimentally supported lncRNA-disease association data, [downloaded](http://www.cuilab.cn/files/images/ldd/data.txt) at 01/12/2016. 329 lncRNAs (col 2), 228 diseases (col 3), 1,102 records total.
+	- `data2.txt` - the exprerimentally supported lncRNA (col 2) - gene (col 3) interaction data, [downloaded](http://www.cuilab.cn/files/images/ldd/data2.txt) at 01/12/2016. 478 records.
+	- `rna_seq.txt` - the RNA sequence of lncRNA, [downloaded](http://www.cuilab.cn/files/images/ldd/rna_seq.txt) at 01/12/2016.
 
 ### [db_LincSNP](http://210.46.85.180:8080/LincSNP/home.jsp) - Disease-SNP associations
 
