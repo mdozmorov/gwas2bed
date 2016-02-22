@@ -15,7 +15,7 @@ export LANG=C
 FILE=GRASP2fullDataset # Name of the file to process
 PVAL=1e-4 # P-value cutoff
 DIR=$FILE".bed."$PVAL # Folder to output processed BED files
-NUM=10 # Cutoff to move files by the number of lines
+NUM=10 # Cutoff to move files with the number of lines larger than this number
 DIRMORE=$FILE".bed."$PVAL".more"$NUM # Folder to keep files larger than $NUM lines
 # DIRLESS=$FILE".bed."$PVAL".less"$NUM # Folder to keep files smaller than $NUM lines
 
