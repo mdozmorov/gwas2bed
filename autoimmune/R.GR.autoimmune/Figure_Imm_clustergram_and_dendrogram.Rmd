@@ -1,0 +1,114 @@
+---
+title: "Figure Imm clustergram and dendrogram"
+author: "Mikhail G. Dozmorov"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+```{r setup, echo=FALSE, include=FALSE, cache=FALSE, warning=FALSE, message=FALSE, eval=TRUE}
+# Set up the environment
+library(knitr) 
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=100,  echo=F, autodep=T, width=200, warning=FALSE, comment=NA, results='hide', eval=FALSE) # Need to explicitly set eval=TRUE for chunks
+set.seed(1)
+# Local functions and settings
+library(MDmisc)
+library(dplyr)
+# Correlation to use
+cortype <- "spearman"
+# Clustering: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
+hclust.method <- "ward.D2"
+# Color scheme
+col3 <- colorRampPalette(c("blue", "yellow", "red"))
+```
+
+### Load the data
+
+```{r eval=TRUE}
+library(xlsx)
+# Load term mapping
+term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
+# Load the actual episimilarity data
+fname <- c("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt") # Best correlation results
+# fname <- c("data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt") # Imputed-ALL
+# fname <- c("data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Processed-ALL
+# fname <- c("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt", "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt", "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt", "data.gr.05/grweb_encDNase//matrix_PVAL.txt", "data.gr.05/grweb_encHistone//matrix_PVAL.txt", "data.gr.05/grweb_encSegway//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom18//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom25//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Complete-ALL
+mtx <- gr_load_data(fname, p2z = T)
+mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
+# A vector of category names, same order as the correlation matrix
+categoryNames <- term.mapping$Category
+names(categoryNames) <- term.mapping$Name
+# Trim column names
+colnames(mtx) <- term.mapping$Name
+```
+
+The matrix is scaled, so the enrichment profiles for each disease/phenotype have mean = 0 and SD = 1. 
+
+```{r eval=TRUE}
+# mtx.scaled <- mtx %>% t %>% scale %>% t # Row-wise (feature-wise) centering
+mtx.scaled <- mtx %>% scale # Column-wise (sample-wise) centering
+```
+
+
+### Hierarchical clustering
+
+Prepare the matrix of correlation coefficients, and cluster it.
+
+```{r eval=TRUE}
+## Using spearman correlations
+# rcorr returns a list, [[1]] - correl coeffs, [[3]] - p-values. Type - pearson/spearman
+mtx.cor <- Hmisc::rcorr(mtx.scaled, type=cortype)[[1]]
+## Clustering
+hclustergram <- hclust(as.dist(1-mtx.cor), method=hclust.method) # Cluster it
+```
+
+```{r eval=TRUE, fig.height=8, fig.width=10}
+# Plotting with aheatmap
+suppressMessages(library(NMF))
+suppressMessages(library(dendextend))
+annot <- data.frame(Category=term.mapping$Category) #, Size=as.numeric(term.mapping$BEDcount))
+annotColor <- list(Category=c("red", "green", "blue", "black")) #, Size=c("red", "white", "blue"))
+hclustergram.ext <- hclustergram %>% as.dendrogram %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% ladderize
+pdf("results/Figure_all_clustergram.pdf", width = 10, height = 8.5)
+h <- aheatmap(mtx.cor, Rowv=hclustergram.ext, Colv=hclustergram.ext, color=col3(20), annCol=annot, annColors = annotColor, fontsize = 10, cexRow = 1, cexCol = 1)
+dev.off()
+```
+
+```{r eval=TRUE}
+ind <- categoryNames == "immunologic" # Indexes of immunological diseases
+```
+
+```{r eval=TRUE, fig.height=7}
+library(pvclust)
+# # A function to calculate Spearman correlations
+# spm <- function(x) {
+#   res <- 1 - cor(x, method = "spearman", use = "pairwise.complete.obs")
+#   res <- as.dist(res)
+#   attr(res, "method") <- "spearman"
+#   return(res)
+# }
+# library(parallel)
+# cl <- makeCluster(4, type="PSOCK")
+# set.seed(1)
+# result <- parPvclust(cl=cl, mtx.scaled[, ind], method.dist=spm, method.hclust=hclust.method, nboot=10000)
+# stopCluster(cl)
+# saveRDS(result, "data/pvClust_03.Rds")
+# # result <- readRDS("data/pvClust_01.Rds") # p-vals, ind-subset, method.dist="correlation", method.hclust=hclust.method, nboot=10000
+# # result <- readRDS("data/pvClust_02.Rds") # p-vals, ind-subset, method.dist=spm, method.hclust=hclust.method, nboot=10000
+result <- readRDS("data/pvClust_03.Rds") # z-scores, ind-subset, method.dist=spm, method.hclust=hclust.method, nboot=10000
+pdf("results/Figure_imm_dendrogram.pdf", height = 9)
+par(oma=c(7,0,0,0), mar=c(13, 4.1, 4.1, 5.1), cex.main=0.65) # Adjust margins
+dend <- as.dendrogram(result) %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% plot(main="Cluster dendrogram with AU/BP values (%)\n reproduced plot with dendrogram")
+result %>% text(print.num = F)
+result %>% pvrect(alpha=0.89)
+dev.off()
+hclustergram.imm <- result$hclust # Make the heatmap plot whatever hclust object
+```
+
+```{r eval=TRUE, fig.height=6}
+mtx.cor.imm <- mtx.cor[ind, ind]
+# hclustergram.imm <- hclust(as.dist(1-mtx.cor.imm), method=hclust.method) #  Cluster it
+hclustergram.imm.ext <- hclustergram.imm %>% as.dendrogram %>% set("branches_k_color", k = 2) %>% set("branches_lwd", 2) %>% ladderize
+pdf("results/Figure_imm_clustergram.pdf", height = 6)
+h <- aheatmap(mtx.cor.imm, Rowv=hclustergram.imm.ext, Colv=hclustergram.imm.ext, color=col3(20), fontsize = 10, cexRow = 1, cexCol = 1)
+dev.off()
+```

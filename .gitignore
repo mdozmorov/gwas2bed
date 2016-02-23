@@ -3,12 +3,13 @@
 .Rhistory
 .RData
 *.Rproj
-img/*
+img
 cache
 results
 less*
 more*
 *.bed
+*.gif
 *.xls*
 *.pdf
 *.html
@@ -16,9 +17,19 @@ more*
 *.tar.gz
 node_modules
 AllNet3.net
-autoimmune/R.GR.autoimmune/data/*
-autoimmune/bed500/*
+atlas_24*
+Disease-Disease_v1.txt
+FinalPhenotypes_new.txt
+human-*
+autoimmune/R.GR.autoimmune/data*
+autoimmune/bed*
+autoimmune/data*
 autoimmune/jaccard/*
 gwasCatalog/data/*
+gwasCatalog/R.GR.gwasCatalog/
+Methylation17tissues/*.txt
+psychiatric/data*
+tumorportal/data
 tumorportal/R.GR.tumorportal/data.gr/*
+
 

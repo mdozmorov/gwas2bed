@@ -1,0 +1,78 @@
+---
+title: "Figure Full clustergram and PCA"
+author: "Mikhail G. Dozmorov"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+```{r setup, echo=FALSE, include=FALSE, cache=FALSE, warning=FALSE, message=FALSE, eval=TRUE}
+# Set up the environment
+library(knitr) 
+opts_chunk$set(cache.path='cache/', fig.path='img/', cache=F, tidy=T, fig.keep='high', dpi=100,  echo=F, autodep=T, width=200, warning=FALSE, comment=NA, results='hide', eval=FALSE) # Need to explicitly set eval=TRUE for chunks
+set.seed(1)
+# Local functions and settings
+library(MDmisc)
+library(dplyr)
+# Correlation to use
+cortype <- "spearman"
+# Clustering: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
+hclust.method <- "ward.D2"
+# Color scheme
+col3 <- colorRampPalette(c("blue", "yellow", "red"))
+```
+
+### Load the data
+
+```{r eval=TRUE}
+library(xlsx)
+# Load term mapping
+term.mapping <- read.xlsx2("data/icd9_mapping.xlsx", sheetName="manual")
+# Load the actual episimilarity data
+fname <- c("data.gr.05/grweb_roadmapHistone_gPk-imputed/matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed/matrix_PVAL.txt") # Best correlation results
+# fname <- c("data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt") # Imputed-ALL
+# fname <- c("data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Processed-ALL
+# fname <- c("data.gr.05/grweb_encBroadHmm//matrix_PVAL.txt", "data.gr.05/grweb_encChromCombined//matrix_PVAL.txt", "data.gr.05/grweb_encChromHmm//matrix_PVAL.txt", "data.gr.05/grweb_encDNase//matrix_PVAL.txt", "data.gr.05/grweb_encHistone//matrix_PVAL.txt", "data.gr.05/grweb_encSegway//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_cellspecific//matrix_PVAL.txt", "data.gr.05/grweb_encTFBS_clustered//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom15//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom18//matrix_PVAL.txt", "data.gr.05/grweb_roadmapChrom25//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapDNase_nPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_bPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_gPk-processed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-imputed//matrix_PVAL.txt", "data.gr.05/grweb_roadmapHistone_nPk-processed//matrix_PVAL.txt") # Complete-ALL
+mtx <- gr_load_data(fname, p2z = T)
+mtx <- mtx[, match(term.mapping$BED, colnames(mtx))] # Match and subset the data
+# A vector of category names, same order as the correlation matrix
+categoryNames <- term.mapping$Category
+names(categoryNames) <- term.mapping$Name
+# Trim column names
+colnames(mtx) <- term.mapping$Name
+```
+
+The matrix is scaled, so the enrichment profiles for each disease/phenotype have mean = 0 and SD = 1. 
+
+```{r eval=TRUE}
+# mtx.scaled <- mtx %>% t %>% scale %>% t # Row-wise (feature-wise) centering
+mtx.scaled <- mtx %>% scale # Column-wise (sample-wise) centering
+```
+
+### Principal components analysis
+
+Proportion of variance explained for the first 10 principle components, and a plot of the variance against the number of the principal components (screeplot).
+
+```{r eval=TRUE, results='show'}
+pca <- prcomp(t(mtx.scaled))
+screeplot(pca, type="lines", main="PCA of the regulatory similarities")
+summary(pca)$importance[, 1:10] %>% round(digits = 2) %>% kable
+```
+
+First two principal components
+
+```{r eval=TRUE, fig.height=7, fig.width=11}
+library(ggplot2)
+scores <- as.data.frame(pca$x)
+scores <- left_join(data.frame(Name=rownames(scores), scores), data.frame(Name=names(categoryNames), Category=categoryNames), by = c("Name" = "Name"))
+pt <- ggplot(data=scores, aes(x=PC1, y=PC2, label=Name)) +
+  ggtitle("PCA of the regulatory similarities") + 
+  theme(plot.title = element_text(lineheight = 0.8, face="bold")) +
+  scale_color_manual(values=c("red", "green", "blue", "black")) +
+  geom_point(aes(color = Category), size = 4) +
+  geom_hline(yintercept = 0, colour = "gray65") +
+  geom_vline(xintercept = 0, colour = "gray65") +
+  geom_text(colour = "black", size = 4, vjust = -1) +
+  scale_x_continuous(limits = c(-60, 60))
+plot(pt)
+ggsave(filename="results/Figure_PCA_bestimputed.pdf", plot=pt, height = 9)
+```
