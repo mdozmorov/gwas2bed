@@ -9,6 +9,8 @@ A collection of datasets from various publications containing genomic coordinate
 
 - `gwasCatalog` folder. Scripts to extract the coordinates of disease-specific SNP sets into separate files. Description of genomics datasets and databases related to complex diseases.
 
+- `tumorportal` folder. Description of genomics datasets and databases related to cancers.
+
 Large data collections are in the `data` subfolders of the **`autoimmune`**, `gwasCatalog`, and `tumorportal` folders. Each subfolder has its own README file with the dataset-specific explanations.
 
 # Disease-disease similarities
