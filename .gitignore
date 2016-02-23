@@ -30,6 +30,6 @@ gwasCatalog/R.GR.gwasCatalog/
 Methylation17tissues/*.txt
 psychiatric/data*
 tumorportal/data
-tumorportal/R.GR.tumorportal/data.gr/*
+tumorportal/R.GR.tumorportal
 
 
