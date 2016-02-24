@@ -37,6 +37,22 @@ Output:
 
 `mapping_DisGeNet-gwascatalog.xlsx` - maping between DisGeNet genes and gwasCatalog SNPs
 
+
+### [db_AMD](http://www.nature.com/ng/journal/v48/n2/full/ng.3448.html#supplementary-information)
+
+Age-related macular degeneration GWAS results, from [Fritsche LG, et.al. "A large genome-wide association study of age-related macular degeneration highlights contributions of rare and common variants". Nat Genet. 2016 PMID: 26691988](https://www.ncbi.nlm.nih.gov/pubmed/26691988).
+
+- `AMD.txt` - a list of all AMD-associated 52 SNPs. Manually extracted from the Supplementary Table 5 in the [Supplementary Text and Figures](http://www.nature.com/ng/journal/v48/n2/extref/ng.3448-S1.pdf). 02/24/2016.
+
+- `ng.3448-S3.xlsx` - [Supplementary Data Set 2](http://www.nature.com/ng/journal/v48/n2/extref/ng.3448-S3.xlsx): Extended results of the 34 lead variants in non-European subjects. We analyzed the association of advanced AMD compared to control subjects in Asian (473 cases, 1,099 controls), African (52 cases, 361 controls) and ‘other ancestry’ (254 cases, 694 controls) groups for our 34 lead variants. Shown are frequencies, odds ratios and P values from the Firth-corrected logistic regression for all analyses. 34 SNPs.
+
+- `ng.3448-S4.xlsx`, `AMD_ext.txt` - [Supplementary Data Set 3](http://www.nature.com/ng/journal/v48/n2/extref/ng.3448-S4.xlsx): Variants in 95% credible sets and their annotation. For each of the 52 index variants, the 95% credible set contains the minimal set of variants that add up to >95% posterior probability. 1343 unique SNPs, include 50 all AMD-associated SNPs (sans rs2043085, rs5817082).
+
+- `ng.3448-S6.xlsx` - [Supplementary Data Set 5](http://www.nature.com/ng/journal/v48/n2/extref/ng.3448-S6.xlsx): Genes in the 34 identified AMD locus regions. Stated are all genes that overlap with the 34 AMD locus regions (defined by the 52 identified variants and their proxies (r2 ≥0.5, ±500 kb) as well as an indicator of whether this gene was also among the 368 genes in the narrow AMD locus regions (defined by 52 identified variants and their proxies (r2 ≥0.5, ±100 kb). 878 genes.
+
+- `ng.3448-S8.xlsx` - [Supplementary Data Set 7](http://www.nature.com/ng/journal/v48/n2/extref/ng.3448-S8.xlsx): Relevant eye phenotypes in genetic mouse models in 33 genes in the 34 narrow AMD regions. We queried databases and conducted a literature search (Online Methods) for the 368 genes in the 34 narrow AMD regions and found relevant eye phenotypes for 33 of these genes. 368 genes.
+
+
 ### [db_DiseaseConnect](http://disease-connect.org/) Disease-Disease and Disease-Gene associations
 
 `Disease-Disease_v1.csv.gz` - Format: Disease 1, Disease 2, P value. The disease-disease relations are determined by the significance of the shared GWAS/OMIM/DEG genes between two diseases using hypergeometric test.
