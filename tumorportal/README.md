@@ -128,6 +128,10 @@ Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulat
 
 `Michiailidou-S2.xls` - Set of all 522 SNPs correlated with 1 of the 15 lead SNPs and that could not be ruled out as potentially causal (based on a likelihood ratio of 100:1).
 
+### [Bernard PS, Parker JS, Mullins M, Cheung MCU, Leung S, Voduc D, Vickery T, Davies S, Fauron C, He X, Hu Z, Quackenhush JF, Stijleman IJ, Palazzo J, Matron JS, Nobel AB, Mardis E, Nielsen TO, Ellis MJ, Perou CM: Supervised risk predictor of breast cancer based on intrinsic subtypes. J Clin Oncol 2009](https://www.ncbi.nlm.nih.gov/pubmed/19204204)
+
+`pam50_centroids.txt` - 50-gene classifier for four breast cancer types. [Source, zip file with data, analysis and results files](https://genome.unc.edu/pubsup/breastGEO/PAM50.zip), [Source, text file](https://genome.unc.edu/pubsup/breastGEO/pam50_centroids.txt). [Notes about PAM50](https://www.biostars.org/p/77590/ß)
+
 ### [Min Zhao, Lei Ma, Yining Liu, Hong Qu (2015) Pedican: an online gene for pediatric cancers with literature evidence. scientific reports](http://pedican.bioinfo-minzhao.org/index.html)
 
 `Pedican.txt` - All the 735 human Pediatric cancer genes with cancer types
