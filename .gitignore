@@ -25,6 +25,7 @@ autoimmune/R.GR.autoimmune/data*
 autoimmune/bed*
 autoimmune/data*
 autoimmune/jaccard/*
+genes/data/*
 gwasCatalog/data/*
 gwasCatalog/R.GR.gwasCatalog/
 Methylation17tissues/*.txt
