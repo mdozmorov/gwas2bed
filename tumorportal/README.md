@@ -104,7 +104,11 @@ Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulat
 
 # Individual data files
 
-### [Beroukhim, R., Mermel, C. H., Porter, D., Wei, G., Raychaudhuri, S., Donovan, J., …### Meyerson, M. (2010). The landscape of somatic copy-number alteration across human cancers. Nature, 463(7283), 899–905. doi:10.1038/nature08822](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2826709/)
+### [Santarius T, Shipley J, Brewer D, Stratton MR, Cooper CS. A census of amplified and overexpressed human cancer genes. Nat Rev Cancer. 2010](https://www.ncbi.nlm.nih.gov/pubmed/20029424)
+
+`AmpliconTablev1.xls` - Summary of AOGIC database, Amplified and Overexpressed Genes In Cancer. [Source](http://www.amplicon.icr.ac.uk/downloads/AmpliconTablev1.xls)
+
+### [Beroukhim, R., Mermel, C. H., Porter, D., Wei, G., Raychaudhuri, S., Donovan, J., ... Meyerson, M. (2010). The landscape of somatic copy-number alteration across human cancers. Nature, 463(7283), 899–905. doi:10.1038/nature08822](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2826709/)
 
 `Beroukhim_S2.xlsx` - 158 independent regions of significant focal SCNAs, including 76 amplifications and 82 deletions, in the pooled analysis of all our data
 
