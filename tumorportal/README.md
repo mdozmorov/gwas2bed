@@ -114,6 +114,12 @@ Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulat
 
 `Beroukhim_S5.xlsx` - Peak regions in individual cancer types but not in the pooled analysis
 
+### [COSMIC](http://cancer.sanger.ac.uk/cosmic/download)
+
+`Census_all*.csv` - [The cancer Gene Census](http://cancer.sanger.ac.uk/census)
+
+`COSMIC_genes.txt` - Genes sorted by the number of records associated with them. Obtained using `zcat <CosmicCompleteTargetedScreensMutantExport.tsv.gz | sed '1d' | cut -f1 | sort | uniq -c | sort -k1 -r -n > COSMIC_genes.txt`
+
 ### [Cheng F, Jia P, Wang Q, Lin CC, Li WH, Zhao Z: Studying tumorigenesis through network evolution and somatic mutational perturbations in the cancer interactome. Mol Biol Evol 2014, 31:2156–2169.](http://mbe.oxfordjournals.org/content/31/8/2156.long)
 
 `Cheng_S1.xlsx` - 4,050 cancer genes from Cheng study. Gene names, Entrez IDs, annotations and classifications by source. To analyze as a general pan-cancer gene set, and as subsets by source/type.
