@@ -1,5 +1,43 @@
 ## Extracting genomic coordinates of disease-associated SNPs from GWAS catalog
 
+The GWAS catalog is now hosted at [EBI](https://www.ebi.ac.uk/gwas/home). Last downloaded: 03-10-2016.
+
+- `current_gwas_catalog.txt` - the most recent GWAScatalog from (https://www.ebi.ac.uk/gwas/api/search/downloads/full), download manually. Use the "with added ontology annotations" version.
+
+- `mapped_traits.txt` - how many SNPs per trait, `cut -f35 | sort | uniq -c | sort -k1 -r > mapped_traits.txt`
+
+- `make.sh` - extract trait-specific SNP rsIDs into separate files.
+
+Usage:
+```
+./make.sh
+```
+
+Output:
+
+- `MAPPED_TRAIT` folder with trait-specific lists of SNP rsIDs. Only traits having 5 or more SNPs are kept.
+- `all_current_gwas_catalog.txt` - all rsIDs from the cuttent GWAS catalog
+
+-------------------------------------------------------------------------------
+
+- `gwas_catalog_download.pl` - a Perl script for extracting hg19 disease-specific genomic coordinates from the latest [GWAScatalog](https://www.ebi.ac.uk/gwas/docs/downloads). (C) Krista Bean
+
+Usage:
+```
+perl gwas_catalog_download.pl
+```
+
+Output: 
+
+- `diseases.genes` - a subfolder containing symbols of disease-associated genes in separate files;
+- `diseases.snps_bed` - a subfolder containing hg19 genomic coordinates of disease-associated SNPs;
+- `diseases.snps_empty` - a subfolder containing lists of diseases that don't have SNPs;
+- `diseases.snp_not_found` - a subfolder containing lists of SNPs that can't be mapped.
+
+Need to post-process file names, to eliminate special characters and spaces. `for FILE in *.bed; do mv -v "$FILE" $(echo "$FILE" | sed 's/^\_//' | tr " " "_" | tr "-" "_" | tr -d '[{}(),!];:/' | tr -d "'" | tr -d '`' | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g'); done`
+
+-------------------------------------------------------------------------------
+
 - `gwas2bed.py` - A Pyhton script for downloading the coordinates of disease-associated SNPs and separate them into disease-specific .bed files
 
 Get GWAScatalog data from the UCSC MySQL server, extract hg19 genomic coordinates into separate files defined by the 'title' column. At this time, only standard chromosome names are considered.
@@ -15,21 +53,7 @@ Output: A `gwasCatalog-[date].bed` file with the coordinates of all GWAS SNPs. T
 
 Getting the number of SNPs per file: `for file in bed/more5/*.bed; do wc -l $file; done | awk '{OFS="\t"} {print $2,$1}' | sed 's/\.bed//' | sed 's/bed\/more5\///' |  sort -n -k2 -r > bed_length.txt`
 
-- `gwas_catalog_download.pl` - a Perl script for extracting hg19 disease-specific genomic coordinates from the latest [GWAScatalog](https://www.ebi.ac.uk/gwas/docs/downloads). (C) Krista Bean
-
-Usage:
-```
-# Save the most recent GWAScatalog from (https://www.ebi.ac.uk/gwas/api/search/downloads/full) into `current_gwas_catalog.txt` file
-perl gwas_catalog_download.pl
-```
-
-Output: 
-
-- `diseases.genes` - a subfolder containing symbols of disease-associated genes in separate files;
-- `diseases.snps_bed` - a subfolder containing hg19 genomic coordinates of disease-associated SNPs;
-- `diseases.snps_empty` - a subfolder containing lists of diseases that don't have SNPs;
-- `diseases.snp_not_found` - a subfolder containing lists of SNPs that can't be mapped.
-
+-------------------------------------------------------------------------------
 
 # `data` folder
 

@@ -27,6 +27,11 @@ autoimmune/data*
 autoimmune/jaccard/*
 genes/data/*
 gwasCatalog/data/*
+gwasCatalog/MAPPED*
+gwasCatalog/diseases*
+gwasCatalog/all_current_gwas_catalog.txt
+gwasCatalog/current_gwas_catalog.txt.gz
+gwasCatalog/mapped_traits.txt
 gwasCatalog/R.GR.gwasCatalog/
 Methylation17tissues/*.txt
 psychiatric/data*
