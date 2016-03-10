@@ -58,7 +58,7 @@ if($download_new_file == 1)
 {
 	#download file from site
 	$ua = LWP::UserAgent->new;
-	$url = "http://www.genome.gov/admin/gwascatalog.txt";
+	$url = "https://www.ebi.ac.uk/gwas/api/search/downloads/full";
 
 	my $content = $ua->get($url);
 	die "couldn't get $url" unless defined $content;

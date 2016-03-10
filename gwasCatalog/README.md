@@ -15,16 +15,16 @@ Output: A `gwasCatalog-[date].bed` file with the coordinates of all GWAS SNPs. T
 
 Getting the number of SNPs per file: `for file in bed/more5/*.bed; do wc -l $file; done | awk '{OFS="\t"} {print $2,$1}' | sed 's/\.bed//' | sed 's/bed\/more5\///' |  sort -n -k2 -r > bed_length.txt`
 
-- `gwas_catalog_download.pl` - a Perl script for extracting hg19 disease-specific genomic coordinates from the latest [GWAScatalog](http://www.genome.gov/gwastudies/). (C) Krista Bean
+- `gwas_catalog_download.pl` - a Perl script for extracting hg19 disease-specific genomic coordinates from the latest [GWAScatalog](https://www.ebi.ac.uk/gwas/docs/downloads). (C) Krista Bean
 
 Usage:
 ```
+# Save the most recent GWAScatalog from (https://www.ebi.ac.uk/gwas/api/search/downloads/full) into `current_gwas_catalog.txt` file
 perl gwas_catalog_download.pl
 ```
 
 Output: 
 
-- `current_gwas_catalog.txt` - a file containing the most current version of GWAScatalog;
 - `diseases.genes` - a subfolder containing symbols of disease-associated genes in separate files;
 - `diseases.snps_bed` - a subfolder containing hg19 genomic coordinates of disease-associated SNPs;
 - `diseases.snps_empty` - a subfolder containing lists of diseases that don't have SNPs;
@@ -52,6 +52,10 @@ Age-related macular degeneration GWAS results, from [Fritsche LG, et.al. "A larg
 
 - `ng.3448-S8.xlsx` - [Supplementary Data Set 7](http://www.nature.com/ng/journal/v48/n2/extref/ng.3448-S8.xlsx): Relevant eye phenotypes in genetic mouse models in 33 genes in the 34 narrow AMD regions. We queried databases and conducted a literature search (Online Methods) for the 368 genes in the 34 narrow AMD regions and found relevant eye phenotypes for 33 of these genes. 368 genes.
 
+- `assoc_linear_pvalue5E-5_ChrRsBpAllele.txt` and `glaucoma_selected.txt` - 82 glaucoma-associated SNPs. 
+
+Extract rsIDs, `cut -f2 assoc_linear_pvalue5E-5_ChrRsBpAllele.txt | sed 's/\ //g' | sort > glaucoma_selected.txt`. 
+Extract all known glaucoma-related SNPs from GWAScatalog, `cat *.bed | cut -f4 | sort | uniq > glaucoma_gwascatalog.txt`
 
 ### [db_DiseaseConnect](http://disease-connect.org/) Disease-Disease and Disease-Gene associations
 
