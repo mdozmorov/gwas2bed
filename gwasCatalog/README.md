@@ -79,6 +79,7 @@ Age-related macular degeneration GWAS results, from [Fritsche LG, et.al. "A larg
 - `assoc_linear_pvalue5E-5_ChrRsBpAllele.txt` and `glaucoma_selected.txt` - 82 glaucoma-associated SNPs. 
 
 Extract rsIDs, `cut -f2 assoc_linear_pvalue5E-5_ChrRsBpAllele.txt | sed 's/\ //g' | sort > glaucoma_selected.txt`. 
+
 Extract all known glaucoma-related SNPs from GWAScatalog, `cat *.bed | cut -f4 | sort | uniq > glaucoma_gwascatalog.txt`
 
 ### [db_DiseaseConnect](http://disease-connect.org/) Disease-Disease and Disease-Gene associations
