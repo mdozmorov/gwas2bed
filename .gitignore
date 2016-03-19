@@ -34,6 +34,7 @@ gwasCatalog/current_gwas_catalog.txt.gz
 gwasCatalog/mapped_traits.txt
 gwasCatalog/R.GR.gwasCatalog/
 Methylation17tissues/*.txt
+population/data*
 psychiatric/data*
 tumorportal/data
 tumorportal/R.GR.tumorportal

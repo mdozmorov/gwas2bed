@@ -11,6 +11,8 @@ A collection of datasets from various publications containing genomic coordinate
 
 - `tumorportal` folder. Description of genomics datasets and databases related to cancers.
 
+- `population` folder. Individual-specific genotypes of various populations. See README.md there.
+
 Large data collections are in the `data` subfolders of the **`autoimmune`**, `gwasCatalog`, and `tumorportal` folders. Each subfolder has its own README file with the dataset-specific explanations.
 
 # Disease-disease similarities
