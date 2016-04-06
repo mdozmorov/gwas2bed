@@ -55,24 +55,25 @@ Proportion of variance explained for the first 10 principle components, and a pl
 ```{r eval=TRUE, results='show'}
 pca <- prcomp(t(mtx.scaled))
 screeplot(pca, type="lines", main="PCA of the regulatory similarities")
-summary(pca)$importance[, 1:10] %>% round(digits = 2) %>% kable
+summary(pca)$importance[, 1:10] %>% round(digits = 5) %>% kable
 ```
 
 First two principal components
 
 ```{r eval=TRUE, fig.height=7, fig.width=11}
 library(ggplot2)
+library(ggrepel)
 scores <- as.data.frame(pca$x)
 scores <- left_join(data.frame(Name=rownames(scores), scores), data.frame(Name=names(categoryNames), Category=categoryNames), by = c("Name" = "Name"))
 pt <- ggplot(data=scores, aes(x=PC1, y=PC2, label=Name)) +
   ggtitle("PCA of the regulatory similarities") + 
+  labs(x = "PC1 (23.06%)", y = "PC2 (7.95%)") +
   theme(plot.title = element_text(lineheight = 0.8, face="bold")) +
-  scale_color_manual(values=c("red", "green", "blue", "black")) +
-  geom_point(aes(color = Category), size = 4) +
+  theme_bw() +
+  geom_point(aes(shape = Category), size = 4) +
   geom_hline(yintercept = 0, colour = "gray65") +
   geom_vline(xintercept = 0, colour = "gray65") +
-  geom_text(colour = "black", size = 4, vjust = -1) +
-  scale_x_continuous(limits = c(-60, 60))
+  geom_text_repel(colour = "black", size = 4)
 plot(pt)
 ggsave(filename="results/Figure_PCA_bestimputed.pdf", plot=pt, height = 9)
 ```
