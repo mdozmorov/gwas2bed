@@ -6,9 +6,11 @@
 
 - `ACMG_114.txt` - American College of Medical Genetics and Genomics (ACMG) selected 114 genes associated with clinically actionable medical conditions. Data source: manually extracted from Table 1 of the [manuscript](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3791261/)
 
+- `ADME_core/extended/related.txt` - 32/267/74 drug-metabolizing genes, from [PharmaADME.org](http://pharmaadme.org/).
+
 
 Supplementary data from Tennessen JA, et.al. "[NHLBI Exome Sequencing Project: Evolution and functional impact of rare coding variation from deep sequencing of human exomes](https://www.ncbi.nlm.nih.gov/pubmed/22604720)". Science 2012
 
-- `ESP_genes_with_rare_variants.txt` - gene names extracted from Table S3.Genes with unusuallyhigh proportions of rare variation.
+- `ESP_genes_with_rare_variants.txt` - gene names extracted from Table S3. Genes with unusually high proportions of rare variation.
 
 - `ESP_genes_positive_selection.txt` - gene names extracted from Table S4. Summary information of 114 genes with signatures of positive selection.
