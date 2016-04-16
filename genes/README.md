@@ -8,6 +8,8 @@
 
 - `ADME_core/extended/related.txt` - 32/267/74 drug-metabolizing genes, from [PharmaADME.org](http://pharmaadme.org/).
 
+- `CancerDB_Drug_Targets.txt` - 116 drug targets genes, from [CancerDB](http://crdd.osdd.net/raghava/cancerdr/targets_browse.php) 
+
 
 Supplementary data from Tennessen JA, et.al. "[NHLBI Exome Sequencing Project: Evolution and functional impact of rare coding variation from deep sequencing of human exomes](https://www.ncbi.nlm.nih.gov/pubmed/22604720)". Science 2012
 
