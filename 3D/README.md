@@ -1,6 +1,13 @@
 # 3D-related datasets
 
 
+### `Heidari-Snyder.2014`
+
+Supplementary data from Heidari, Nastaran, Douglas H. Phanstiel, Chao He, Fabian Grubert, Fereshteh Jahanbani, Maya Kasowski, Michael Q. Zhang, and Michael P. Snyder. “[Genome-Wide Map of Regulatory Interactions in the Human Genome](http://genome.cshlp.org/content/24/12/1905/suppl/DC1).” Genome Research 24, no. 12 (December 2014): 1905–17. doi:10.1101/gr.176586.114.
+
+- `TableS1.xlsx` - K562 cell line, 29,366 interacting pairs for six factors, H3K4me1, me2, me3, 27ac, POLR2A, RAD21. Gm12878 cell line, 20,888 interacting pairs for RAD21. hg19 genomic coordinates.
+
+
 ### `Hnisz-Young.2016`
 
 Supplementary data from Hnisz, Denes, Abraham S. Weintraub, Daniel S. Day, Anne-Laure Valton, Rasmus O. Bak, Charles H. Li, Johanna Goldmann, et al. “[Activation of Proto-Oncogenes by Disruption of Chromosome Neighborhoods](http://science.sciencemag.org/content/early/2016/03/02/science.aad9024.full).” Science (New York, N.Y.) 351, no. 6280 (March 25, 2016): 1454–58. doi:10.1126/science.aad9024.
