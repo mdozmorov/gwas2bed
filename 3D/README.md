@@ -4,7 +4,7 @@
 
 Supplementary Table 4 from Dixon, Jesse R., Siddarth Selvaraj, Feng Yue, Audrey Kim, Yan Li, Yin Shen, Ming Hu, Jun S. Liu, and Bing Ren. “[Topological Domains in Mammalian Genomes Identified by Analysis of Chromatin Interactions](http://www.nature.com/nature/journal/v485/n7398/full/nature11082.html).” Nature 485, no. 7398 (April 11, 2012): 376–80. doi:10.1038/nature11082.
 
-- `TableS4.xls` - Boundaries in mESC, mouse cortex, hESC, IMR90. mm9/hg18. [Source](http://www.nature.com/nature/journal/v485/n7398/extref/nature11082-s3.xls)
+- `TableS4.xls` - TAD Boundaries in mESC, mouse cortex, hESC, IMR90. mm9/hg18. [Source](http://www.nature.com/nature/journal/v485/n7398/extref/nature11082-s3.xls)
 
 
 ### `Heidari-Snyder.2014` 
