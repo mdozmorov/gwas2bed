@@ -1,7 +1,13 @@
 # 3D-related datasets
 
+### `Dixon-Ren.2012`
 
-### `Heidari-Snyder.2014`
+Supplementary Table 4 from Dixon, Jesse R., Siddarth Selvaraj, Feng Yue, Audrey Kim, Yan Li, Yin Shen, Ming Hu, Jun S. Liu, and Bing Ren. “[Topological Domains in Mammalian Genomes Identified by Analysis of Chromatin Interactions](http://www.nature.com/nature/journal/v485/n7398/full/nature11082.html).” Nature 485, no. 7398 (April 11, 2012): 376–80. doi:10.1038/nature11082.
+
+- `TableS4.xls` - Boundaries in mESC, mouse cortex, hESC, IMR90. mm9/hg18. [Source](http://www.nature.com/nature/journal/v485/n7398/extref/nature11082-s3.xls)
+
+
+### `Heidari-Snyder.2014` 
 
 Supplementary data from Heidari, Nastaran, Douglas H. Phanstiel, Chao He, Fabian Grubert, Fereshteh Jahanbani, Maya Kasowski, Michael Q. Zhang, and Michael P. Snyder. “[Genome-Wide Map of Regulatory Interactions in the Human Genome](http://genome.cshlp.org/content/24/12/1905/suppl/DC1).” Genome Research 24, no. 12 (December 2014): 1905–17. doi:10.1101/gr.176586.114.
 
