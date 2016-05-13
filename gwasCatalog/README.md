@@ -55,6 +55,10 @@ Getting the number of SNPs per file: `for file in bed/more5/*.bed; do wc -l $fil
 
 -------------------------------------------------------------------------------
 
+
+- `filtered_regions_hg19.bed` - hg19 BED file of filtered regions, used to filter out uncertain CNVs. From Brandler et al., “Frequency and Complexity of De Novo Structural Mutation in Autism.”, [Source](http://www.sciencedirect.com/science/article/pii/S0002929716000690#app3)
+
+
 # `data` folder
 
 `mapping_DisGeNet-GWASdb2.xlsx` - maping between DisGeNet genes and GWASdb2 SNPs
