@@ -196,6 +196,10 @@ JSON files with genetic score models
 
 See [README.md](https://github.com/joepickrell/phenotypes/blob/master/README.md) in the Git repository.
 
+### [mutationalProfiles](https://github.com/cclab-brca/mutationalProfiles)
+
+Somatic mutation calls and ASCAT (Van Loo, P. et al. Allele-specific copy number analysis of tumors. Proc. Natl Acad. Sci. USA 107, 16910–16915 (2010)) segment files for 2,433 primary tumours. Breast cancer, with phenotype information. From open paper [Pereira et al., “The Somatic Mutation Profiles of 2,433 Breast Cancers Refines Their Genomic and Transcriptomic Landscapes.”](http://www.nature.com/ncomms/2016/160510/ncomms11479/full/ncomms11479.html)
+
 # Summary statistics
 
 49 traits from 24 phenotypes. Summary statistics from [Bulik-Sullivan B, Finucane HK, Anttila V, Gusev A, Day FR, Consortium R, Genomics Consortium P, of the Wellcome Trust Consortium GC for A, Perry JRB, Patterson N, Robinson E, Daly MJ, Price AL, Neale BM: An Atlas of Genetic Correlations across Human Diseases and Traits. bioRxiv 2015, 47:1–44.](http://www.nature.com/ng/journal/v47/n11/full/ng.3406.html#supplementary-information)
