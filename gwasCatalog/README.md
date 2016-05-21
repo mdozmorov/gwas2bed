@@ -86,6 +86,22 @@ Extract rsIDs, `cut -f2 assoc_linear_pvalue5E-5_ChrRsBpAllele.txt | sed 's/\ //g
 
 Extract all known glaucoma-related SNPs from GWAScatalog, `cat *.bed | cut -f4 | sort | uniq > glaucoma_gwascatalog.txt`
 
+
+### [db_Bagley-Altman](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004885#sec01)
+
+- `journal.pcbi.1004885.s002.CSV` - S1 File. Subset of VARIMED used in our analysis, with disease name, gene name, chromosome, and PubMed ID. 40 diseases
+
+- `journal.pcbi.1004885.s003.CSV` - S2 File. Diseases and disease clusters.
+
+- `journal.pcbi.1004885.s004.CSV` - S3 File. Disease pairs from Columbia EMR with statistically significant under or overrepresentation. 2x2 enrichment statistics
+
+- `journal.pcbi.1004885.s005.CSV` - S4 File. Disease pairs from Stanford EMR with statistically significant under or overrepresentation.
+
+- `journal.pcbi.1004885.s006.CSV` - S5 File. Disease pairs in intersection of Columbia and Stanford EMRs.
+
+- `journal.pcbi.1004885.s007.CSV` - S6 File. Disease pairs from VARIMED with statistically significant gene overlap.
+
+
 ### [db_DiseaseConnect](http://disease-connect.org/) Disease-Disease and Disease-Gene associations
 
 `Disease-Disease_v1.csv.gz` - Format: Disease 1, Disease 2, P value. The disease-disease relations are determined by the significance of the shared GWAS/OMIM/DEG genes between two diseases using hypergeometric test.
