@@ -138,6 +138,12 @@ Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulat
 
 `Michiailidou-S2.xls` - Set of all 522 SNPs correlated with 1 of the 15 lead SNPs and that could not be ruled out as potentially causal (based on a likelihood ratio of 100:1).
 
+
+### [Nik-Zainal, Serena, Helen Davies, Johan Staaf, Manasa Ramakrishna, Dominik Glodzik, Xueqing Zou, Inigo Martincorena, et al. “Landscape of Somatic Mutations in 560 Breast Cancer Whole-Genome Sequences.” Nature, May 2, 2016. doi:10.1038/nature17676.](http://www.nature.com/nature/journal/vaop/ncurrent/full/nature17676.html)
+
+- `Nik-Zainal_2016_S12.xlsx` = `Supplementary Table 12.ExtendedCancerGeneList727_En58position_final_15052015.xlsx` - extended list of 727 cancer genes from COSMIC and newly identified. [Download](http://www.nature.com/nature/journal/vaop/ncurrent/full/nature17676.html#supplementary-information)
+
+
 ### [Bernard PS, Parker JS, Mullins M, Cheung MCU, Leung S, Voduc D, Vickery T, Davies S, Fauron C, He X, Hu Z, Quackenhush JF, Stijleman IJ, Palazzo J, Matron JS, Nobel AB, Mardis E, Nielsen TO, Ellis MJ, Perou CM: Supervised risk predictor of breast cancer based on intrinsic subtypes. J Clin Oncol 2009](https://www.ncbi.nlm.nih.gov/pubmed/19204204)
 
 `pam50_centroids.txt` - 50-gene classifier for four breast cancer types. [Source, zip file with data, analysis and results files](https://genome.unc.edu/pubsup/breastGEO/PAM50.zip), [Source, text file](https://genome.unc.edu/pubsup/breastGEO/pam50_centroids.txt). [Notes about PAM50](https://www.biostars.org/p/77590/ß)
