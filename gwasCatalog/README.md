@@ -116,6 +116,13 @@ Extract all known glaucoma-related SNPs from GWAScatalog, `cat *.bed | cut -f4 |
 
 A collection of disease-associated genes. Scripts are used to extract disease-specific gene lists.
 
+### [db_DnetDB](http://app.scbit.org/DNetDB/#) Disease-Disease associations
+
+Disease-disease similarity mased on differential co-expression analysis
+
+- `Basic information of 108 diseases.xlsx`
+- `The disease similarity file.xlsx`
+
 ### [db_GRASP](http://grasp.nhlbi.nih.gov/Updates.aspx) Disease-SNP associations
 
 Leslie R, O’Donnell CJ, Johnson AD: **GRASP: analysis of genotype-phenotype results from 1390 genome-wide association studies and corresponding open access database**. Bioinformatics 2014, 30:i185–94.
