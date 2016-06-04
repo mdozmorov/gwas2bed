@@ -10,6 +10,8 @@
 
 - `CancerDB_Drug_Targets.txt` - 116 drug targets genes, from [CancerDB](http://crdd.osdd.net/raghava/cancerdr/targets_browse.php) 
 
+- `ENCODE_ChIPseqTargets_Promoters.gmt` - Genes regulated by a given transcription factor (Transcription Factor Target Gene Set). 168 TFs. From [CRAFTT, Computational drug-Repositioning Approach For Targeting Transcription factors](http://physiology.med.cornell.edu/faculty/elemento/lab/data/CRAFTT/downloads.html), a drug repositioning tool by Olivier Elemento group
+
 - `Genes_Glycosylation and Coagulation Genes.xlsx` - Coagulation, Heparan Sulfate Biosynthesis, N-Linked Glycosylation, O-Linked Glycosylation, Glycosylation genes
 
 - `MIG_5149.xlsx` - [Additional file 3](https://static-content.springer.com/esm/art%3A10.1186%2Fs13073-015-0197-4/MediaObjects/13073_2015_197_MOESM3_ESM.xlsx) from Patwardhan et al., [“Achieving High-Sensitivity for Clinical Applications Using Augmented Exome Sequencing.”](http://genomemedicine.biomedcentral.com/articles/10.1186/s13073-015-0197-4). 5,149 medically important genes and hg19 genomic coordinates of exome regions associated with them. Defines regions of the MIG using chromosomal position information and relevant gene identifiers; the reference transcript used for gene definitions; and the sources from which the genes were drawn.
