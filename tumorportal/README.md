@@ -76,6 +76,24 @@ Nature. 2013 Oct 10;502(7470):258. PubMed PMID: 23945592; PubMed Central PMCID: 
  - `ODMG.xlsx` - Orphan disease genes (2,124 genes)
  - `Essentialgenes.xlsx` - Essential genes (2,721 genes)
 
+### [db_Pharmacogenomics](http://www.cancerrxgene.org/gdsc1000/GDSC1000_WebResources/Home.html)
+
+[Iorio, F., Knijnenburg, T.A., Vis, D.J., Bignell, G.R., Menden, M.P., Schubert, M., Aben, N., Gonçalves, E., Barthorpe, S., Lightfoot, H., et al. (2016). A Landscape of Pharmacogenomic Interactions in Cancer. Cell.](http://www.sciencedirect.com/science/article/pii/S0092867416307462)
+
+(+) - data useful for GenomeRunner
+
+- `mmc3_TableS2.xlsx` - Table S2. Lists of Cancer Functional Events and Characterization of Patient Tumors and Cell Lines, Related to Figure 2. 
+
+	- (A) List of cancer driver genes predicted by the intOGen pipeline or from Wong et al., 2014.
+	- (D) Pan-cancer and cancer-specific region of focal amplification/deletion (RACSs).
+	- (H) Full list of informative CpG islands with hyperlinks to webpages containing corresponding statistical scores.
+	- (I) Full list of informative CpG islands found hypermethylated in primary tumors.
+	- (J) Full list of informative CpG islands found hypermethylated in cell lines.
+	- (K) Cancer Functional Events (CFEs) identified in primary tumor and not occurring in cell lines.
+
+- `mmc5_TableS5.xlsx` - Table S4. Drug Response Data, ANOVA Results, and Validation on Independent Datasets, Related to Figure 4.  
+
+
 ### [db_Pleasance](http://www.nature.com/nature/journal/v463/n7278/full/nature08658.html)
 
 Pleasance, E. D., Cheetham, R. K., Stephens, P. J., McBride, D. J., Humphray, S. J., Greenman, C. D., … Stratton, M. R. (2010). **A comprehensive catalogue of somatic mutations from a human cancer genome**. Nature, 463(January), 191–196. doi:10.1038/nature08658
