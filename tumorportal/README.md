@@ -120,6 +120,10 @@ Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulat
 
 `COSMIC_genes.txt` - Genes sorted by the number of records associated with them. Obtained using `zcat <CosmicCompleteTargetedScreensMutantExport.tsv.gz | sed '1d' | cut -f1 | sort | uniq -c | sort -k1 -r -n > COSMIC_genes.txt`
 
+### [intOGen](https://www.intogen.org/search) Tamborero D., Rubio-Perez C., Deu-Pons J., Schroeder M., Vivancos A., Rovira A., Tusquets I, Albanell J., Rodon J., Tabernero J., Dienstmann R., Gonzalez-Perez A. and Lopez-Bigas N. Cancer Genome Interpreter identifies driver and actionable alterations.
+
+- `intogen_driver_mutations_catalog-2016.5.zip` - Catalog of cancer-specific driver mutations (2016.5) - This database contains the results of the driver analysis performed by the Cancer Genome Interpreter across 6,792 exomes of a pan-cancer cohort of 28 tumor types. Validated oncogenic mutations are identified according to the state-of-the-art clinical and experimental data, whereas the effect of the mutations of unknown significance is predicted by the OncodriveMUT method. Registration required to download. Unzip, each cancer-abbreviated folder contains `mutation_analysis.tsv` with all cancer-specific driver mutations.
+
 ### [Cheng F, Jia P, Wang Q, Lin CC, Li WH, Zhao Z: Studying tumorigenesis through network evolution and somatic mutational perturbations in the cancer interactome. Mol Biol Evol 2014, 31:2156–2169.](http://mbe.oxfordjournals.org/content/31/8/2156.long)
 
 `Cheng_S1.xlsx` - 4,050 cancer genes from Cheng study. Gene names, Entrez IDs, annotations and classifications by source. To analyze as a general pan-cancer gene set, and as subsets by source/type.
