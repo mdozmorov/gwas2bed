@@ -96,6 +96,16 @@ Nature. 2013 Oct 10;502(7470):258. PubMed PMID: 23945592; PubMed Central PMCID: 
 
 Pleasance, E. D., Cheetham, R. K., Stephens, P. J., McBride, D. J., Humphray, S. J., Greenman, C. D., … Stratton, M. R. (2010). **A comprehensive catalogue of somatic mutations from a human cancer genome**. Nature, 463(January), 191–196. doi:10.1038/nature08658
 
+
+### [db_PRECOG](https://precog.stanford.edu/)
+
+[Gentles, A.J., Newman, A.M. et al. (2015). The prognostic landscape of genes and infiltrating immune cells across human cancers. Nat. Med.](http://www.nature.com/nm/journal/v21/n8/full/nm.3909.html#supplementary-information)
+
+- `nm.3909-S2.xlsx` - Supplementary Data 1. PRECOG meta-z matrix and source data. 23,288 genez x 39 cancers, each cell contains z-scores for poor/favorable (positive/negative) outcomes. All-cancer p-value, q-value and unweighted meta z-score.
+- `nm.3909-S3.xlsx` - Supplementary Data 2. Prognostic genes shared across multiple cancers or specific to individual cancers, and related analyses. "Adverse/FavorableSiteSpecificGenes" worksheets contain cancer-specific gene names.
+- `nm.3909-S7.xlsx` - Supplementary Data 6. CIBERSORT-inferred fractions of tumor-associated leukocytes across 25 malignancies. A matrix of cancer-specific cell proportions, several datasets per cancer.
+
+
 ### db_TCGA
 
 TCGA data from multiple sources
