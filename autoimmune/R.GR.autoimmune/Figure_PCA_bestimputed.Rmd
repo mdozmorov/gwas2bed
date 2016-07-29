@@ -41,6 +41,13 @@ names(categoryNames) <- term.mapping$Name
 colnames(mtx) <- term.mapping$Name
 ```
 
+The -log10-transformed data is transposed to have 39 diseases as rows and 3972 GFs as columns, and saved in `data/mtx_PCA_bestimputed.txt`
+
+```{r eval=FALSE}
+write.table(t(mtx), "data/mtx_PCA_bestimputed.txt", sep = "\t", col.names = NA, quote = FALSE)
+```
+
+
 The matrix is scaled, so the enrichment profiles for each disease/phenotype have mean = 0 and SD = 1. 
 
 ```{r eval=TRUE}
