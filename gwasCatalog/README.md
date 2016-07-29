@@ -249,3 +249,7 @@ Processing method, using the script [munge_sumstats.py](https://github.com/bulik
 - IIBDGC (inflammatory bowel disease) summary statistics (we used a newer version of these data with 1000 Genomes Project imputation), http://www.ibdgenetics.org/downloads.html; 
 - plasma lipid summary statistics, http://www.broadinstitute.org/mpg/pubs/lipids2010/; 
 - SSGAC (educational attainment) summary statistics, http://www.ssgac.org/.
+
+# Blood cell association data
+
+Blood Cell Consortium (BCX), Summary ExomeChip association data [http://www.mhi-humangenetics.org/resources](http://www.mhi-humangenetics.org/resources)
