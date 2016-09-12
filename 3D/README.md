@@ -23,3 +23,13 @@ Supplementary data from Hnisz, Denes, Abraham S. Weintraub, Daniel S. Day, Anne-
 - `TableS2.xlsx` - SMC1 (cohesin) ChIA-PET interactions identified by Mango pipeline (150,306 interactions), Dowen pipeline (18,240 interactions), High confidence interactions identified in Jurkat cells but not in GM12878, HeLa, HMEC, HUVEC, IMR90, K562, KBM7 and NHEK cells (1,341 interactions, 3-column BED). [Source](http://science.sciencemag.org/highwire/filestream/675217/field_highwire_adjunct_files/6/aad9024_TableS2_160122.xlsx)
 
 - `TableS8.xlsx` - 10,624 Constitutive neighborhoods (CTCF-CTCF loops) across three cell types (Jurkat, GM12878 and K562 cell). 13,908 anchor pairs. [Source](http://science.sciencemag.org/highwire/filestream/675217/field_highwire_adjunct_files/12/aad9024_TableS8_160122.xlsx)
+
+### Rao-Lieberman.2014
+
+Data from Rao et al., “[A 3D Map of the Human Genome at Kilobase Resolution Reveals Principles of Chromatin Looping.](http://www.sciencedirect.com/science/article/pii/S0092867414014974)”
+
+- `mmc1.pdf` - Document S1. Extended Experimental Procedures, Data S1 and S2, and Tables S2 and S4–S8.  
+- `mmc2.xlsx` - Table S1. Hi-C Experiments. Stats, and cell line descriptions
+- `mmc3.xlsx` - Table S3. External Data Sets Used. URLs and names of the data tracks from ENCODE, and refs to HiC studies
+
+Actual data are at [http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63525](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63525). More data from Lieberman-Aiden lab [http://aidenlab.org/data.html](http://aidenlab.org/data.html)
