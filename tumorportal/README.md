@@ -146,6 +146,11 @@ Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulat
 
 - `CancerDB_Drug_Targets.txt` - 116 drug targets genes
 
+### [CIViC](https://civic.genome.wustl.edu/#/releases)
+
+- `CIViC_01-Oct-2016-GeneSummaries.tsv` - cancer genes
+
+- `CIViC_01-Oct-2016-VariantSummaries.tsv` - cancer variants
 
 ### [COSMIC](http://cancer.sanger.ac.uk/cosmic/download)
 
