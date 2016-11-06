@@ -272,7 +272,7 @@ mtx.list.epi <- c(list(mtx.fig1a), list(term.iridescent.minMim), list(term.iride
 #, list(mtx.gtc), list(mtx.shrunken), list(mtx.clusterSim.MF.Resnik), list(mtx.clusterSim.MF.Wang))
 #, list(term.msh.path), list(term.snomed.path), list(term.snomed.vector)
 
-mtx.cor.epi.joined <- do.call(cbind, lapply(mtx.list.epi, function(x) x[match(rownames(mtx.list.epi[[1]]), rownames(x)), ]))
+mtx.cor.epi.joined <- do.call(cbind, lapply(mtx.list.epi, function(x) x[base::match(rownames(mtx.list.epi[[1]]), rownames(x)), ]))
 rownames(mtx.cor.epi.joined) <- rownames(mtx.list.epi[[1]])
 
 # Set the column names after merging lists
@@ -402,6 +402,7 @@ ggplot(reshape2::melt(mtx.cor.epi.joined), aes(x=Var2, y=value, fill=Var2)) +
 Summarize all, and most correlated with episimilarity metrics. Visualize it as a heatmap
 
 ```{r similarityHeatmap_gwasCatalog, fig.height=9, fig.width=13, dev="png"}
+write.table(mtx.cor.epi.joined, "results/mtx_cor_epi_joined.txt", sep = "\t", col.names = NA, quote = FALSE)
 #mtx.cor.epi.joined <- sweep(mtx.cor.epi.joined, 1, apply(mtx.cor.epi.joined, 1, median,na.rm=T))
 mtx.cor.epi.joined <- scale(mtx.cor.epi.joined)
 
@@ -412,6 +413,7 @@ if (cortype != "MIC") {
   hclustergram <- hclust(as.dist(1-mtx.cor[[1]]), method=hclust.method) # Cluster it
 
   # Save the results
+  unlink("results/comparison_analysis.xlsx")
   write.xlsx2(formatC(mtx.cor[[1]], format="f", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("corr", cortype, mat.type, sep="_"), append=TRUE)
   write.xlsx2(formatC(mtx.cor[[3]], format="e", digits=2), "results/comparison_analysis.xlsx", sheetName=paste("pval", cortype, mat.type, sep="_"), append=TRUE)
   
