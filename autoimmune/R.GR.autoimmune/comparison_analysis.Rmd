@@ -7,8 +7,8 @@ output: html_document
 
 ```{r setup, echo=FALSE, message=FALSE}
 library(MDmisc)
-#source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/utils2.R")
-#source("/Users/mikhail/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.R")
+#source("/Users/mdozmorov/Documents/Work/GenomeRunner/R.GenomeRunner/utils2.R")
+#source("/Users/mdozmorov/Documents/Work/GenomeRunner/R.GenomeRunner/episimilarity.R")
 # Set up the environment
 col3 <- colorRampPalette(c("blue", "yellow", "red"))
 library(knitr) 
@@ -57,7 +57,7 @@ Preparing Barabasi similarity
 
 ```{r diseaseNetwork1, echo=FALSE, cache=FALSE, eval=TRUE}
 # All disease-disease relationships
-mtx.disease <- readRDS("/Users/mikhail/Documents/Work/GenomeRunner/Paper-Similarity/data_gwasCatalog/AllNet5/AllNet5.Rds") # Full Barabasi matrix
+mtx.disease <- readRDS("/Users/mdozmorov/Documents/Work/GenomeRunner/Paper-Similarity/data_gwasCatalog/AllNet5/AllNet5.Rds") # Full Barabasi matrix
 # Optionally, use 3-digits IDC9 codes
 # mtx.disease <- read.table("../../AllNet3.net", sep="\t", header=F)
 # Subset by ICD9 codes associated with terms
@@ -118,7 +118,7 @@ mtx.ar <- read.table("data/ar_11-11-2015.txt", sep="\t", header = T, as.is = T)
 
 ```{r eval=FALSE}
 # Preparing Zhou similarity
-mtx.sig <- read.table("/Users/mikhail/Documents/Work/GenomeRunner/gwas2bed/human-sig-disease-network.txt.gz", sep="\t", fill=T, header=T, as.is=T)
+mtx.sig <- read.table("/Users/mdozmorov/Documents/Work/GenomeRunner/gwas2bed/human-sig-disease-network.txt.gz", sep="\t", fill=T, header=T, as.is=T)
 # Subset by ZhouIDs associated with our terms
 mtx.sig <- mtx.sig[ mtx.sig$MeSH.Disease.Term %in% term.mapping$ZhouID[ term.mapping$ZhouID != "" ] & mtx.sig$MeSH.Disease.Term.1 %in% term.mapping$ZhouID[ term.mapping$ZhouID != ""], ]
 
@@ -148,7 +148,7 @@ term.Zhou.sig <- reshape_wide_data(term.Zhou.sig)
 
 ```{r eval=FALSE}
 # Preparing DiseaseConnect similarity 
-mtx.sig <- read.table("/Users/mikhail/Documents/Work/GenomeRunner/gwas2bed/Disease-Disease_v1.txt", sep="\t", fill=T, header=T, as.is=T)
+mtx.sig <- read.table("/Users/mdozmorov/Documents/Work/GenomeRunner/gwas2bed/Disease-Disease_v1.txt", sep="\t", fill=T, header=T, as.is=T)
 # Subset by DiseaseConnectIDs associated with our terms
 mtx.sig <- mtx.sig[ mtx.sig$Disease.1 %in% term.mapping$DiseaseConnectID[ term.mapping$DiseaseConnectID != "" ] & mtx.sig$Disease.2 %in% term.mapping$DiseaseConnectID[ term.mapping$DiseaseConnectID != ""], ]
 
