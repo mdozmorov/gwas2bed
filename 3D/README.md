@@ -33,3 +33,15 @@ Data from Rao et al., “[A 3D Map of the Human Genome at Kilobase Resolution Re
 - `mmc3.xlsx` - Table S3. External Data Sets Used. URLs and names of the data tracks from ENCODE, and refs to HiC studies
 
 Actual data are at [http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63525](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63525). More data from Lieberman-Aiden lab [http://aidenlab.org/data.html](http://aidenlab.org/data.html)
+
+### Schmitt-Ren.2016
+
+Data from Schmitt et.al. “**A Compendium of Chromatin Contact Maps Reveals Spatially Active Regions in the Human Genome.**” Cell Reports 2016 [http://www.cell.com/cell-reports/abstract/S2211-1247(16)31481-4](http://www.cell.com/cell-reports/abstract/S2211-1247(16)31481-4)
+
+- `mmc3.xlsx` - Compartment A/B Patterns and PC1 values. Genomic coordinates are the most interesting. For each tissue, "A" and "B" labels indicate the compartments.
+
+- `mmc4.xlsx` - TAD boundary annotations. Each worksheet contains BED coordinates for corresponding tissue/cell type. hg19 and mm9 genome assemblies.
+
+- `mmc6.xlsx` - Genome-wide FIRE scores. Lots of data, including ifferent studies.
+
+- `mmc7.xlsx` - FIRE calls and sample-specific FIRE calls in the primary cohort. Tissue-specific genomic coordinates
