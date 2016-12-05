@@ -1,5 +1,13 @@
 # 3D-related datasets
 
+### `DiStefano-Micheletti.2016`
+
+Data from Di Stefano, M. et.al. “[Hi-C-Constrained Physical Models of Human Chromosomes Recover Functionally-Related Properties of Genome Organization.](http://www.nature.com/articles/srep35985#supplementary-information)” Scientific Reports 2016
+
+Strongly interacting regions in IMR90 and hESC cells, 100kb resolution. Used Hi-C matrices from Dixon-Ren.
+
+- `srep35985-s3.xls` - Tables S1 and S2 contain positions of interacting regions, row/column numbers in the Hi-C matrices.
+
 ### `Dixon-Ren.2012`
 
 Supplementary Table 4 from Dixon, Jesse R., Siddarth Selvaraj, Feng Yue, Audrey Kim, Yan Li, Yin Shen, Ming Hu, Jun S. Liu, and Bing Ren. “[Topological Domains in Mammalian Genomes Identified by Analysis of Chromatin Interactions](http://www.nature.com/nature/journal/v485/n7398/full/nature11082.html).” Nature 485, no. 7398 (April 11, 2012): 376–80. doi:10.1038/nature11082.
