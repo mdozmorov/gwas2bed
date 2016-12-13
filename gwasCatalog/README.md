@@ -89,7 +89,7 @@ Extract all known glaucoma-related SNPs from GWAScatalog, `cat *.bed | cut -f4 |
 
 ### [db_Bagley-Altman](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004885#sec01)
 
-- `journal.pcbi.1004885.s002.CSV` - S1 File. Subset of VARIMED used in our analysis, with disease name, gene name, chromosome, and PubMed ID. 40 diseases
+- `journal.pcbi.1004885.s002.CSV` - S1 File. Subset of VARIMED used in our analysis, with disease name, gene name, chromosome, and PubMed ID. 40 diseases, and corresponding genes.
 
 - `journal.pcbi.1004885.s003.CSV` - S2 File. Diseases and disease clusters.
 
