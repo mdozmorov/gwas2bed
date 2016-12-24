@@ -155,6 +155,14 @@ PMID: 19161620; PubMed Central PMCID: PMC2639349.
 
 	- `JohnsonOdonnell_Table.txt.gz` - 56,411 GWAS genotype-phenotype associations and annotation.
 
+### [db_Ko-Kim](http://www.nature.com/articles/srep39433#supplementary-information)
+
+Ko, Younhee, Minah Cho, Jin-Sung Lee, and Jaebum Kim. “Identification of Disease Comorbidity through Hidden Molecular Mechanisms.” Scientific Reports 6 (December 19, 2016): 39433. doi:10.1038/srep39433.
+
+	- `srep39433-s2.txt` and `srep39433-s3.txt` - disease similarity based on genetic similarity (gene interactions), validated against Barabasi's co-morbidity network. Columns: ICD9 for D1, description, ICD9 for D2, description, # of genes in D1, # of genes in D2, EntrezID for shared genes, # of overlapped genes(NG), RR, phi, XD, # of enriched GO terms in D1, # of enriched GO terms in D2, # of overlapped GO terms
+
+	- `srep39433-s4.txt` - classification of ICD9 codes into categories. Columns: [ICD9], classes, [ICD9], classes, RR, PHI, XD
+
 ### [db_lncRNAdisease](http://www.cuilab.cn/lncrnadisease) Disease-lncRNA associations
 
 	- `data.txt` - the experimentally supported lncRNA-disease association data, [downloaded](http://www.cuilab.cn/files/images/ldd/data.txt) at 01/12/2016. 329 lncRNAs (col 2), 228 diseases (col 3), 1,102 records total.
