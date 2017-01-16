@@ -67,14 +67,14 @@ summary(pca)$importance[, 1:10] %>% round(digits = 5) %>% kable
 
 First two principal components
 
-```{r eval=TRUE, fig.height=7, fig.width=11}
+```{r eval=TRUE, fig.height=9, fig.width=11}
 library(ggplot2)
 library(ggrepel)
 scores <- as.data.frame(pca$x)
 scores <- left_join(data.frame(Name=rownames(scores), scores), data.frame(Name=names(categoryNames), Category=categoryNames), by = c("Name" = "Name"))
-pt <- ggplot(data=scores, aes(x=PC1, y=PC2, label=Name)) +
+scores$Name <- gsub("_", " ", scores$Name)
+pt <- ggplot(data=scores, aes(x=PC1, y=PC2, label=Name, color = Category)) +
   labs(x = "PC1 (23.06%)", y = "PC2 (7.95%)") +
-  theme_bw() +
   theme(plot.title = element_text(lineheight = 0.8, face="bold")) +
   theme(legend.position = c(0.1, 0.88)) +
   theme(legend.text = element_text(size = 15)) +
