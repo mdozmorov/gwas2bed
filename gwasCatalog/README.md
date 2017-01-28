@@ -190,6 +190,15 @@ Classic example of the enrichment analysis in DNAse hypersensitive regions.
 
 - `1222794-Maurano-tableS2.txt` - [Table S2](http://www.sciencemag.org/content/suppl/2012/09/04/science.1222794.DC1/1222794-Maurano-tableS2.txt) - a list of the disease-associated SNPs used in the paper. 
 
+### [db_Menche-Barabasi](http://science.sciencemag.org/content/suppl/2015/02/18/347.6224.1257601.DC1) - PPI-based disease similarity
+
+Supplementary data from Menche, Jörg, Amitabh Sharma, Maksim Kitsak, Susan Dina Ghiassian, Marc Vidal, Joseph Loscalzo, and Albert-László Barabási. “Disease Networks. Uncovering Disease-Disease Relationships through the Incomplete Interactome.” Science (New York, N.Y.) 347, no. 6224 (February 20, 2015): 1257601. doi:10.1126/science.1257601.
+
+- `DataS1_interactome.tsv` - human interactome. 3-columns, Entrez vs. Entrez, and type of relationship. 141,296 interactions.
+- `DataS2_disease_genes.tsv` - Disease-gene association. 6 columns: disease	number_of_all_genes	number_of_OMIM_genes	number_of_GWAS_genes	OMIM_genes	GWAS_genes. 
+- `DataS3_localization.tsv` - disease network properties
+- `DataS4_disease_pairs.tsv` - similarity between pairs of diseases
+
 ### [db_Okada-Plenge](http://plaza.umin.ac.jp/~yokada/datasource/software.htm) - Curated Disease-SNP data from the GWAS catalogue
 
 Okada Y, Wu D, Trynka G, Raj T, Terao C, Ikari K, Kochi Y, Ohmura K, Suzuki A, Yoshida S, Graham RR, Manoharan A, Ortmann W, Bhangale T, Denny JC, Carroll RJ, Eyler AE, Greenberg JD, Kremer JM, Pappas DA, Jiang L, Yin J, Ye L, Su DF, Yang J, Xie G, Keystone E, Westra HJ, Esko T, Metspalu A, Zhou X, Gupta N, Mirel D, Stahl EA, Diogo D, Cui J, Liao K, Guo MH, Myouzen K, Kawaguchi T, Coenen MJ, van  Riel PL, van de Laar MA, Guchelaar HJ, Huizinga TW, Dieudé P, Mariette X, Bridges SL Jr, Zhernakova A, Toes RE, Tak PP, Miceli-Richard C, Bang SY, Lee HS, Martin J, Gonzalez-Gay MA, Rodriguez-Rodriguez L, Rantapää-Dahlqvist S, Arlestig L, Choi HK, Kamatani Y, Galan P, Lathrop M; RACI consortium; GARNET consortium, Eyre S, Bowes J, Barton A, de Vries N, Moreland LW, Criswell LA, Karlson EW, Taniguchi A, Yamada R, Kubo M, Liu JS, Bae SC, Worthington J, Padyukov L, Klareskog L, Gregersen PK, Raychaudhuri S, Stranger BE, De Jager PL, Franke L, Visscher PM, Brown MA, Yamanaka H, Mimori T, Takahashi A, Xu H, Behrens TW, Siminovitch KA, Momohara S, Matsuda F, Yamamoto K, Plenge RM. **Genetics of rheumatoid arthritis contributes to biology and drug discovery**. Nature. 2014 Feb 20;506(7488):376-81. doi: 10.1038/nature12873. Epub 2013 Dec 25. PubMed PMID: 24390342; PubMed Central PMCID: PMC3944098.
