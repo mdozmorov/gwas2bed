@@ -32,7 +32,18 @@ Supplementary data from Hnisz, Denes, Abraham S. Weintraub, Daniel S. Day, Anne-
 
 - `TableS8.xlsx` - 10,624 Constitutive neighborhoods (CTCF-CTCF loops) across three cell types (Jurkat, GM12878 and K562 cell). 13,908 anchor pairs. [Source](http://science.sciencemag.org/highwire/filestream/675217/field_highwire_adjunct_files/12/aad9024_TableS8_160122.xlsx)
 
-### Rao-Lieberman.2014
+
+### `Mifsud-Osborne.2015`
+
+Supplementary data from Mifsud, Borbala, Filipe Tavares-Cadete, Alice N. Young, Robert Sugar, Stefan Schoenfelder, Lauren Ferreira, Steven W. Wingett, et al. “[Mapping Long-Range Promoter Contacts in Human Cells with High-Resolution Capture Hi-C.](https://www.nature.com/ng/journal/v47/n6/full/ng.3286.html#supplementary-information)” Nature Genetics 47, no. 6 (June 2015): 598–606. doi:10.1038/ng.3286.
+
+Hi-C and Capture Hi-C of Gm12878 and CD34+ cells.
+
+- `ng.3286-S2.xlsx` - Supplementary Tables 1-11. Particularly interesting:
+    - Supplementary Table 2	- Genomic coordinates of topological domain boundaries mapped in GM12878 and CD34+ Hi-C libraries. BED format. hg19
+    - Supplementary Table 7	- Interactions between promoters and GWAS SNP-containing fragments. SNP rsIDs, diseases, categories. SNP-gene associations based on interactions
+
+### `Rao-Lieberman.2014`
 
 Data from Rao et al., “[A 3D Map of the Human Genome at Kilobase Resolution Reveals Principles of Chromatin Looping.](http://www.sciencedirect.com/science/article/pii/S0092867414014974)”
 
