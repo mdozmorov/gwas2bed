@@ -36,7 +36,7 @@ Output:
 - `diseases.snps_empty` - a subfolder containing lists of diseases that don't have SNPs;
 - `diseases.snp_not_found` - a subfolder containing lists of SNPs that can't be mapped.
 
-Need to post-process file names, to eliminate special characters and spaces. `for FILE in *.bed; do mv -v "$FILE" $(echo "$FILE" | sed 's/^\_//' | tr " " "_" | tr "-" "_" | tr -d '[{}(),!];:/' | tr -d "'" | tr -d '`' | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g'); done`
+Need to post-process file names, to eliminate special characters and spaces. `for FILE in *; do mv -v "$FILE" $(echo "$FILE" | sed 's/^\_//' | tr " " "_" | tr "-" "_" | tr -d '[{}(),!];:/' | tr -d "'" | tr -d '`' | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g'); done`
 
 -------------------------------------------------------------------------------
 
