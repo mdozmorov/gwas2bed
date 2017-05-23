@@ -1,12 +1,14 @@
 ## Extracting genomic coordinates of disease-associated SNPs from GWAS catalog
 
-The GWAS catalog is now hosted at [EBI](https://www.ebi.ac.uk/gwas/home). Last downloaded: 03-10-2016.
+The GWAS catalog is now hosted at [EBI](https://www.ebi.ac.uk/gwas/home). Last downloaded: 05-23-2017.
 
 - `current_gwas_catalog.txt` - the most recent GWAScatalog from (https://www.ebi.ac.uk/gwas/api/search/downloads/full), download manually. Use the "with added ontology annotations" version.
 
-- `mapped_traits.txt` - how many SNPs per trait, `cut -f35 | sort | uniq -c | sort -k1 -r > mapped_traits.txt`
+- `mapped_traits.txt` - how many SNPs per trait, `cut -f8 current_gwas_catalog.txt | sort | uniq -c | sort -k1 -r > mapped_traits.txt`
 
-- `make.sh` - extract trait-specific SNP rsIDs into separate files.
+-------------------------------------------------------------------------------
+
+- `make.sh` - from `current_gwas_catalog.txt`, extract trait-specific SNP rsIDs into separate files.
 
 Usage:
 ```
