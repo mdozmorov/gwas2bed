@@ -258,3 +258,7 @@ Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulat
 ### [Burstein MD, Tsimelzon A, Poage GM, Covington KR, Contreras A, Fuqua SAW, Savage MI, Osborne CK, Hilsenbeck SG, Chang JC, Mills GB, Lau CC, Brown PH: Comprehensive genomic analysis identifies novel subtypes and targets of triple-negative breast cancer. Clin Cancer Res 2015, 21:1688–98.](http://clincancerres.aacrjournals.org/content/21/7/1688.long)
 
 Four TNBC subtypes. [Tables S1-S4](http://clincancerres.aacrjournals.org/content/suppl/2014/09/11/1078-0432.CCR-14-0432.DC1/127442_2_supp_0_nbcclb.pdf) - DEGs for these subtypes. [Tables S11-S14](http://clincancerres.aacrjournals.org/content/suppl/2014/09/11/1078-0432.CCR-14-0432.DC1/127442_2_supp_0_nbcb46.pdf) - predictive signatures. Data in PDF, need manual extraction.
+
+### `OncoKB` http://oncokb.org/#/genes
+
+Clinically actionable genes
