@@ -4,6 +4,24 @@ The GWAS catalog is now hosted at [EBI](https://www.ebi.ac.uk/gwas/home). Last d
 
 - `current_gwas_catalog.txt` - the most recent GWAScatalog from (https://www.ebi.ac.uk/gwas/api/search/downloads/full), download manually. Use the "with added ontology annotations" version.
 
+- `gwas_catalog_download.pl` - a Perl script for extracting hg19 disease-specific genomic coordinates from the latest [GWAScatalog](https://www.ebi.ac.uk/gwas/downloads). (C) Krista Bean
+
+Usage: Download the latest gwascatalog from https://www.ebi.ac.uk/gwas/docs/file-downloads (All associations v1.0), rename to `current_gwas_catalog.txt`, place in the same folder and run:
+```
+perl gwas_catalog_download.pl
+```
+
+Output: 
+
+- `diseases.genes` - a subfolder containing symbols of disease-associated genes in separate files;
+- `diseases.snps_bed` - a subfolder containing hg19 genomic coordinates of disease-associated SNPs;
+- `diseases.snps_empty` - a subfolder containing lists of diseases that don't have SNPs;
+- `diseases.snp_not_found` - a subfolder containing lists of SNPs that can't be mapped.
+
+Need to post-process file names, to eliminate special characters and spaces. `for FILE in *; do mv -v "$FILE" $(echo "$FILE" | sed 's/^\_//' | tr " " "_" | tr "-" "_" | tr -d '[{}(),!];:/' | tr -d "'" | tr -d '`' | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g'); done`
+
+-------------------------------------------------------------------------------
+
 - `mapped_traits.txt` - how many SNPs per trait, `cut -f8 current_gwas_catalog.txt | sort | uniq -c | sort -k1 -r > mapped_traits.txt`
 
 -------------------------------------------------------------------------------
@@ -19,24 +37,6 @@ Output:
 
 - `MAPPED_TRAIT` folder with trait-specific lists of SNP rsIDs. Only traits having 5 or more SNPs are kept.
 - `all_current_gwas_catalog.txt` - all rsIDs from the cuttent GWAS catalog
-
--------------------------------------------------------------------------------
-
-- `gwas_catalog_download.pl` - a Perl script for extracting hg19 disease-specific genomic coordinates from the latest [GWAScatalog](https://www.ebi.ac.uk/gwas/docs/downloads). (C) Krista Bean
-
-Usage:
-```
-perl gwas_catalog_download.pl
-```
-
-Output: 
-
-- `diseases.genes` - a subfolder containing symbols of disease-associated genes in separate files;
-- `diseases.snps_bed` - a subfolder containing hg19 genomic coordinates of disease-associated SNPs;
-- `diseases.snps_empty` - a subfolder containing lists of diseases that don't have SNPs;
-- `diseases.snp_not_found` - a subfolder containing lists of SNPs that can't be mapped.
-
-Need to post-process file names, to eliminate special characters and spaces. `for FILE in *; do mv -v "$FILE" $(echo "$FILE" | sed 's/^\_//' | tr " " "_" | tr "-" "_" | tr -d '[{}(),!];:/' | tr -d "'" | tr -d '`' | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g'); done`
 
 -------------------------------------------------------------------------------
 

@@ -133,7 +133,7 @@ foreach $line (@lines)
 		
 		if($rs_beginning eq "rs")
 		{
-			@more_snps = split(':', $long_snp);
+			@more_snps = split('; ', $long_snp);
 		}
 		else
 		{
