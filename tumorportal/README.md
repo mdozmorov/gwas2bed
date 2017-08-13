@@ -222,6 +222,9 @@ Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulat
 
 - `Stephens-Stratton_nature11017-s3.xlsx` - Breast cancer somatic mutations, CNVs, genes and more.
 
+### TARGET database
+
+- `TARGET_db_v3_02142015.xlsx` - TARGET (tumor alterations relevant for genomics-driven therapy) is a database of genes that, when somatically altered in cancer, are directly linked to a clinical action. TARGET genes may be predictive of response or resistance to a therapy, prognostic, and/or diagnostic. [http://archive.broadinstitute.org/cancer/cga/target](http://archive.broadinstitute.org/cancer/cga/target)
 
 ### [Vogelstein B, Papadopoulos N, Velculescu VE, Zhou S, Diaz L a, Kinzler KW: Cancer genome landscapes. Science 2013, 339(March):1546–58.](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3749880/)
 
