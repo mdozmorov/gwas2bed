@@ -21,8 +21,15 @@ Output:
 Need to post-process file names, to eliminate special characters and spaces. `for FILE in *; do mv -v "$FILE" $(echo "$FILE" | sed 's/^\_//' | tr " " "_" | tr "-" "_" | tr -d '[{}(),!];:/' | tr -d "'" | tr -d '`' | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g'); done`
 
 -------------------------------------------------------------------------------
+Get gene/snp counts per disease
 
-- `mapped_traits.txt` - how many SNPs per trait, `cut -f8 current_gwas_catalog.txt | sort | uniq -c | sort -k1 -r > mapped_traits.txt`
+- `for file in diseases.genes/*; do wc -l $file | sed 's/diseases\.genes\///'; done | sort -n -k1 -r | awk '{OFS="\t"}{print $2,$1}' > count_genes.txt`
+- `for file in diseases.snps_bed/large/*; do wc -l $file | sed 's/diseases\.genes\///'; done | sort -n -k1 -r | awk '{OFS="\t"}{print $2,$1}' > count_snps.txt`
+
+-------------------------------------------------------------------------------
+Make whole genome BED
+
+for file in `find . -type f -name "*.bed"`; do cut -f1-3 $file >>tmp.bed; done && bedtools sort -i tmp.bed | uniq > whole_genome.bed
 
 -------------------------------------------------------------------------------
 
