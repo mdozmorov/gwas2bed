@@ -205,8 +205,11 @@ Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulat
 
 ### [Leiserson, M. D. M., Vandin, F., Wu, H.-T., Dobson, J. R., Eldridge, J. V, Niu, B., … Raphael, B. J. (2015). PanCancer Network Analysis Identifies Combinations of Rare Somatic Mutations across Pathways and Protein Complexes. Manuscript, 47(2). doi:10.1038/ng.3168](http://www.nature.com/ng/journal/v47/n2/full/ng.3168.html)
 
-- `Raphael_HotNet2.xlsx`` - a collection of tables. Tables 6-18 - genes in factor-specific networks, small lists. Table 19 - genes specific for each cancer type. Table 20 - 147 cancer-specific genes.
+- `Raphael_HotNet2.xlsx` - a collection of tables. Tables 6-18 - genes in factor-specific networks, small lists. Table 19 - genes specific for each cancer type. Table 20 - 147 cancer-specific genes.
 
+### [Robinson, Dan R., Yi-Mi Wu, Robert J. Lonigro, Pankaj Vats, Erin Cobain, Jessica Everett, Xuhong Cao, et al. “Integrative Clinical Genomics of Metastatic Cancer.” Nature, August 2, 2017. doi:10.1038/nature23306.](https://www.nature.com/nature/journal/v548/n7667/full/nature23306.html#supplementary-information)
+
+- `Robinson_Table-S3.xlsx` - recurrent molecular aberrations in metastatic cancer samples. Sample-specific genes and the type (e.g., amplification, deletion) of mutations. Supplementary Table S1 lists samples and the associated cancer types
 
 ### [Sanchez-Garcia, F., Villagrasa, P., Matsui, J., Kotliar, D., Castro, V., Akavia, U.-D., … Pe’er, D. (2014). Integration of Genomic Data Enables Selective Discovery of Breast Cancer Drivers. Cell, 1461–1475. doi:10.1016/j.cell.2014.10.048](http://www.sciencedirect.com/science/article/pii/S0092867414013750)
 
