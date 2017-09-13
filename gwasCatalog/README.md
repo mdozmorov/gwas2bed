@@ -20,6 +20,8 @@ Output:
 
 Need to post-process file names, to eliminate special characters and spaces. `for FILE in *; do mv -v "$FILE" $(echo "$FILE" | sed 's/^\_//' | tr " " "_" | tr "-" "_" | tr -d '[{}(),!];:/' | tr -d "'" | tr -d '`' | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g'); done`
 
+Also need to eliminate stray spaces - some numerical coordinates have them: `for file in *.bed; do cat $file | sed 's/ //g' > tmp.bed && mv tmp.bed $file; done`
+
 -------------------------------------------------------------------------------
 Get gene/snp counts per disease
 
