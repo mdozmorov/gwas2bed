@@ -2,7 +2,7 @@
 
 Data from [TumorPortal](http://cancergenome.broadinstitute.org/), [Lawrence et al. Nature (2014)](http://www.nature.com/nature/journal/v505/n7484/full/nature12912.html) paper.
 
-`make` will download *.maf files, convert them into variation type-specific .bed files and sort them into cancer-specific subfolders under 'bed' folder.
+`make` will download \*.maf files, convert them into variation type-specific .bed files and sort them into cancer-specific subfolders under 'bed' folder.
 
 - `tumorportal_ICD9.xlsx` - Mapping of cancer types to ICD9 3- and 5-digits codes. Extensively tweaked to avoid ambigious mappings, or mapping of the same code to two different diseases. 
 - `tumorportal_ICD9-3.txt` - Tab-delimited mapping of abbreviations to names and 3-digits ICD9 codes 
@@ -75,6 +75,13 @@ Nature. 2013 Oct 10;502(7470):258. PubMed PMID: 23945592; PubMed Central PMCID: 
  - `MDG.xlsx` - Mendelian disease genes (2,716 genes)
  - `ODMG.xlsx` - Orphan disease genes (2,124 genes)
  - `Essentialgenes.xlsx` - Essential genes (2,721 genes)
+
+### [db_CGI](https://cancergenomeinterpreter.org/genes)
+
+Tamborero, David, Carlota Rubio-Perez, Jordi Deu-Pons, Michael P. Schroeder, Ana Vivancos, Ana Rovira, Ignasi Tusquets, et al. “Cancer Genome Interpreter Annotates The Biological And Clinical Relevance Of Tumor Alterations,” June 21, 2017. doi:10.1101/140475. https://www.biorxiv.org/content/early/2017/06/21/140475
+
+Downloadable data on Cancer Genes, Validated Oncogenic Mutations, Cancer Biomarkers, Cancer-targeting compounds
+
 
 ### [db_Pharmacogenomics](http://www.cancerrxgene.org/gdsc1000/GDSC1000_WebResources/Home.html)
 
