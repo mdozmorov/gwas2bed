@@ -25,3 +25,11 @@
 
 - `ESP_genes_positive_selection.txt` - gene names extracted from Table S4. Summary information of 114 genes with signatures of positive selection.
 
+### `db.Ghiassian`
+
+Ghiassian, Susan Dina, Jörg Menche, and Albert-László Barabási. “A DIseAse MOdule Detection (DIAMOnD) Algorithm Derived from a Systematic Analysis of Connectivity Patterns of Disease Proteins in the Human Interactome.” Edited by Andrey Rzhetsky. PLOS Computational Biology 11, no. 4 (April 8, 2015): e1004120. doi:10.1371/journal.pcbi.1004120. - Significance of connectivity, instead of density. Applied to 70 diseases. Used in the combined network of interactions. http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004120
+
+- `journal.pcbi.1004120.s003.TSV` - S1 data. Interactome - 141,297 interactions  
+- `journal.pcbi.1004120.s004.TSV` - S2 Data. Disease gene association data for 70 diseases.  
+- `journal.pcbi.1004120.s005.PY` - S1 Code. A python implementation of the DIAMOnD algorithm.
+
