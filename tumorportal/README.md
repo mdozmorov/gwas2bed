@@ -274,4 +274,15 @@ Four TNBC subtypes. [Tables S1-S4](http://clincancerres.aacrjournals.org/content
 
 ### `OncoKB` http://oncokb.org/#/genes
 
-Clinically actionable genes
+Clinically actionable genes, variants, drugs
+
+```
+library(jsonlite)
+# Get all curated drugs.
+drugs <- fromJSON("http://oncokb.org/api/v1/drugs")
+# Get list of currently curated genes.
+genes <- fromJSON("http://oncokb.org/api/v1/genes")
+# Get all annotated variants.
+variants <- fromJSON("http://oncokb.org/api/v1/variants")
+```
+
