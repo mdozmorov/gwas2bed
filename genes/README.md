@@ -18,6 +18,11 @@
 
 - `NCG_5_0.tsv` - the list of 1,571 prote3in-coding cancer genes from the Network of Cancer Genes, NCG5.0, downloaded from [http://ncg.kcl.ac.uk/download.php](http://ncg.kcl.ac.uk/download.php)
 
+### Supplementary data from Bartha, István, Julia di Iulio, J. Craig Venter, and Amalio Telenti. “Human Gene Essentiality.” Nature Reviews Genetics 19, no. 1 (October 30, 2017): 51–62. https://doi.org/10.1038/nrg.2017.75. https://www.nature.com/articles/nrg.2017.75#supplementary-information
+
+- `Essential_genes_human_nrg.2017.75-s2.xlsx` - all genes (Ensembl IDs) scored for essentiality using different metrics. "Missense Z-score" metric performs best, Higher value = more intolerant.
+
+- `Essential_genes_nrg.2017.75-s3.txt` - Essential genes and the associated diseases. Genes characterized by "number_of_pathogenic_variants"	"invivo_essential"	"invitro_essential"	"mice_essential".
 
 ### Supplementary data from Tennessen JA, et.al. "[NHLBI Exome Sequencing Project: Evolution and functional impact of rare coding variation from deep sequencing of human exomes](https://www.ncbi.nlm.nih.gov/pubmed/22604720)". Science 2012
 
