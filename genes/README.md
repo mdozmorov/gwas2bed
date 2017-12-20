@@ -24,6 +24,9 @@
 
 - `Essential_genes_nrg.2017.75-s3.txt` - Essential genes and the associated diseases. Genes characterized by "number_of_pathogenic_variants"	"invivo_essential"	"invitro_essential"	"mice_essential".
 
+- http://www.essentialgene.org/ - the database of essential genes, for multiple organisms
+
+
 ### Supplementary data from Tennessen JA, et.al. "[NHLBI Exome Sequencing Project: Evolution and functional impact of rare coding variation from deep sequencing of human exomes](https://www.ncbi.nlm.nih.gov/pubmed/22604720)". Science 2012
 
 - `ESP_genes_with_rare_variants.txt` - gene names extracted from Table S3. Genes with unusually high proportions of rare variation.
