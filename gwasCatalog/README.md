@@ -72,9 +72,11 @@ Getting the number of SNPs per file: `for file in bed/more5/*.bed; do wc -l $fil
 
 # `data` folder
 
-`mapping_DisGeNet-GWASdb2.xlsx` - maping between DisGeNet genes and GWASdb2 SNPs
+- `Mancuso-Pasaniuc_mmc4.xlsx` - Table S5. Significant Gene Associations. From Mancuso, Nicholas, Huwenbo Shi, Pagé Goddard, Gleb Kichaev, Alexander Gusev, and Bogdan Pasaniuc. “Integrating Gene Expression with Summary Association Statistics to Identify Genes Associated with 30 Complex Traits.” American Journal of Human Genetics 100, no. 3 (March 2, 2017): 473–87. https://doi.org/10.1016/j.ajhg.2017.01.031.
 
-`mapping_DisGeNet-gwascatalog.xlsx` - maping between DisGeNet genes and gwasCatalog SNPs
+- `mapping_DisGeNet-GWASdb2.xlsx` - maping between DisGeNet genes and GWASdb2 SNPs
+
+- `mapping_DisGeNet-gwascatalog.xlsx` - maping between DisGeNet genes and gwasCatalog SNPs
 
 
 ### [db_AMD](http://www.nature.com/ng/journal/v48/n2/full/ng.3448.html#supplementary-information)
