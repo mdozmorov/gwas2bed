@@ -72,7 +72,7 @@ Getting the number of SNPs per file: `for file in bed/more5/*.bed; do wc -l $fil
 
 # `data` folder
 
-- `Mancuso-Pasaniuc_mmc4.xlsx` - Table S5. Significant Gene Associations. From Mancuso, Nicholas, Huwenbo Shi, Pagé Goddard, Gleb Kichaev, Alexander Gusev, and Bogdan Pasaniuc. “Integrating Gene Expression with Summary Association Statistics to Identify Genes Associated with 30 Complex Traits.” American Journal of Human Genetics 100, no. 3 (March 2, 2017): 473–87. https://doi.org/10.1016/j.ajhg.2017.01.031.
+- `Mancuso-Pasaniuc_mmc4.xlsx` - Table S5. Significant Gene Associations. From Mancuso, Nicholas, Huwenbo Shi, Pagé Goddard, Gleb Kichaev, Alexander Gusev, and Bogdan Pasaniuc. “Integrating Gene Expression with Summary Association Statistics to Identify Genes Associated with 30 Complex Traits.” American Journal of Human Genetics 100, no. 3 (March 2, 2017): 473–87. https://doi.org/10.1016/j.ajhg.2017.01.031. Another data at http://www.cell.com/action/showImagesData?pii=S0002-9297%2817%2930032-0: Table S6. Susceptibility Genes Identified in Zhu et al., Table S8. Susceptibility Genes Reported in Pavlides et al., Table S11. Estimates of Expression Correlation and Genetic Correlation for Pairs of Traits
 
 - `mapping_DisGeNet-GWASdb2.xlsx` - maping between DisGeNet genes and GWASdb2 SNPs
 
