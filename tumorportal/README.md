@@ -135,6 +135,14 @@ Davoli T, Xu AW, Mengwasser KE, Sack LM, Yoon JC, Park PJ, Elledge SJ: **Cumulat
 - `Davoli_Table_S5.xlsx` - Table S5A - Lists of tumor suppressor (STOP) genes, lists of essential genes (145 and 332 genes), and genes localized in regions of recurrent focal deletions or amplifications (Beroukhim et al., 2010). [Source](http://www.sciencedirect.com/science/MiamiMultiMediaURL/1-s2.0-S0092867413012877/1-s2.0-S0092867413012877-mmc5.xlsx/272196/html/S0092867413012877/67b5b6730171a63b617034b9bf8d6ec1/mmc5.xlsx)
 - `Davoli_Table_S7.xlsx` - Table S7A/B - manually curated lists of TSG/OG genes, respectively. [Source](http://www.sciencedirect.com/science/MiamiMultiMediaURL/1-s2.0-S0092867413012877/1-s2.0-S0092867413012877-mmc7.xlsx/272196/html/S0092867413012877/102ba9da31942f6ccec236a565aac494/mmc7.xlsx)
 
+### `db_Yates.2017`
+
+Yates, Lucy R., Stian Knappskog, David Wedge, James H.R. Farmery, Santiago Gonzalez, Inigo Martincorena, Ludmil B. Alexandrov, et al. “Genomic Evolution of Breast Cancer Metastasis and Relapse.” Cancer Cell 32, no. 2 (August 2017): 169–184.e7. https://doi.org/10.1016/j.ccell.2017.07.005. Supplementary data at http://www.cell.com/cancer-cell/supplemental/S1535-6108(17)30297-0
+
+- `mmc2.xlsx` - Table S1, clinical annotations
+- `mmc4.xlsx` - Table S3, Mutation Calls, Including Targeted Capture Data for Primary and Relapse Cohorts.
+- `WGS_mutation_calls.zip` - The zip file contains three folders, which group somatically acquired indels, structural variants and substitutions. Within each of these folders, there are individual tab-delimited text files containing the calls for each patient separately, together with which samples within each patient the mutation was identified in. Data arise from whole genome sequencing of primary and metastatic / relapsing breast cancers. https://data.mendeley.com/datasets/g7kpzkhz8c/1
+
 
 # Individual data files
 
