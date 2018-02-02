@@ -56,6 +56,15 @@ Nature. 2013 Oct 10;502(7470):258. PubMed PMID: 23945592; PubMed Central PMCID: 
 
 `links.txt` - links to download cleaned mutation data.
 
+### [db_cancergenomeinterpreter - Cancer Genome Interpreter](https://www.cancergenomeinterpreter.org/genes)
+
+- Rheinbay, Esther, Morten Muhlig Nielsen, Federico Abascal, Grace Tiao, Henrik Hornshøj, Julian M Hess, Randi Istrup Istrup Pedersen, et al. “Discovery and Characterization of Coding and Non-Coding Driver Mutations in More than 2,500 Whole Cancer Genomes.” BioRxiv, January 1, 2017. https://doi.org/10.1101/237313.
+
+- `catalog_of_cancer_genes_latest.zip` 
+- `catalog_of_validated_oncogenic_mutations_latest.zip`
+- `cgi_biomarkers_latest.zip`
+- `cancer_bioactivities_latest.zip`
+
 ### [db_CCG - Interactome of cancer genes](http://bioinfo.mc.vanderbilt.edu/CCG/)
 
 - Catalogue of Cancer Genes
@@ -171,7 +180,7 @@ Yates, Lucy R., Stian Knappskog, David Wedge, James H.R. Farmery, Santiago Gonza
 
 - `Census_all*.csv` - [The cancer Gene Census](http://cancer.sanger.ac.uk/census)
 - `COSMIC_genes.txt` - Genes sorted by the number of records associated with them. Obtained using `zcat <CosmicCompleteTargetedScreensMutantExport.tsv.gz | sed '1d' | cut -f1 | sort | uniq -c | sort -k1 -r -n > COSMIC_genes.txt`
-
+- `CosmicCodingMuts.vcf.gz` - VCF file of all coding mutations in the current release (release v83, 7th November 2017).
 
 ### [Hnisz et al., “Activation of Proto-Oncogenes by Disruption of Chromosome Neighborhoods.”](http://science.sciencemag.org/content/351/6280/1454)
 
