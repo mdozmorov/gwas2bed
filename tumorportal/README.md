@@ -212,6 +212,11 @@ Yates, Lucy R., Stian Knappskog, David Wedge, James H.R. Farmery, Santiago Gonza
 - `Michiailidou-S2.xls` - Set of all 522 SNPs correlated with 1 of the 15 lead SNPs and that could not be ruled out as potentially causal (based on a likelihood ratio of 100:1).
 
 
+### [NCG 5.0, Network of Cancer Genes](http://ncg.kcl.ac.uk/)
+
+- `NCG.tsv` - list of 1,571 protein-coding cancer genes. Downloaded 02-25-2017, from http://ncg.kcl.ac.uk/download.php
+
+
 ### [Nik-Zainal, Serena, Helen Davies, Johan Staaf, Manasa Ramakrishna, Dominik Glodzik, Xueqing Zou, Inigo Martincorena, et al. “Landscape of Somatic Mutations in 560 Breast Cancer Whole-Genome Sequences.” Nature, May 2, 2016. doi:10.1038/nature17676.](http://www.nature.com/nature/journal/vaop/ncurrent/full/nature17676.html)
 
 - `Nik-Zainal_2016_S12.xlsx` = `Supplementary Table 12.ExtendedCancerGeneList727_En58position_final_15052015.xlsx` - extended list of 727 cancer genes from COSMIC and newly identified. [Download](http://www.nature.com/nature/journal/vaop/ncurrent/full/nature17676.html#supplementary-information)
