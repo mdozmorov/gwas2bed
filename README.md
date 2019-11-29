@@ -45,3 +45,18 @@ Disease-disease relationships based on gene/protein interaction networks. [Suthr
 
 - `Suthram_TableS2_disease-relationships.xlsx` - data from [Supplementary Table S2](http://journals.plos.org/ploscompbiol/article/asset?unique&id=info:doi/10.1371/journal.pcbi.1000662.s005). List of the 138 significant disease-disease correlations. Other correlations are not significant.
 
+## Papers
+
+- Human-disease phenotype map. Network of diseases connected via SNPs. PheWASs on electronic health records from the Geisinger's biobank. Network properties. Visualization at https://www.biomedinfolab.com/software
+    - Verma, Anurag, Lisa Bang, Jason E. Miller, Yanfei Zhang, Ming Ta Michael Lee, Yu Zhang, Marta Byrska-Bishop, et al. “Human-Disease Phenotype Map Derived from PheWAS across 38,682 Individuals.” The American Journal of Human Genetics, December 2018. https://doi.org/10.1016/j.ajhg.2018.11.006.
+
+## Web-resources
+
+- `eMERGE` - electronic health recorsd and genomics resources. https://emerge.mc.vanderbilt.edu/resourcelibrary/
+
+- `PheWAS Catalog` - PheWAS of GWAS Catalog of SNPs. https://phewascatalog.org/phewas
+
+
+
+
+
